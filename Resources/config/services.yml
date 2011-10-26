@@ -1,0 +1,14 @@
+services:
+    crocos_security.context:
+        class: Crocos\SecurityBundle\Security\SecurityContext
+
+    crocos_security.checker:
+        class: Crocos\SecurityBundle\Security\SecurityChecker
+        arguments:
+            - @annotation_reader
+
+    crocos_security.listener.controller:
+        class: Crocos\SecurityBundle\EventListener\ControllerListener
+        arguments:
+            - @crocos_security.context
+            - @crocos_security.checker
