@@ -3,6 +3,7 @@
 namespace Crocos\SecurityBundle\Security;
 
 use Crocos\SecurityBundle\Annotation\Secure;
+use Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyInterface;
 
 /**
  * SecurityContext.
@@ -14,10 +15,9 @@ class SecurityContext
     protected $secure = false;
     protected $requiredRoles = array();
     protected $domain = 'default';
-    protected $strategy = 'default';
-    protected $authenticated = false;
-    protected $user;
+    protected $strategy = 'session';
     protected $forwardingController;
+    protected $authStrategy;
 
     /**
      * Set secure.
@@ -82,7 +82,7 @@ class SecurityContext
     /**
      * Set authentication/authorization strategy.
      *
-     * @param string $strategy
+     * @param string|AuthStrategyInterface $strategy
      */
     public function setStrategy($strategy)
     {
@@ -92,7 +92,7 @@ class SecurityContext
     /**
      * Get authentication/authorization strategy.
      *
-     * @return string
+     * @return string|AuthStrategyInterface
      */
     public function getStrategy()
     {
@@ -126,9 +126,7 @@ class SecurityContext
      */
     public function login($user)
     {
-        $this->user = $user;
-
-        $this->authenticated = true;
+        $this->strategy->login($user);
     }
 
     /**
@@ -136,8 +134,7 @@ class SecurityContext
      */
     public function logout()
     {
-        $this->authenticated = false;
-        $this->user = null;
+        $this->strategy->logout();
     }
 
     /**
@@ -147,7 +144,7 @@ class SecurityContext
      */
     public function isAuthenticated()
     {
-        return $this->authenticated;
+        return $this->strategy->isAuthenticated();
     }
 
     /**
@@ -157,6 +154,6 @@ class SecurityContext
      */
     public function getUser()
     {
-        return $this->user;
+        return $this->strategy->getUser();
     }
 }

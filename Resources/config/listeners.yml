@@ -1,0 +1,8 @@
+services:
+    crocos_security.request_listener:
+        class: Crocos\SecurityBundle\EventListener\RequestListener
+        arguments:
+            - @crocos_security.checker
+            - @controller_resolver
+        tags:
+            - { name: kernel.event_listener, event: kernel.request }

@@ -68,12 +68,12 @@ trueに設定した場合、認証不要であることを表します。初期�
 
 #### strategy
 
-認証状態の管理方法を指定します。初期値は "default" で、セッションを用いた認証状態の管理を行います。
+認証状態の管理方法を指定します。初期値は "session" で、セッションを用いた認証状態の管理を行います。
 
 この他にも、FacebookのPHP-SDKの状態と連動させた "facebook" などが指定できます。
 
 - type: boolean
-- default: "default"
+- default: "session"
 
 #### forward
 

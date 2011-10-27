@@ -4,6 +4,7 @@ namespace Crocos\SecurityBundle\Security;
 
 use Doctrine\Common\Annotations\Reader;
 use Crocos\SecurityBundle\Annotation\Secure;
+use Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyResolver;
 
 /**
  * AnnotationLoader.
@@ -21,10 +22,12 @@ class AnnotationLoader
      * Constructor.
      *
      * @param Reader $reader Annotation reader
+     * @param AuthStrategyResolver $resolver
      */
-    public function __construct(Reader $reader)
+    public function __construct(Reader $reader, AuthStrategyResolver $resolver)
     {
         $this->reader = $reader;
+        $this->resolver = $resolver;
     }
 
     /**
@@ -56,6 +59,8 @@ class AnnotationLoader
                 $this->loadAnnotation($context, $annotation);
             }
         }
+
+        $this->resolveAuthStrategy($context);
     }
 
     /**
@@ -80,5 +85,14 @@ class AnnotationLoader
         if (null !== $annotation->forward()) {
             $context->setForwardingController($annotation->forward());
         }
+    }
+
+    protected function resolveAuthStrategy($context)
+    {
+        $strategy = $this->resolver->resolveAuthStrategy($context->getStrategy());
+
+        $strategy->setDomain($context->getDomain());
+
+        $context->setStrategy($strategy);
     }
 }

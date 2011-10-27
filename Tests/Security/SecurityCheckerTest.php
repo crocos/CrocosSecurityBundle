@@ -50,7 +50,7 @@ class SecurityCheckerTest extends \PHPUnit_Framework_TestCase
     public function testSecureControllerNotForwardIfLoggedIn()
     {
         Phake::when($this->context)->isSecure()->thenReturn(true);
-        Phake::when($this->context)->getUser()->thenReturn('fivestar');
+        Phake::when($this->context)->isAuthenticated()->thenReturn(true);
 
         $this->assertEmpty($this->checker->checkSecurity($this->object, $this->method));
     }

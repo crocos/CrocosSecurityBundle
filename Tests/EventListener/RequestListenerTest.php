@@ -53,7 +53,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->kernel)->forward($forwardingController)->thenReturn($response);
 
         $listener = new RequestListener($this->checker, $this->resolver);
-        $listener->onKernelController($this->event);
+        $listener->onKernelRequest($this->event);
 
         Phake::verify($this->kernel)->forward($forwardingController);
         Phake::verify($this->event)->setResponse($response);
@@ -67,6 +67,6 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
         Phake::verifyNoInteraction($this->kernel);
 
         $listener = new RequestListener($this->checker, $this->resolver);
-        $listener->onKernelController($this->event);
+        $listener->onKernelRequest($this->event);
     }
 }

@@ -5,10 +5,26 @@ services:
     crocos_security.checker:
         class: Crocos\SecurityBundle\Security\SecurityChecker
         arguments:
+            - @crocos_security.context
+            - @crocos_security.annotation_loader
+            - @crocos_security.forwarding_controller_matcher
+
+    crocos_security.annotation_loader:
+        class: Crocos\SecurityBundle\Security\AnnotationLoader
+        arguments:
             - @annotation_reader
 
-    crocos_security.listener.controller:
-        class: Crocos\SecurityBundle\EventListener\ControllerListener
+    crocos_security.forwarding_controller_matcher:
+        class: Crocos\SecurityBundle\Security\ForwardingControllerMatcher
         arguments:
-            - @crocos_security.context
-            - @crocos_security.checker
+            - @controller_name_converter
+
+    crocos_security.auth_strategy_resolver:
+        class: Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyResolver
+
+    crocos_security.auth_strategy.session:
+        class: Crocos\SecurityBundle\Security\AuthStrategy\SessionAuth
+        arguments:
+            - @session
+        tags:
+            - { name: crocos_security.strategy, alias: session }

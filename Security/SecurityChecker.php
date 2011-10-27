@@ -56,8 +56,9 @@ class SecurityChecker
             return;
         }
 
-        $user = $this->context->getUser();
-        if ($user) {
+        if ($this->context->isAuthenticated()) {
+            // @todo Authorize roles
+
             return;
         }
 
@@ -67,25 +68,5 @@ class SecurityChecker
         }
 
         return $forwardingController;
-    }
-
-    /**
-     * Check given controller is login controller.
-     *
-     * @param array $controller
-     * @param string $loginControllerName
-     * @return boolean
-     */
-    protected function isLoginController($controller, $loginControllerName)
-    {
-        list($loginController, $loginAction) = explode('::', $loginControllerName);
-
-        if ($loginController === get_class($controller[0])
-            && $loginAction === $controller[1]
-        ) {
-            return true;
-        }
-
-        return false;
     }
 }

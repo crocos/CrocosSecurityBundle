@@ -10,45 +10,31 @@ use Phake;
 class SecurityContextTest extends \PHPUnit_Framework_TestCase
 {
     protected $context;
+    protected $strategy;
 
     protected function setUp()
     {
-        $this->context = new SecurityContext();
+        $context = new SecurityContext();
+
+        $strategy = Phake::mock('Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyInterface');
+        $context->setStrategy($strategy);
+
+        $this->context = $context;
+        $this->strategy = $strategy;;
     }
 
-    public function testDefault()
+    public function testDelegateToStrategy()
     {
         $context = $this->context;
 
-        $this->assertFalse($context->isSecure());
-        $this->assertEquals(array(), $context->getRequiredRoles());
-        $this->assertEquals('default', $context->getDomain());
-        $this->assertEquals('default', $context->getStrategy());
-        $this->assertFalse($context->isAuthenticated());
-        $this->assertEmpty($context->getUser());
-    }
-
-    public function testAuthenticatedAfterSetUser()
-    {
-        $context = $this->context;
-
-        $user = new Fixtures\User();
-        $context->login($user);
-
-        $this->assertTrue($context->isAuthenticated());
-        $this->assertEquals($user, $context->getUser());
-    }
-
-    public function testNotAuthenticatedAfterSetEmpty()
-    {
-        $context = $this->context;
-
-        $user = new Fixtures\User();
-        $context->login($user);
-
+        $context->login('user');
         $context->logout();
+        $context->getUser();
+        $context->isAuthenticated();
 
-        $this->assertFalse($context->isAuthenticated());
-        $this->assertEmpty($context->getUser());
+        Phake::verify($this->strategy)->login('user');
+        Phake::verify($this->strategy)->logout();
+        Phake::verify($this->strategy)->getUser();
+        Phake::verify($this->strategy)->isAuthenticated();
     }
 }
