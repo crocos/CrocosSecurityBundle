@@ -3,9 +3,10 @@
 namespace Crocos\SecurityBundle\Tests\Fixtures;
 
 use Crocos\SecurityBundle\Annotation\Secure;
+use Crocos\SecurityBundle\Annotation\SecureConfig;
 
 /**
- * @Secure(disabled=true, forward="Crocos\SecurityBundle\Tests\Fixtures\UserController::loginAction")
+ * @SecureConfig(forward="Crocos\SecurityBundle\Tests\Fixtures\UserController::loginAction")
  */
 class UserController
 {

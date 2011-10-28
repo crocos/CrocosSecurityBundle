@@ -3,7 +3,9 @@
 namespace Crocos\SecurityBundle\Security;
 
 use Doctrine\Common\Annotations\Reader;
+use Crocos\SecurityBundle\Annotation\Annotation;
 use Crocos\SecurityBundle\Annotation\Secure;
+use Crocos\SecurityBundle\Annotation\SecureConfig;
 use Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyResolver;
 
 /**
@@ -48,14 +50,14 @@ class AnnotationLoader
         $classes = array_reverse($classes);
         foreach ($classes as $class) {
             foreach ($this->reader->getClassAnnotations($class) as $annotation) {
-                if ($annotation instanceof Secure) {
+                if ($annotation instanceof Annotation) {
                     $this->loadAnnotation($context, $annotation);
                 }
             }
         }
 
         foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
-            if ($annotation instanceof Secure) {
+            if ($annotation instanceof Annotation) {
                 $this->loadAnnotation($context, $annotation);
             }
         }
@@ -64,16 +66,43 @@ class AnnotationLoader
     }
 
     /**
-     * Load @Secure annotation.
+     * Load security annotation.
+     *
+     * @param SecurityContext $context
+     * @param Annotation $annotation
      */
-    protected function loadAnnotation(SecurityContext $context, Secure $annotation)
+    protected function loadAnnotation(SecurityContext $context, Annotation $annotation)
+    {
+        if ($annotation instanceof Secure) {
+            $this->loadSecureAnnotation($context, $annotation);
+        } elseif ($annotation instanceof SecureConfig) {
+            $this->loadSecureConfigAnnotation($context, $annotation);
+        }
+    }
+
+    /**
+     * Load @Secure annotation.
+     *
+     * @param SecurityContext $context
+     * @param Secure $annotation
+     */
+    protected function loadSecureAnnotation(SecurityContext $context, Secure $annotation)
     {
         $context->setSecure(!$annotation->disabled());
 
         if (null !== $annotation->roles()) {
             $context->setRequiredRoles($annotation->roles());
         }
+    }
 
+    /**
+     * Load @SecureConfig annotation.
+     *
+     * @param SecurityContext $context
+     * @param SecureConfig $annotation
+     */
+    protected function loadSecureConfigAnnotation(SecurityContext $context, SecureConfig $annotation)
+    {
         if (null !== $annotation->domain()) {
             $context->setDomain($annotation->domain());
         }
@@ -87,7 +116,12 @@ class AnnotationLoader
         }
     }
 
-    protected function resolveAuthStrategy($context)
+    /**
+     * Resolve auth strategy.
+     *
+     * @param SecurityContext $context
+     */
+    protected function resolveAuthStrategy(SecurityContext $context)
     {
         $strategy = $this->resolver->resolveAuthStrategy($context->getStrategy());
 

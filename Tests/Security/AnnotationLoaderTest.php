@@ -3,7 +3,6 @@
 namespace Crocos\SecurityBundle\Tests\Security;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Security\SecurityContext;
 use Crocos\SecurityBundle\Security\AnnotationLoader;
 use Crocos\SecurityBundle\Tests\Fixtures;
