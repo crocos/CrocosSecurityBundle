@@ -15,6 +15,8 @@ class SessionAuth implements AuthStrategyInterface
     protected $domain;
 
     /**
+     * Constructor.
+     *
      * @param Session $session
      */
     public function __construct(Session $session)
@@ -38,7 +40,7 @@ class SessionAuth implements AuthStrategyInterface
         $this->session->migrate();
 
         $this->setAttribute('_authenticated', true);
-        $this->setAttribute('_user', $this->hibernateUser($user));
+        $this->setAttribute('_user', $this->sleepUser($user));
     }
 
     /**
@@ -96,20 +98,20 @@ class SessionAuth implements AuthStrategyInterface
     }
 
     /**
-     * Hibernate user.
+     * sleep user.
      *
      * @param mixed $user
-     * @return mixed Hibernated data.
+     * @return mixed sleepd data.
      */
-    protected function hibernateUser($user)
+    protected function sleepUser($user)
     {
         return $user;
     }
 
     /**
-     * Awake user from hibernated data.
+     * Awake user from sleepd data.
      *
-     * @param mixed $data Hibernated data made by hibernate()
+     * @param mixed $data sleepd data made by sleep()
      * @return mixed
      */
     protected function awakeUser($data)

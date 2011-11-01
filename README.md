@@ -14,7 +14,6 @@ CrocosSecurityBundle - README
 
 `PROJECT_ROOT/vendor/bundles/Crocos/SecurityBundle` に配置します。
 
-
 ### app/AppKernel.php
 
 `Symfony\Bundle\SecurityBundle\SecurityBundle` は外します。
@@ -295,5 +294,8 @@ AuthStrategy
 
 ### FacebookAuth
 
-`FacebookAuth` はFacebookの認証状態を使った
+`FacebookAuth` はFacebook PHP SDKを用いて認証を行います。
 
+`login()` および `logout()` メソッドは使用できません。`BaseFacebook::getLoginUrl()` を用いて認証してください。
+
+`FacebookAuth` を利用する場合は、`facebook.api` というキーで `Facebook` オブジェクトをDIコンテナにサービス登録してください。

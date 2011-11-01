@@ -4,8 +4,8 @@ namespace Crocos\SecurityBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Crocos\FrameworkBundle\DependencyInjection\Compiler\StrategyPass;
-use Crocos\FrameworkBundle\DependencyInjection\Compiler\FacebookPass;
+use Crocos\SecurityBundle\DependencyInjection\Compiler\StrategyPass;
+use Crocos\SecurityBundle\DependencyInjection\Compiler\FacebookPass;
 
 /**
  * CrocosSecurityBundle.
