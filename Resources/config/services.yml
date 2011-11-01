@@ -13,6 +13,7 @@ services:
         class: Crocos\SecurityBundle\Security\AnnotationLoader
         arguments:
             - @annotation_reader
+            - @crocos_security.auth_strategy_resolver
 
     crocos_security.forwarding_controller_matcher:
         class: Crocos\SecurityBundle\Security\ForwardingControllerMatcher

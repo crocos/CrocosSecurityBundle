@@ -1,13 +1,13 @@
 <?php
 
-namespace Crocos\HtmlPurifierBundle\DependencyInjection;
+namespace Crocos\SecurityBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 /**
- * CrocosHtmlPurifierExtension configuration structure.
+ * CrocosSecurityExtension configuration structure.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */

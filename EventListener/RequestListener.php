@@ -49,7 +49,9 @@ class RequestListener
 
         $request = $event->getRequest();
         $controller = $this->resolver->getController($request);
-        $request->attributes->set('_controller', $controller);
+
+        //無駄になるけどRequestDataCollectorでこけるから...
+        //$request->attributes->set('_controller', $controller);
 
         if (!is_array($controller)) {
             return;
