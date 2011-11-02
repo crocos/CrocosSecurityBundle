@@ -42,7 +42,7 @@ CrocosSecurityBundle - README
 使い方
 --------
 
-`Secure` アノテーション、`SecureConfig`アノテーションをコントローラのメソッドもしくはクラスに設定します。
+`Secure` アノテーション、`SecureConfig` アノテーションをコントローラのメソッドもしくはクラスに設定します。
 
     <?php
     use Crocos\SecurityBundle\Annotation\Secure;
@@ -62,6 +62,28 @@ CrocosSecurityBundle - README
         public function secureAction()
         {
             $user = $this->get('crocos_security.context')->getUser();
+        }
+    }
+
+    class SecurityController extends AppController
+    {
+        public function login(Request $request)
+        {
+            $user = $this->findUser($request->request->get('username'), $request->request->get('password'));
+
+            $this->get('crocos_security.context')->login($user);
+
+            return $this->redirect('/');
+        }
+
+        /**
+         * @Secure
+         */
+        public function logout()
+        {
+            $this->get('crocos_security.context')->logout();
+
+            return $this->redirect('/login');
         }
     }
 

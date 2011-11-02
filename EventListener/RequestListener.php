@@ -62,6 +62,10 @@ class RequestListener
             return;
         }
 
+        if ($request->hasSession()) {
+            $request->getSession()->set('_security.target_path', $request->getUri());
+        }
+
         $response = $event->getKernel()->forward($forwardingController);
 
         $event->setResponse($response);
