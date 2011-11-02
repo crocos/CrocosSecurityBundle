@@ -181,7 +181,7 @@ class SecurityContext
      */
     public function hasPreviousUrl()
     {
-        $this->previousUrlHandler->has();
+        return $this->previousUrlHandler->has();
     }
 
     /**
