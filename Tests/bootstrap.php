@@ -18,3 +18,7 @@ AnnotationRegistry::registerLoader(function($class) use ($loader) {
 });
 
 require_once $_SERVER['PHAKE'].'/tests/bootstrap.php';
+
+if (is_readable($fbpath = $_SERVER['FACEBOOK'].'/facebook.php')) {
+    require_once $fbpath;
+}
