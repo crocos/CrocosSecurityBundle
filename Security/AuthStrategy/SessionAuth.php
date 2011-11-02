@@ -13,6 +13,7 @@ class SessionAuth implements AuthStrategyInterface
 {
     protected $session;
     protected $domain;
+    protected $user;
 
     /**
      * Constructor.
@@ -41,6 +42,8 @@ class SessionAuth implements AuthStrategyInterface
 
         $this->setAttribute('_authenticated', true);
         $this->setAttribute('_user', $this->sleepUser($user));
+
+        $this->user = $user;
     }
 
     /**
@@ -52,6 +55,8 @@ class SessionAuth implements AuthStrategyInterface
 
         $this->setAttribute('_authenticated', false);
         $this->setAttribute('_user', null);
+
+        $this->user = null;
     }
 
     /**
@@ -67,7 +72,17 @@ class SessionAuth implements AuthStrategyInterface
      */
     public function getUser()
     {
-        return $this->awakeUser($this->getAttribute('_user'));
+        if (!isset($this->user)) {
+            try {
+                $this->user = $this->awakeUser($this->getAttribute('_user'));
+            } catch (\Exception $e) {
+                $this->logout();
+
+                throw $e;
+            }
+        }
+
+        return $this->user;
     }
 
     /**
