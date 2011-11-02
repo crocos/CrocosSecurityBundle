@@ -39,6 +39,16 @@ class SecurityChecker
     }
 
     /**
+     * Get security context.
+     *
+     * @return SecurityContext
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
      * Check security.
      *
      * @param object $object

@@ -12,6 +12,7 @@ use Phake;
 class RequestListenerTest extends \PHPUnit_Framework_TestCase
 {
     protected $checker;
+    protected $context;
     protected $request;
     protected $resolver;
     protected $kernel;
@@ -21,6 +22,9 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $checker = Phake::mock('Crocos\SecurityBundle\Security\SecurityChecker');
+
+        $context = Phake::mock('Crocos\SecurityBundle\Security\SecurityContext');
+        Phake::when($checker)->getContext()->thenReturn($context);
 
         $request = Request::create('/');
 
@@ -37,6 +41,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
         Phake::when($resolver)->getController($request)->thenReturn($controller);
 
         $this->checker = $checker;
+        $this->context = $context;
         $this->request = $request;
         $this->resolver = $resolver;
         $this->kernel = $kernel;
@@ -55,6 +60,7 @@ class RequestListenerTest extends \PHPUnit_Framework_TestCase
         $listener = new RequestListener($this->checker, $this->resolver);
         $listener->onKernelRequest($this->event);
 
+        Phake::verify($this->context)->setPreviousUrl($this->request->getUri());
         Phake::verify($this->kernel)->forward($forwardingController);
         Phake::verify($this->event)->setResponse($response);
     }
