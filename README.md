@@ -290,9 +290,14 @@ AuthStrategy
 
 ### SessionAuth
 
+    strategy="session"
+
 `SessionAuth` はセッションを用いて認証状態を管理する仕組みです。
 
+
 ### FacebookAuth
+
+    strategy="facebook"
 
 `FacebookAuth` はFacebook PHP SDKを用いて認証を行います。
 
