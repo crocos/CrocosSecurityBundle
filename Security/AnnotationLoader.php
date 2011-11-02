@@ -15,6 +15,8 @@ use Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyResolver;
  */
 class AnnotationLoader
 {
+    const DEFAULT_STRATEGY = 'session';
+
     /**
      * @var Reader
      */
@@ -62,7 +64,7 @@ class AnnotationLoader
             }
         }
 
-        $this->resolveAuthStrategy($context);
+        $this->fixContext($context);
     }
 
     /**
@@ -108,7 +110,7 @@ class AnnotationLoader
         }
 
         if (null !== $annotation->strategy()) {
-            $context->setStrategy($annotation->strategy());
+            $context->setStrategy($this->resolver->resolveAuthStrategy($annotation->strategy()));
         }
 
         if (null !== $annotation->forward()) {
@@ -117,16 +119,16 @@ class AnnotationLoader
     }
 
     /**
-     * Resolve auth strategy.
      *
-     * @param SecurityContext $context
      */
-    protected function resolveAuthStrategy(SecurityContext $context)
+    protected function fixContext(SecurityContext $context)
     {
-        $strategy = $this->resolver->resolveAuthStrategy($context->getStrategy());
+        $context->getPreviousUrlHandler()->setup($context->getDomain());
 
-        $strategy->setDomain($context->getDomain());
+        if (null === $context->getStrategy()) {
+            $context->setStrategy($this->resolver->resolveAuthStrategy(self::DEFAULT_STRATEGY));
+        }
 
-        $context->setStrategy($strategy);
+        $context->getStrategy()->setDomain($context->getDomain());
     }
 }

@@ -1,6 +1,8 @@
 services:
     crocos_security.context:
         class: Crocos\SecurityBundle\Security\SecurityContext
+        calls:
+            - [ setPreviousUrlHandler, [ @crocos_security.previous_url_handler ] ]
 
     crocos_security.checker:
         class: Crocos\SecurityBundle\Security\SecurityChecker
@@ -19,6 +21,11 @@ services:
         class: Crocos\SecurityBundle\Security\ForwardingControllerMatcher
         arguments:
             - @controller_name_converter
+
+    crocos_security.previous_url_handler:
+        class: Crocos\SecurityBundle\Security\PreviousUrlHandler
+        arguments:
+            - @session
 
     crocos_security.auth_strategy_resolver:
         class: Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyResolver
