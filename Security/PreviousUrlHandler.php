@@ -38,7 +38,9 @@ class PreviousUrlHandler
     }
 
     /**
+     * Has url?
      *
+     * @return boolean
      */
     public function has()
     {
@@ -46,7 +48,9 @@ class PreviousUrlHandler
     }
 
     /**
+     * Set url.
      *
+     * @param string $url
      */
     public function set($url)
     {
@@ -56,7 +60,9 @@ class PreviousUrlHandler
     }
 
     /**
+     * Get url.
      *
+     * @return string
      */
     public function get()
     {
@@ -65,6 +71,11 @@ class PreviousUrlHandler
          return $this->url;
     }
 
+    /**
+     * Get session key.
+     *
+     * @return string
+     */
     protected function getKey()
     {
         return "{$this->domain}._previous_url";

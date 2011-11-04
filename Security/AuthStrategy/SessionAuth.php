@@ -93,7 +93,7 @@ class SessionAuth implements AuthStrategyInterface
      */
     protected function setAttribute($key, $value)
     {
-        $acutualKey = $this->domain . '/' . $key;
+        $acutualKey = $this->domain . '.' . $key;
 
         $this->session->set($acutualKey, $value);
     }
@@ -107,7 +107,7 @@ class SessionAuth implements AuthStrategyInterface
      */
     protected function getAttribute($key, $default = null)
     {
-        $acutualKey = $this->domain . '/' . $key;
+        $acutualKey = $this->domain . '.' . $key;
 
         return $this->session->get($acutualKey, $default);
     }
