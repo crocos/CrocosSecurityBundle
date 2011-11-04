@@ -2,7 +2,7 @@ services:
     crocos_security.context:
         class: Crocos\SecurityBundle\Security\SecurityContext
         calls:
-            - [ setPreviousUrlHandler, [ @crocos_security.previous_url_handler ] ]
+            - [ setPreviousUrlHolder, [ @crocos_security.previous_url_holder ] ]
 
     crocos_security.checker:
         class: Crocos\SecurityBundle\Security\SecurityChecker
@@ -22,8 +22,8 @@ services:
         arguments:
             - @controller_name_converter
 
-    crocos_security.previous_url_handler:
-        class: Crocos\SecurityBundle\Security\PreviousUrlHandler
+    crocos_security.previous_url_holder:
+        class: Crocos\SecurityBundle\Security\PreviousUrlHolder
         arguments:
             - @session
 

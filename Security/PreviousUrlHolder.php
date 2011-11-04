@@ -5,11 +5,11 @@ namespace Crocos\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Session;
 
 /**
- * PreviousUrlHandler.
+ * PreviousUrlHolder.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class PreviousUrlHandler
+class PreviousUrlHolder
 {
     protected $session;
     protected $domain;

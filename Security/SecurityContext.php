@@ -16,7 +16,7 @@ class SecurityContext
     protected $domain = 'default';
     protected $strategy;
     protected $forwardingController;
-    protected $previousUrlHandler;
+    protected $previousUrlHolder;
 
     /**
      * Set secure.
@@ -157,46 +157,46 @@ class SecurityContext
     }
 
     /**
-     * Set PreviousUrlHandler.
+     * Set PreviousUrlHolder.
      *
-     * @param PreviousUrlHandler $previousUrlHandler
+     * @param PreviousUrlHolder $previousUrlHolder
      */
-    public function setPreviousUrlHandler(PreviousUrlHandler $previousUrlHandler)
+    public function setPreviousUrlHolder(PreviousUrlHolder $previousUrlHolder)
     {
-        $this->previousUrlHandler = $previousUrlHandler;
+        $this->previousUrlHolder = $previousUrlHolder;
     }
 
     /**
-     * Get PreviousUrlHandler.
+     * Get PreviousUrlHolder.
      *
-     * @return PreviousUrlHandler.
+     * @return PreviousUrlHolder.
      */
-    public function getPreviousUrlHandler()
+    public function getPreviousUrlHolder()
     {
-        return $this->previousUrlHandler;
+        return $this->previousUrlHolder;
     }
 
     /**
-     * @see PreviousUrlHandler
+     * @see PreviousUrlHolder
      */
     public function hasPreviousUrl()
     {
-        return $this->previousUrlHandler->has();
+        return $this->previousUrlHolder->has();
     }
 
     /**
-     * @see PreviousUrlHandler
+     * @see PreviousUrlHolder
      */
     public function setPreviousUrl($url)
     {
-        $this->previousUrlHandler->set($url);
+        $this->previousUrlHolder->set($url);
     }
 
     /**
-     * @see PreviousUrlHandler
+     * @see PreviousUrlHolder
      */
     public function getPreviousUrl()
     {
-        return $this->previousUrlHandler->get();
+        return $this->previousUrlHolder->get();
     }
 }

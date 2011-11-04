@@ -17,8 +17,8 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $context = new SecurityContext();
 
-        $previousUrlHandler = Phake::mock('Crocos\SecurityBundle\Security\PreviousUrlHandler');
-        $context->setPreviousUrlHandler($previousUrlHandler);
+        $previousUrlHolder = Phake::mock('Crocos\SecurityBundle\Security\PreviousUrlHolder');
+        $context->setPreviousUrlHolder($previousUrlHolder);
 
         $reflObject = new \ReflectionObject($object);
 
@@ -37,7 +37,7 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($authStrategy, $context->getStrategy());
 
         Phake::verify($authStrategy)->setDomain($domain);
-        Phake::verify($previousUrlHandler)->setup($domain);
+        Phake::verify($previousUrlHolder)->setup($domain);
     }
 
     public function getLoadAnnotationData()

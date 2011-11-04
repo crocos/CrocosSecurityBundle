@@ -123,7 +123,7 @@ class AnnotationLoader
      */
     protected function fixContext(SecurityContext $context)
     {
-        $context->getPreviousUrlHandler()->setup($context->getDomain());
+        $context->getPreviousUrlHolder()->setup($context->getDomain());
 
         if (null === $context->getStrategy()) {
             $context->setStrategy($this->resolver->resolveAuthStrategy(self::DEFAULT_STRATEGY));
