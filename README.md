@@ -45,7 +45,9 @@ CrocosSecurityBundle - README
 `Secure` アノテーション、`SecureConfig` アノテーションをコントローラのメソッドもしくはクラスに設定します。
 
     <?php
+
     use Crocos\SecurityBundle\Annotation\Secure;
+    use Crocos\SecurityBundle\Annotation\SecureConfig;
 
     /**
      * @SecureCnofig(forward="CrocosAppBundle:Security:login")
