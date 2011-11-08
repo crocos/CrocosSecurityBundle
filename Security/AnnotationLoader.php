@@ -3,7 +3,9 @@
 namespace Crocos\SecurityBundle\Security;
 
 use Doctrine\Common\Annotations\Reader;
+use Crocos\SecurityBundle\Annotation\Annotation;
 use Crocos\SecurityBundle\Annotation\Secure;
+use Crocos\SecurityBundle\Annotation\SecureConfig;
 use Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyResolver;
 
 /**
@@ -13,6 +15,8 @@ use Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyResolver;
  */
 class AnnotationLoader
 {
+    const DEFAULT_STRATEGY = 'session';
+
     /**
      * @var Reader
      */
@@ -39,47 +43,77 @@ class AnnotationLoader
      */
     public function load(SecurityContext $context, \ReflectionClass $class, \ReflectionMethod $method)
     {
+        // Retrieve all ancestors (parent first)
         $klass = $class;
         $classes = array($klass);
         while ($klass = $klass->getParentClass()) {
             $classes[] = $klass;
         }
 
+        // Read class annotations.
         $classes = array_reverse($classes);
         foreach ($classes as $class) {
             foreach ($this->reader->getClassAnnotations($class) as $annotation) {
-                if ($annotation instanceof Secure) {
+                if ($annotation instanceof Annotation) {
                     $this->loadAnnotation($context, $annotation);
                 }
             }
         }
 
+        // Read method annotations.
         foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
-            if ($annotation instanceof Secure) {
+            if ($annotation instanceof Annotation) {
                 $this->loadAnnotation($context, $annotation);
             }
         }
 
-        $this->resolveAuthStrategy($context);
+        $this->fixContext($context);
+    }
+
+    /**
+     * Load security annotation.
+     *
+     * @param SecurityContext $context
+     * @param Annotation $annotation
+     */
+    protected function loadAnnotation(SecurityContext $context, Annotation $annotation)
+    {
+        if ($annotation instanceof Secure) {
+            $this->loadSecureAnnotation($context, $annotation);
+        } elseif ($annotation instanceof SecureConfig) {
+            $this->loadSecureConfigAnnotation($context, $annotation);
+        }
     }
 
     /**
      * Load @Secure annotation.
+     *
+     * @param SecurityContext $context
+     * @param Secure $annotation
      */
-    protected function loadAnnotation(SecurityContext $context, Secure $annotation)
+    protected function loadSecureAnnotation(SecurityContext $context, Secure $annotation)
     {
         $context->setSecure(!$annotation->disabled());
 
         if (null !== $annotation->roles()) {
             $context->setRequiredRoles($annotation->roles());
         }
+    }
 
+    /**
+     * Load @SecureConfig annotation.
+     *
+     * @param SecurityContext $context
+     * @param SecureConfig $annotation
+     */
+    protected function loadSecureConfigAnnotation(SecurityContext $context, SecureConfig $annotation)
+    {
         if (null !== $annotation->domain()) {
             $context->setDomain($annotation->domain());
         }
 
         if (null !== $annotation->strategy()) {
-            $context->setStrategy($annotation->strategy());
+            $context->setStrategy($this->resolver->resolveAuthStrategy($annotation->strategy()));
         }
 
         if (null !== $annotation->forward()) {
@@ -87,12 +121,19 @@ class AnnotationLoader
         }
     }
 
-    protected function resolveAuthStrategy($context)
+    /**
+     * Fix security context.
+     *
+     * @param SecurityContext $context
+     */
+    protected function fixContext(SecurityContext $context)
     {
-        $strategy = $this->resolver->resolveAuthStrategy($context->getStrategy());
+        $context->getPreviousUrlHolder()->setup($context->getDomain());
 
-        $strategy->setDomain($context->getDomain());
+        if (null === $context->getStrategy()) {
+            $context->setStrategy($this->resolver->resolveAuthStrategy(self::DEFAULT_STRATEGY));
+        }
 
-        $context->setStrategy($strategy);
+        $context->getStrategy()->setDomain($context->getDomain());
     }
 }

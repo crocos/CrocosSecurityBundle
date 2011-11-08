@@ -4,8 +4,10 @@ CrocosSecurityBundle - README
 概要
 ------
 
-`CrocosSecurityBundle` はよりシンプルに認証状態の管理を行うためにのバンドルで、複雑なSecurityコンポーネントを置き換えるために開発されました。
-`CrocosSecurityBundle` では単一のアノテーションのみを用いて設定を行います。
+`CrocosSecurityBundle` はよりシンプルに認証状態の管理を行うためにのバンドルで、複雑なSecurityコンポーネントを置き換えるために開発されました。Securityコンポーネントと比べ、次のような違いがあります。
+
+- アノテーションのみを用いて設定を行います
+- ログイン、ログアウトの状態切り替えは開発者が明示的に行います
 
 インストール方法
 -----------------
@@ -25,7 +27,10 @@ CrocosSecurityBundle - README
         );
     }
 
+
 ### app/autoload.php
+
+`Crocos` プレフィックスをオートローダに登録します。
 
     $loader->registerNamespaces(array(
         // ...
@@ -37,11 +42,55 @@ CrocosSecurityBundle - README
 使い方
 --------
 
-`Secure` アノテーションをコントローラのメソッドもしくはクラスに設定します。 
+`Secure` アノテーション、`SecureConfig` アノテーションをコントローラのメソッドもしくはクラスに設定します。
+
+    <?php
+    use Crocos\SecurityBundle\Annotation\Secure;
+
+    /**
+     * @SecureCnofig(forward="CrocosAppBundle:Security:login")
+     */
+    class AppController
+    {
+    }
+
+    class SampleController extends AppController
+    {
+        /**
+         * @Secure
+         */
+        public function secureAction()
+        {
+            $user = $this->get('crocos_security.context')->getUser();
+        }
+    }
+
+    class SecurityController extends AppController
+    {
+        public function login(Request $request)
+        {
+            $user = $this->findUser($request->request->get('username'), $request->request->get('password'));
+
+            $this->get('crocos_security.context')->login($user);
+
+            return $this->redirect('/');
+        }
+
+        /**
+         * @Secure
+         */
+        public function logout()
+        {
+            $this->get('crocos_security.context')->logout();
+
+            return $this->redirect('/login');
+        }
+    }
+
 
 ### Secure アノテーション
 
-`Secure` アノテーションには次の項目が設定可能です。
+`Secure` アノテーションを付与したコントローラは認証が必要として扱います。クラスに設定した場合はすべてのアクションに、メソッドに設定した場合は指定したアクションのみが対象です。
 
 #### disabled
 
@@ -52,10 +101,15 @@ trueに設定した場合、認証不要であることを表します。初期�
 
 #### roles
 
-必要な権限を配列で設定します。
+必要な権限を配列で設定します。現在この値を用いた認可処理は未実装です。
 
 - type: array
 - default: []
+
+
+### SecureConfig アノテーション
+
+`SecureConfig` アノテーションは認証に関する設定を行います。適応可能範囲は `Secure` アノテーションと同様です。
 
 #### domain
 
@@ -93,7 +147,7 @@ disabled属性を指定しなかった場合は認証が必要として上書き
 
 ### サンプルコード
 
-次のコードは `@Secure` アノテーションを用いて認証を行うサンプルコードです。 `CrocosSecurityBundle` を使用する際は、設定をしやすくするためにアプリケーションごとに共通のコントローラクラスを作成することを推奨します。
+次のコードはアノテーションを用いて認証を行うサンプルコードです。 `CrocosSecurityBundle` を使用する際は、設定をしやすくするためにアプリケーションごとに共通のコントローラクラスを作成することを推奨します。
 
     <?php
 
@@ -104,9 +158,10 @@ disabled属性を指定しなかった場合は認証が必要として上書き
     use Symfony\Bundle\FrameworkBundle\Controller\Controller;
     use Symfony\Component\HttpFoundation\Request;
     use Crocos\SecurityBundle\Annotation\Secure;
+    use Crocos\SecurityBundle\Annotation\SecureConfig;
 
     /**
-     * @Secure(disabled=true, forward="CrocosAppBundle:Accont:login")
+     * @SecureConfig(forward="CrocosAppBundle:Accont:login")
      */
     abstract class AppController extends Controller
     {
@@ -185,9 +240,11 @@ disabled属性を指定しなかった場合は認証が必要として上書き
     use Symfony\Bundle\FrameworkBundle\Controller\Controller;
     use Symfony\Component\HttpFoundation\Request;
     use Crocos\SecurityBundle\Annotation\Secure;
+    use Crocos\SecurityBundle\Annotation\SecureConfig;
 
     /**
-     * @Secure(domain="admin", forward="CrocosAppBundle:Admin\Accont:login")
+     * @Secure
+     * @SecureConfig(domain="admin", forward="CrocosAppBundle:Admin\Accont:login")
      */
     abstract class AppController extends Controller
     {
@@ -215,7 +272,7 @@ disabled属性を指定しなかった場合は認証が必要として上書き
 SecurityContext
 -----------------
 
-認証に関わる状態は `crocos_security.context` というキーでサービスコンテナに登録されている、 `Crocos\SecurityBundle\Security\SecurityContext` オブジェクトが保持しています。
+認証に関わる状態は `crocos_security.context` というキーでサービスコンテナに登録されている、 `Crocos\SecurityBundle\Security\SecurityContext` オブジェクトが保持しています。なお実際の処理内容については後述する `AuthStrategy` によって変更可能です。
 
 ### ログイン
 
@@ -246,3 +303,26 @@ SecurityContext
 
     $this->get('crocos_security.context')->getUser();           // => null
     $this->get('crocos_security.context')->isAuthenticated();   // => false
+
+
+AuthStrategy
+--------------
+
+`AuthStrategy` は認証状態の管理方法を切り替える仕組みです。`Secure` アノテーションの `strategy` と対応しています。標準では、セッションを用いて認証状態の管理を行う `SessionAuth` (strategy="session")、Facebook PHP SDKに状態管理を委譲する `FacebookAuth` (strategy="facebook") の2つがあります。また、既存の `AuthStrategy` を拡張したり、独自に作成することも可能です。
+
+### SessionAuth
+
+    strategy="session"
+
+`SessionAuth` はセッションを用いて認証状態を管理する仕組みです。
+
+
+### FacebookAuth
+
+    strategy="facebook"
+
+`FacebookAuth` はFacebook PHP SDKを用いて認証を行います。
+
+`login()` および `logout()` メソッドは使用できません。`BaseFacebook::getLoginUrl()` を用いて認証してください。
+
+`FacebookAuth` を利用する場合は、`facebook.api` というキーで `Facebook` オブジェクトをDIコンテナにサービス登録してください。

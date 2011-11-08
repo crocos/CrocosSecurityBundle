@@ -13,8 +13,11 @@ class SessionAuth implements AuthStrategyInterface
 {
     protected $session;
     protected $domain;
+    protected $user;
 
     /**
+     * Constructor.
+     *
      * @param Session $session
      */
     public function __construct(Session $session)
@@ -38,7 +41,9 @@ class SessionAuth implements AuthStrategyInterface
         $this->session->migrate();
 
         $this->setAttribute('_authenticated', true);
-        $this->setAttribute('_user', $this->hibernateUser($user));
+        $this->setAttribute('_user', $this->sleepUser($user));
+
+        $this->user = $user;
     }
 
     /**
@@ -50,6 +55,8 @@ class SessionAuth implements AuthStrategyInterface
 
         $this->setAttribute('_authenticated', false);
         $this->setAttribute('_user', null);
+
+        $this->user = null;
     }
 
     /**
@@ -65,7 +72,17 @@ class SessionAuth implements AuthStrategyInterface
      */
     public function getUser()
     {
-        return $this->awakeUser($this->getAttribute('_user'));
+        if (!isset($this->user)) {
+            try {
+                $this->user = $this->awakeUser($this->getAttribute('_user'));
+            } catch (\Exception $e) {
+                $this->logout();
+
+                throw $e;
+            }
+        }
+
+        return $this->user;
     }
 
     /**
@@ -76,7 +93,7 @@ class SessionAuth implements AuthStrategyInterface
      */
     protected function setAttribute($key, $value)
     {
-        $acutualKey = $this->domain . '/' . $key;
+        $acutualKey = $this->domain . '.' . $key;
 
         $this->session->set($acutualKey, $value);
     }
@@ -90,26 +107,26 @@ class SessionAuth implements AuthStrategyInterface
      */
     protected function getAttribute($key, $default = null)
     {
-        $acutualKey = $this->domain . '/' . $key;
+        $acutualKey = $this->domain . '.' . $key;
 
         return $this->session->get($acutualKey, $default);
     }
 
     /**
-     * Hibernate user.
+     * sleep user.
      *
      * @param mixed $user
-     * @return mixed Hibernated data.
+     * @return mixed sleepd data.
      */
-    protected function hibernateUser($user)
+    protected function sleepUser($user)
     {
         return $user;
     }
 
     /**
-     * Awake user from hibernated data.
+     * Awake user from sleepd data.
      *
-     * @param mixed $data Hibernated data made by hibernate()
+     * @param mixed $data sleepd data made by sleep()
      * @return mixed
      */
     protected function awakeUser($data)

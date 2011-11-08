@@ -3,7 +3,6 @@
 namespace Crocos\SecurityBundle\Tests\Security;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Security\SecurityContext;
 use Crocos\SecurityBundle\Security\AnnotationLoader;
 use Crocos\SecurityBundle\Tests\Fixtures;
@@ -18,6 +17,9 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $context = new SecurityContext();
 
+        $previousUrlHolder = Phake::mock('Crocos\SecurityBundle\Security\PreviousUrlHolder');
+        $context->setPreviousUrlHolder($previousUrlHolder);
+
         $reflObject = new \ReflectionObject($object);
 
         $resolver = Phake::mock('Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyResolver');
@@ -27,12 +29,15 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         $loader = new AnnotationLoader(new AnnotationReader(), $resolver);
         $loader->load($context, $reflObject, $reflObject->getMethod($method));
 
+        Phake::verify($resolver)->resolveAuthStrategy($strategy);
+
         $this->assertEquals($secure, $context->isSecure());
         $this->assertEquals($roles, $context->getRequiredRoles());
         $this->assertEquals($forward, $context->getForwardingController());
+        $this->assertEquals($authStrategy, $context->getStrategy());
 
         Phake::verify($authStrategy)->setDomain($domain);
-        $this->assertEquals($authStrategy, $context->getStrategy());
+        Phake::verify($previousUrlHolder)->setup($domain);
     }
 
     public function getLoadAnnotationData()

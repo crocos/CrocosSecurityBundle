@@ -18,9 +18,11 @@ class FacebookPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if ($container->hasDefinition('facebook.api')) {
-            $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config'));
-            $loader->load('facebook.yml');
+        if (!$container->hasDefinition('facebook.api')) {
+            return;
         }
+
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config'));
+        $loader->load('facebook.yml');
     }
 }

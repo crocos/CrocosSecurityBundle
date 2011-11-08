@@ -3,7 +3,6 @@
 namespace Crocos\SecurityBundle\Security;
 
 use Crocos\SecurityBundle\Annotation\Secure;
-use Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyInterface;
 
 /**
  * SecurityContext.
@@ -15,9 +14,9 @@ class SecurityContext
     protected $secure = false;
     protected $requiredRoles = array();
     protected $domain = 'default';
-    protected $strategy = 'session';
+    protected $strategy;
     protected $forwardingController;
-    protected $authStrategy;
+    protected $previousUrlHolder;
 
     /**
      * Set secure.
@@ -82,7 +81,7 @@ class SecurityContext
     /**
      * Set authentication/authorization strategy.
      *
-     * @param string|AuthStrategyInterface $strategy
+     * @param AuthStrategyInterface $strategy
      */
     public function setStrategy($strategy)
     {
@@ -92,7 +91,7 @@ class SecurityContext
     /**
      * Get authentication/authorization strategy.
      *
-     * @return string|AuthStrategyInterface
+     * @return AuthStrategyInterface
      */
     public function getStrategy()
     {
@@ -155,5 +154,49 @@ class SecurityContext
     public function getUser()
     {
         return $this->strategy->getUser();
+    }
+
+    /**
+     * Set PreviousUrlHolder.
+     *
+     * @param PreviousUrlHolder $previousUrlHolder
+     */
+    public function setPreviousUrlHolder(PreviousUrlHolder $previousUrlHolder)
+    {
+        $this->previousUrlHolder = $previousUrlHolder;
+    }
+
+    /**
+     * Get PreviousUrlHolder.
+     *
+     * @return PreviousUrlHolder.
+     */
+    public function getPreviousUrlHolder()
+    {
+        return $this->previousUrlHolder;
+    }
+
+    /**
+     * @see PreviousUrlHolder
+     */
+    public function hasPreviousUrl()
+    {
+        return $this->previousUrlHolder->has();
+    }
+
+    /**
+     * @see PreviousUrlHolder
+     */
+    public function setPreviousUrl($url)
+    {
+        $this->previousUrlHolder->set($url);
+    }
+
+    /**
+     * @see PreviousUrlHolder
+     */
+    public function getPreviousUrl()
+    {
+        return $this->previousUrlHolder->get();
     }
 }

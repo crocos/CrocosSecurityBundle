@@ -11,11 +11,25 @@ class AuthStrategyResolver
 {
     protected $strategies = array();
 
-    public function registerStrategy($name, AuthStrategyInterface $strategy)
+    /**
+     * Register auth strategy.
+     *
+     * @param string $name
+     * @param AuthStrategyInterface $strategy
+     */
+    public function registerAuthStrategy($name, AuthStrategyInterface $strategy)
     {
         $this->strategies[$name] = $strategy;
     }
 
+    /**
+     * Resolve auth strategy by name.
+     *
+     * @param string $name
+     * @return AuthStrategyInterface
+     *
+     * @throws \InvalidArgumentException If no auth strategy matched given name
+     */
     public function resolveAuthStrategy($name)
     {
         if (!isset($this->strategies[$name])) {

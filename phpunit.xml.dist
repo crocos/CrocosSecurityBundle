@@ -5,6 +5,7 @@
     <server name="SYMFONY" value="../../../symfony/src" />
     <server name="PHAKE" value="../../../phake" />
     <server name="DOCTRINE_COMMON" value="../../../doctrine-common/lib" />
+    <server name="FACEBOOK" value="../../../facebook/src" />
   </php>
 
   <testsuites>

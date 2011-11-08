@@ -39,11 +39,23 @@ class SecurityChecker
     }
 
     /**
+     * Get security context.
+     *
+     * @return SecurityContext
+     */
+    public function getContext()
+    {
+        return $this->context;
+    }
+
+    /**
      * Check security.
      *
      * @param object $object
      * @param string $method
      * @return string Forwarding cotroller
+     *
+     * @throws \LogicException If forwarding controller is unconfigured
      */
     public function checkSecurity($_object, $_method)
     {
