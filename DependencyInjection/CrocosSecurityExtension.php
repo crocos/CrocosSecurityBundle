@@ -24,6 +24,9 @@ class CrocosSecurityExtension extends Extension
      *
      * @param array $configs
      * @param ContainerBuilder $container
+     *
+     * @see Compiler\FacebookPass
+     * @see Compiler\StrategyPass
      */
     public function load(array $configs, ContainerBuilder $container)
     {

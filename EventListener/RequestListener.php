@@ -62,6 +62,7 @@ class RequestListener
             return;
         }
 
+        // Save actual url.
         $this->checker->getContext()->setPreviousUrl($request->getUri());
 
         $response = $event->getKernel()->forward($forwardingController);

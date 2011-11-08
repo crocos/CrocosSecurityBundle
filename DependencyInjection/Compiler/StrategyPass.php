@@ -20,7 +20,7 @@ class StrategyPass implements CompilerPassInterface
         $definition = $container->getDefinition('crocos_security.auth_strategy_resolver');
 
         foreach ($container->findTaggedServiceIds('crocos_security.strategy') as $id => $attributes) {
-            $definition->addMethodCall('registerStrategy', array($attributes[0]['alias'], new Reference($id)));
+            $definition->addMethodCall('registerAuthStrategy', array($attributes[0]['alias'], new Reference($id)));
         }
     }
 }

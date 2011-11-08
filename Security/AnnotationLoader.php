@@ -43,12 +43,14 @@ class AnnotationLoader
      */
     public function load(SecurityContext $context, \ReflectionClass $class, \ReflectionMethod $method)
     {
+        // Retrieve all ancestors (parent first)
         $klass = $class;
         $classes = array($klass);
         while ($klass = $klass->getParentClass()) {
             $classes[] = $klass;
         }
 
+        // Read class annotations.
         $classes = array_reverse($classes);
         foreach ($classes as $class) {
             foreach ($this->reader->getClassAnnotations($class) as $annotation) {
@@ -58,6 +60,7 @@ class AnnotationLoader
             }
         }
 
+        // Read method annotations.
         foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
             if ($annotation instanceof Annotation) {
                 $this->loadAnnotation($context, $annotation);
@@ -119,7 +122,9 @@ class AnnotationLoader
     }
 
     /**
+     * Fix security context.
      *
+     * @param SecurityContext $context
      */
     protected function fixContext(SecurityContext $context)
     {

@@ -22,31 +22,7 @@ abstract class Annotation
     }
 
     /**
-     * @return string
-     */
-    public function domain()
-    {
-        return $this->domain;
-    }
-
-    /**
-     * @return string
-     */
-    public function strategy()
-    {
-        return $this->strategy;
-    }
-
-    /**
-     * @return string
-     */
-    public function forward()
-    {
-        return $this->forward;
-    }
-
-    /**
-     * __set.
+     * Disabled __set.
      */
     public function __set($property, $value)
     {
@@ -54,7 +30,7 @@ abstract class Annotation
     }
 
     /**
-     * __get.
+     * Disabled __get.
      */
     public function __get($property)
     {
