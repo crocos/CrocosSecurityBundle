@@ -11,11 +11,34 @@ use Crocos\SecurityBundle\Annotation\Secure;
  */
 class SecurityContext
 {
+    /**
+     * @var boolean
+     */
     protected $secure = false;
+
+    /**
+     * @var array
+     */
     protected $requiredRoles = array();
+
+    /**
+     * @var string
+     */
     protected $domain = 'default';
-    protected $strategy;
+
+    /**
+     * @var string
+     */
     protected $forwardingController;
+
+    /**
+     * @var AuthLogicInterface
+     */
+    protected $authLogic;
+
+    /**
+     * @var PreviousUrlHolder
+     */
     protected $previousUrlHolder;
 
     /**
@@ -79,23 +102,23 @@ class SecurityContext
     }
 
     /**
-     * Set authentication/authorization strategy.
+     * Set authentication/authorization logic.
      *
-     * @param AuthStrategyInterface $strategy
+     * @param AuthLogicInterface $authLogic
      */
-    public function setStrategy($strategy)
+    public function setAuthLogic($authLogic)
     {
-        $this->strategy = $strategy;
+        $this->authLogic = $authLogic;
     }
 
     /**
-     * Get authentication/authorization strategy.
+     * Get authentication/authorization logic.
      *
-     * @return AuthStrategyInterface
+     * @return AuthLogicInterface
      */
-    public function getStrategy()
+    public function getAuthLogic()
     {
-        return $this->strategy;
+        return $this->authLogic;
     }
 
     /**
@@ -125,7 +148,7 @@ class SecurityContext
      */
     public function login($user)
     {
-        $this->strategy->login($user);
+        $this->authLogic->login($user);
     }
 
     /**
@@ -133,7 +156,7 @@ class SecurityContext
      */
     public function logout()
     {
-        $this->strategy->logout();
+        $this->authLogic->logout();
     }
 
     /**
@@ -143,7 +166,7 @@ class SecurityContext
      */
     public function isAuthenticated()
     {
-        return $this->strategy->isAuthenticated();
+        return $this->authLogic->isAuthenticated();
     }
 
     /**
@@ -153,7 +176,7 @@ class SecurityContext
      */
     public function getUser()
     {
-        return $this->strategy->getUser();
+        return $this->authLogic->getUser();
     }
 
     /**

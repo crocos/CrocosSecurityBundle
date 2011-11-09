@@ -4,7 +4,7 @@ namespace Crocos\SecurityBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Crocos\SecurityBundle\DependencyInjection\Compiler\StrategyPass;
+use Crocos\SecurityBundle\DependencyInjection\Compiler\AuthLogicPass;
 use Crocos\SecurityBundle\DependencyInjection\Compiler\FacebookPass;
 
 /**
@@ -19,6 +19,6 @@ class CrocosSecurityBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new FacebookPass());
-        $container->addCompilerPass(new StrategyPass());
+        $container->addCompilerPass(new AuthLogicPass());
     }
 }

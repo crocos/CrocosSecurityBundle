@@ -1,14 +1,17 @@
 <?php
 
-namespace Crocos\SecurityBundle\Security\AuthStrategy;
+namespace Crocos\SecurityBundle\Security\AuthLogic;
 
 /**
- * FacebookAuth delegates auth strategy to Facebook PHP SDK.
+ * FacebookAuth delegates auth logic to Facebook PHP SDK.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class FacebookAuth implements AuthStrategyInterface
+class FacebookAuth implements AuthLogicInterface
 {
+    /**
+     * @var \BaseFacebook
+     */
     protected $facebook;
 
     /**

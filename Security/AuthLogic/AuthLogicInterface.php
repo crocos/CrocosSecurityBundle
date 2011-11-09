@@ -1,13 +1,13 @@
 <?php
 
-namespace Crocos\SecurityBundle\Security\AuthStrategy;
+namespace Crocos\SecurityBundle\Security\AuthLogic;
 
 /**
- * AuthStrategyInterface.
+ * AuthLogicInterface.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-interface AuthStrategyInterface
+interface AuthLogicInterface
 {
     /**
      * Set authentication domain.

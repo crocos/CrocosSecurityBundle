@@ -9,18 +9,20 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 /**
- * StrategyPass.
+ * AuthLogicPass.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class StrategyPass implements CompilerPassInterface
+class AuthLogicPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('crocos_security.auth_strategy_resolver');
+        $definition = $container->getDefinition('crocos_security.auth_logic_resolver');
 
-        foreach ($container->findTaggedServiceIds('crocos_security.strategy') as $id => $attributes) {
-            $definition->addMethodCall('registerAuthStrategy', array($attributes[0]['alias'], new Reference($id)));
+        // tags:
+        //   - { name: crocos_security.auth_logic, alias: myauth }
+        foreach ($container->findTaggedServiceIds('crocos_security.auth_logic') as $id => $attributes) {
+            $definition->addMethodCall('registerAuthAuthLogic', array($attributes[0]['alias'], new Reference($id)));
         }
     }
 }
