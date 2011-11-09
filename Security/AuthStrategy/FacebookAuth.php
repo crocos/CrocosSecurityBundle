@@ -42,7 +42,7 @@ class FacebookAuth implements AuthStrategyInterface
      */
     public function logout()
     {
-        // nothing to do
+        $this->facebook->destroySession();
     }
 
     /**
