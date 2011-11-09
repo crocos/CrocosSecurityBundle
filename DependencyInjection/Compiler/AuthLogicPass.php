@@ -22,7 +22,7 @@ class AuthLogicPass implements CompilerPassInterface
         // tags:
         //   - { name: crocos_security.auth_logic, alias: myauth }
         foreach ($container->findTaggedServiceIds('crocos_security.auth_logic') as $id => $attributes) {
-            $definition->addMethodCall('registerAuthAuthLogic', array($attributes[0]['alias'], new Reference($id)));
+            $definition->addMethodCall('registerAuthLogic', array($attributes[0]['alias'], new Reference($id)));
         }
     }
 }
