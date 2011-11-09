@@ -4,7 +4,7 @@ CrocosSecurityBundle - README
 概要
 ------
 
-`CrocosSecurityBundle` はよりシンプルに認証状態の管理を行うためにのバンドルで、複雑なSecurityコンポーネントを置き換えるために開発されました。Securityコンポーネントと比べ、次のような違いがあります。
+**CrocosSecurityBundle** はよりシンプルに認証状態の管理を行うためにのSymfony用のバンドルで、複雑な SecurityBundle を置き換えるために開発されました。SecurityBundle と比べ、次のような違いがあります。
 
 - アノテーションのみを用いて設定を行います
 - ログイン、ログアウトの状態切り替えは開発者が明示的に行います
@@ -16,7 +16,7 @@ CrocosSecurityBundle - README
 
 ### app/AppKernel.php
 
-`Symfony\Bundle\SecurityBundle\SecurityBundle` は外します。
+CrocosSecurityBundle を登録します。
 
     public function registerBundles()
     {
@@ -27,10 +27,16 @@ CrocosSecurityBundle - README
         );
     }
 
+`Symfony\Bundle\SecurityBundle\SecurityBundle` の行は削除します。
+
+### app/config/config.yml
+
+`security.yml` を読み込んでいる行は削除します。
+
 
 ### app/autoload.php
 
-`Crocos` プレフィックスをオートローダに登録します。
+`Crocos` プレフィックスを ClassLoader に登録します。
 
     $loader->registerNamespaces(array(
         // ...
@@ -94,12 +100,14 @@ CrocosSecurityBundle - README
 
 `Secure` アノテーションを付与したコントローラは認証が必要として扱います。クラスに設定した場合はすべてのアクションに、メソッドに設定した場合は指定したアクションのみが対象です。
 
-#### disabled
+`Secure` アノテーションは次の属性が設定可能です。
 
-trueに設定した場合、認証不要であることを表します。初期値はfalseなので、単に `Secure` アノテーションを設定した場合は認証が必要になります。
+#### disabled
 
 - type: boolean
 - default: false
+
+trueに設定した場合、認証不要であることを表します。初期値はfalseなので、単に `Secure` アノテーションを設定した場合は認証が必要になります。
 
 #### roles
 
@@ -111,24 +119,26 @@ trueに設定した場合、認証不要であることを表します。初期�
 
 ### SecureConfig アノテーション
 
-`SecureConfig` アノテーションは認証に関する設定を行います。適応可能範囲は `Secure` アノテーションと同様です。
+`SecureConfig` アノテーションは認証に関する設定を行います。適応可能範囲は `Secure` アノテーションと同じです。
+
+`SecureConfig` アノテーションは次の属性が設定可能です。
 
 #### domain
 
 同一プロジェクト内で異なる認証処理を行わなければならない場合（ユーザ専用ページ、管理者専用ページなど）、認証状況が適応される領域を指定したい場合に指定します。
 
-より技術的に説明すると、認証状態は基本的にセッションに格納され、domainはセッションの名前空間となります。
+デフォルトではセッションを用いて認証状態を保持しますが、domainはセッションの名前空間として利用されます。
 
-- type: boolean
+- type: string
 - default: "default"
 
 #### auth
 
 認証状態の管理方法を指定します。初期値は "session" で、セッションを用いた認証状態の管理を行います。
 
-この他にも、FacebookのPHP-SDKの状態と連動させた "facebook" などが指定できます。
+この他にも、FacebookのPHP-SDKの状態と連動させた "facebook" や、独自の方法を指定することもできます。
 
-- type: boolean
+- type: string
 - default: "session"
 
 #### forward
@@ -149,7 +159,14 @@ disabled属性を指定しなかった場合は認証が必要として上書き
 
 ### サンプルコード
 
-次のコードはアノテーションを用いて認証を行うサンプルコードです。 `CrocosSecurityBundle` を使用する際は、設定をしやすくするためにアプリケーションごとに共通のコントローラクラスを作成することを推奨します。
+次のコードはアノテーションを用いて認証を行うサンプルコードです。
+
+> `CrocosSecurityBundle` を使用する際は、設定をしやすくするためにアプリケーションごとに共通のコントローラクラスを作成することを推奨します。
+
+#### 基本的なサンプル
+
+AppController を継承した ProductController と AccountController が定義されています。ProductController の buyAction には Secure アノテーションが指定されているので認証が必要となります。
+AccountController はクラスに Secure アノテーションが指定してあるため、すべてのアクションで認証が必要です。ただし、AppController の SecureConfig アノテーションで loginAction が forward に指定されているため、loginAction は常に認証が不要になります。
 
     <?php
 
@@ -231,7 +248,10 @@ disabled属性を指定しなかった場合は認証が必要として上書き
         }
     }
 
-管理者用のコントローラを作る場合、次のようにdomain属性を指定して、別の認証領域とします。この場合はデフォルトで認証が必要になります。
+
+#### 管理者用ページ向けのサンプル
+
+管理者用のコントローラを作る場合、次のようにdomain属性を指定して、別の認証領域とします。AppController に Secure アノテーションが指定されているため、すべてのコントローラで認証が必要となります。
 
     <?php
 
@@ -274,7 +294,7 @@ disabled属性を指定しなかった場合は認証が必要として上書き
 SecurityContext
 -----------------
 
-認証に関わる状態は `crocos_security.context` というキーでサービスコンテナに登録されている、 `Crocos\SecurityBundle\Security\SecurityContext` オブジェクトが保持しています。なお実際の処理内容については後述する `AuthLogic` によって変更可能です。
+認証に関わる状態は `crocos_security.context` というキーでサービスコンテナに登録されている、 `Crocos\SecurityBundle\Security\SecurityContext` オブジェクトが保持しています。なお実際の処理内容については後述する **Auth Logic** によって変更可能です。
 
 ### ログイン
 
@@ -315,14 +335,14 @@ Auth Logic は認証状態の管理方法を切り替える仕組みです。`Se
 
 ### SessionAuth
 
-    auth="session"
+    @SecureConfig(auth="session")
 
 `SessionAuth` はセッションを用いて認証状態を管理する仕組みです。
 
 
 ### FacebookAuth
 
-    auth="facebook"
+    @SecureConfig(auth="facebook")
 
 `FacebookAuth` はFacebook PHP SDKを用いて認証を行います。
 
