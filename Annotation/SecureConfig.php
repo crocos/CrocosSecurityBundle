@@ -11,8 +11,19 @@ namespace Crocos\SecurityBundle\Annotation;
  */
 class SecureConfig extends Annotation
 {
+    /**
+     * @var string
+     */
     protected $domain;
-    protected $strategy;
+
+    /**
+     * @var string
+     */
+    protected $auth;
+
+    /**
+     * @var string
+     */
     protected $forward;
 
     /**
@@ -26,9 +37,9 @@ class SecureConfig extends Annotation
     /**
      * @return string
      */
-    public function strategy()
+    public function auth()
     {
-        return $this->strategy;
+        return $this->auth;
     }
 
     /**

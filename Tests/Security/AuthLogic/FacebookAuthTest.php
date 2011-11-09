@@ -1,8 +1,8 @@
 <?php
 
-namespace Crocos\SecurityBundle\Tests\Security\AuthStrategy;
+namespace Crocos\SecurityBundle\Tests\Security\AuthLogic;
 
-use Crocos\SecurityBundle\Security\AuthStrategy\FacebookAuth;
+use Crocos\SecurityBundle\Security\AuthLogic\FacebookAuth;
 use Crocos\SecurityBundle\Tests\Fixtures;
 use Phake;
 

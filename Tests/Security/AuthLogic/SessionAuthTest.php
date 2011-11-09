@@ -1,8 +1,8 @@
 <?php
 
-namespace Crocos\SecurityBundle\Tests\Security\AuthStrategy;
+namespace Crocos\SecurityBundle\Tests\Security\AuthLogic;
 
-use Crocos\SecurityBundle\Security\AuthStrategy\SessionAuth;
+use Crocos\SecurityBundle\Security\AuthLogic\SessionAuth;
 use Crocos\SecurityBundle\Tests\Fixtures;
 use Phake;
 

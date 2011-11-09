@@ -50,7 +50,7 @@ CrocosSecurityBundle - README
     use Crocos\SecurityBundle\Annotation\SecureConfig;
 
     /**
-     * @SecureCnofig(forward="CrocosAppBundle:Security:login")
+     * @SecureConfig(forward="CrocosAppBundle:Security:login")
      */
     class AppController
     {
@@ -67,6 +67,9 @@ CrocosSecurityBundle - README
         }
     }
 
+    /**
+     * @Secure
+     */
     class SecurityController extends AppController
     {
         public function login(Request $request)
@@ -78,9 +81,6 @@ CrocosSecurityBundle - README
             return $this->redirect('/');
         }
 
-        /**
-         * @Secure
-         */
         public function logout()
         {
             $this->get('crocos_security.context')->logout();
@@ -122,7 +122,7 @@ trueに設定した場合、認証不要であることを表します。初期�
 - type: boolean
 - default: "default"
 
-#### strategy
+#### auth
 
 認証状態の管理方法を指定します。初期値は "session" で、セッションを用いた認証状態の管理を行います。
 
@@ -274,13 +274,14 @@ disabled属性を指定しなかった場合は認証が必要として上書き
 SecurityContext
 -----------------
 
-認証に関わる状態は `crocos_security.context` というキーでサービスコンテナに登録されている、 `Crocos\SecurityBundle\Security\SecurityContext` オブジェクトが保持しています。なお実際の処理内容については後述する `AuthStrategy` によって変更可能です。
+認証に関わる状態は `crocos_security.context` というキーでサービスコンテナに登録されている、 `Crocos\SecurityBundle\Security\SecurityContext` オブジェクトが保持しています。なお実際の処理内容については後述する `AuthLogic` によって変更可能です。
 
 ### ログイン
 
 ログインを行うには、`login()` メソッドにユーザ情報を渡します。
 
-    $this->get('crocos_security.context')->login('Katsuhiro Ogawa');
+    $user = $userRepository->findUser('Katsuhiro Ogawa');
+    $this->get('crocos_security.context')->login($user);
 
 
 ### ログイン状態の確認
@@ -307,24 +308,56 @@ SecurityContext
     $this->get('crocos_security.context')->isAuthenticated();   // => false
 
 
-AuthStrategy
+Auth Logic
 --------------
 
-`AuthStrategy` は認証状態の管理方法を切り替える仕組みです。`Secure` アノテーションの `strategy` と対応しています。標準では、セッションを用いて認証状態の管理を行う `SessionAuth` (strategy="session")、Facebook PHP SDKに状態管理を委譲する `FacebookAuth` (strategy="facebook") の2つがあります。また、既存の `AuthStrategy` を拡張したり、独自に作成することも可能です。
+Auth Logic は認証状態の管理方法を切り替える仕組みです。`Secure` アノテーションの `auth` と対応しています。標準では、セッションを用いて認証状態の管理を行う `SessionAuth` (auth="session")、Facebook PHP SDKに状態管理を委譲する `FacebookAuth` (auth="facebook") の2つがあります。また、既存の Auth Logic を拡張したり、独自に作成することも可能です。
 
 ### SessionAuth
 
-    strategy="session"
+    auth="session"
 
 `SessionAuth` はセッションを用いて認証状態を管理する仕組みです。
 
 
 ### FacebookAuth
 
-    strategy="facebook"
+    auth="facebook"
 
 `FacebookAuth` はFacebook PHP SDKを用いて認証を行います。
 
 `login()` および `logout()` メソッドは使用できません。`BaseFacebook::getLoginUrl()` を用いて認証してください。
 
 `FacebookAuth` を利用する場合は、`facebook.api` というキーで `Facebook` オブジェクトをDIコンテナにサービス登録してください。
+
+
+### カスタムAuth Logic
+
+独自の Auth Logic を作成するにはまず、 `Crocos\SecurityBundle\Security\AuthLogic\AuthLogicInterface` インターフェイスを実装したクラスを作成します。Auth Logic には次の5つのメソッドを定義する必要があります。
+
+- setDomain($domain)
+- login($user)
+- function logout()
+- function isAuthenticated()
+- function getUser()
+
+`setDomain()` メソッド以外は `SecurityContext` クラスから委譲される形で呼び出されます。`setDomain()` メソッドはアノテーションで読み込まれた `domain` の値が渡されます。
+
+#### カスタムAuth Logicの登録
+
+Auth Logic を作成したら、DIコンテナに登録する必要があります。その際、`crocos_security.auth_logic` タグを付与することで CrocosSecurityBundle に登録可能です。アノテーションには `alias` に記述した値を指定します。
+
+    services:
+        myapp.security.my_auth:
+            class: Crocos\AppBundle\Security\MyAuth
+            tags:
+                - { name: crocos_security.auth_logic, alias: my_auth }
+
+上記のAuth Logicを呼び出す場合は次のようになります。
+
+    /**
+     * @SecureConfig(auth="my_auth")
+     */
+    class AppController
+    {
+    }

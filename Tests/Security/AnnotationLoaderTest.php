@@ -13,7 +13,7 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getLoadAnnotationData
      */
-    public function testLoadAnnotation($object, $method, $secure, $roles, $domain, $strategy, $forward)
+    public function testLoadAnnotation($object, $method, $secure, $roles, $domain, $auth, $forward)
     {
         $context = new SecurityContext();
 
@@ -22,21 +22,19 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
 
         $reflObject = new \ReflectionObject($object);
 
-        $resolver = Phake::mock('Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyResolver');
-        $authStrategy = Phake::mock('Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyInterface');
-        Phake::when($resolver)->resolveAuthStrategy($strategy)->thenReturn($authStrategy);
+        $resolver = Phake::mock('Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver');
+        $authLogic = Phake::mock('Crocos\SecurityBundle\Security\AuthLogic\AuthLogicInterface');
+        Phake::when($resolver)->resolveAuthLogic($auth)->thenReturn($authLogic);
 
         $loader = new AnnotationLoader(new AnnotationReader(), $resolver);
         $loader->load($context, $reflObject, $reflObject->getMethod($method));
 
-        Phake::verify($resolver)->resolveAuthStrategy($strategy);
-
         $this->assertEquals($secure, $context->isSecure());
         $this->assertEquals($roles, $context->getRequiredRoles());
         $this->assertEquals($forward, $context->getForwardingController());
-        $this->assertEquals($authStrategy, $context->getStrategy());
+        $this->assertEquals($authLogic, $context->getAuthLogic());
 
-        Phake::verify($authStrategy)->setDomain($domain);
+        Phake::verify($authLogic)->setDomain($domain);
         Phake::verify($previousUrlHolder)->setup($domain);
     }
 
@@ -46,7 +44,7 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         $aforward = 'Crocos\SecurityBundle\Tests\Fixtures\AdminController::loginAction';
 
         return array(
-            // object, method, secure, roles, domain, strategy, forward
+            // object, method, secure, roles, domain, auth, forward
 
             array(new Fixtures\UserController(), 'securedAction', true, array(), 'default', 'session', $uforward),
             array(new Fixtures\UserController(), 'publicAction', false, array(), 'default', 'session', $uforward),
