@@ -53,17 +53,23 @@ class AnnotationLoader
         // Read class annotations.
         $classes = array_reverse($classes);
         foreach ($classes as $class) {
-            foreach ($this->reader->getClassAnnotations($class) as $annotation) {
-                if ($annotation instanceof Annotation) {
-                    $this->loadAnnotation($context, $annotation);
+            $annotations = $this->reader->getClassAnnotations($class);
+            if (count($annotations) > 0) {
+                foreach ($annotations as $annotation) {
+                    if ($annotation instanceof Annotation) {
+                        $this->loadAnnotation($context, $annotation);
+                    }
                 }
             }
         }
 
         // Read method annotations.
-        foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
-            if ($annotation instanceof Annotation) {
-                $this->loadAnnotation($context, $annotation);
+        $annotations = $this->reader->getMethodAnnotations($method);
+        if (count($annotations) > 0) {
+            foreach ($annotations as $annotation) {
+                if ($annotation instanceof Annotation) {
+                    $this->loadAnnotation($context, $annotation);
+                }
             }
         }
 
