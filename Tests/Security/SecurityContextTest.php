@@ -23,6 +23,14 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
         $this->auth = $auth;;
     }
 
+    public function testContextBeforeLoading()
+    {
+        $context = new SecurityContext();
+
+        $this->assertEmpty($context->getUser());
+        $this->assertFalse($context->isAuthenticated());
+    }
+
     public function testDelegateToLogic()
     {
         $context = $this->context;
