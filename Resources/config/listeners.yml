@@ -1,8 +1,10 @@
 services:
-    crocos_security.request_listener:
-        class: Crocos\SecurityBundle\EventListener\RequestListener
+    crocos_security.auth_listener:
+        class: Crocos\SecurityBundle\EventListener\AuthListener
         arguments:
+            - @crocos_security.context
             - @crocos_security.checker
             - @controller_resolver
         tags:
             - { name: kernel.event_listener, event: kernel.request }
+            - { name: kernel.event_listener, event: kernel.exception }

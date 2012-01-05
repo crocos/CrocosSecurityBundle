@@ -5,9 +5,8 @@ services:
             - [ setPreviousUrlHolder, [ @crocos_security.previous_url_holder ] ]
 
     crocos_security.checker:
-        class: Crocos\SecurityBundle\Security\SecurityChecker
+        class: Crocos\SecurityBundle\Security\AuthChecker
         arguments:
-            - @crocos_security.context
             - @crocos_security.annotation_loader
             - @crocos_security.forwarding_controller_matcher
 

@@ -381,3 +381,38 @@ Auth Logic を作成したら、DIコンテナに登録する必要がありま�
     class AppController
     {
     }
+
+
+AuthException
+---------------
+
+任意の場所でログイン画面に遷移したい場合は、 `Crocos\SecurityBundle\Exception\AuthException` オブジェクトをスローします。なお、AuthExceptionのコンストラクタの第2引数にattributes配列を指定でき、ログイン画面へ遷移する際にルーティングのパラメータとして渡されます。
+
+    use Crocos\SecurityBundle\Annotation\Secure;
+    use Crocos\SecurityBundle\Annotation\SecureConfig;
+    use Crocos\SecurityBundle\Exception\AuthException;
+
+    /**
+     * @SecureConfig(forward="CrocosAppBundle:Demo:login")
+     */
+    class AppController
+    {
+    }
+
+    class DemoController extends AppController
+    {
+        /**
+         * @Secure
+         */
+        public function someAction($id)
+        {
+            if ($this->hasSomeError()) {
+                throw new AuthException('Login required', array('id' => $id));
+            }
+        }
+
+        public function loginAction($id = null)
+        {
+            // do login
+        }
+    }
