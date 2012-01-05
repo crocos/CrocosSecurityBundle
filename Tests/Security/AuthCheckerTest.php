@@ -2,11 +2,11 @@
 
 namespace Crocos\SecurityBundle\Tests\Security;
 
-use Crocos\SecurityBundle\Security\SecurityChecker;
+use Crocos\SecurityBundle\Security\AuthChecker;
 use Crocos\SecurityBundle\Tests\Fixtures;
 use Phake;
 
-class SecurityCheckerTest extends \PHPUnit_Framework_TestCase
+class AuthCheckerTest extends \PHPUnit_Framework_TestCase
 {
     protected $context;
     protected $matcher;
@@ -23,7 +23,7 @@ class SecurityCheckerTest extends \PHPUnit_Framework_TestCase
         $loader = Phake::mock('Crocos\SecurityBundle\Security\AnnotationLoader');
         $matcher = Phake::mock('Crocos\SecurityBundle\Security\ForwardingControllerMatcher');
 
-        $checker = new SecurityChecker($context, $loader, $matcher);
+        $checker = new AuthChecker($loader, $matcher);
 
         $this->context = $context;
         $this->matcher = $matcher;
@@ -33,18 +33,21 @@ class SecurityCheckerTest extends \PHPUnit_Framework_TestCase
         $this->method = 'securedAction';
     }
 
+    /**
+     * @expectedException Crocos\SecurityBundle\Exception\AuthException
+     */
     public function testSecureControllerForwardLoginController()
     {
         Phake::when($this->context)->isSecure()->thenReturn(true);
 
-        $this->assertEquals($this->context->getForwardingController(), $this->checker->checkSecurity($this->object, $this->method));
+        $this->checker->authenticate($this->context, $this->object, $this->method);
     }
 
     public function testNotSecureControllerNotForward()
     {
         Phake::when($this->context)->isSecure()->thenReturn(false);
 
-        $this->assertEmpty($this->checker->checkSecurity($this->object, $this->method));
+        $this->checker->authenticate($this->context, $this->object, $this->method);
     }
 
     public function testSecureControllerNotForwardIfLoggedIn()
@@ -52,7 +55,7 @@ class SecurityCheckerTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->context)->isSecure()->thenReturn(true);
         Phake::when($this->context)->isAuthenticated()->thenReturn(true);
 
-        $this->assertEmpty($this->checker->checkSecurity($this->object, $this->method));
+        $this->checker->authenticate($this->context, $this->object, $this->method);
     }
 
     public function testIsSecureControllerThatAnnotatedSecureAnnotation()
@@ -63,6 +66,6 @@ class SecurityCheckerTest extends \PHPUnit_Framework_TestCase
         $reflMethod = $reflObject->getMethod($this->method);
         Phake::when($this->matcher)->isForwardingController($this->context, $reflObject, $reflMethod)->thenReturn(true);
 
-        $this->assertEmpty($this->checker->checkSecurity($this->object, $this->method));
+        $this->checker->authenticate($this->context, $this->object, $this->method);
     }
 }
