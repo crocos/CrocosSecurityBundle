@@ -20,7 +20,7 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
         $context->setAuthLogic($auth);
 
         $this->context = $context;
-        $this->auth = $auth;;
+        $this->auth = $auth;
     }
 
     public function testContextBeforeLoading()
