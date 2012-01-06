@@ -11,8 +11,19 @@ use Symfony\Component\HttpFoundation\Session;
  */
 class PreviousUrlHolder
 {
+    /**
+     * @var Session
+     */
     protected $session;
+
+    /**
+     * @var string
+     */
     protected $domain;
+
+    /**
+     * @var string
+     */
     protected $url;
 
     /**

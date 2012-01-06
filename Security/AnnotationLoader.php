@@ -6,7 +6,7 @@ use Doctrine\Common\Annotations\Reader;
 use Crocos\SecurityBundle\Annotation\Annotation;
 use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Annotation\SecureConfig;
-use Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyResolver;
+use Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver;
 
 /**
  * AnnotationLoader.
@@ -15,7 +15,7 @@ use Crocos\SecurityBundle\Security\AuthStrategy\AuthStrategyResolver;
  */
 class AnnotationLoader
 {
-    const DEFAULT_STRATEGY = 'session';
+    const DEFAULT_AUTH_LOGIC = 'session';
 
     /**
      * @var Reader
@@ -26,9 +26,9 @@ class AnnotationLoader
      * Constructor.
      *
      * @param Reader $reader Annotation reader
-     * @param AuthStrategyResolver $resolver
+     * @param AuthLogicResolver $resolver
      */
-    public function __construct(Reader $reader, AuthStrategyResolver $resolver)
+    public function __construct(Reader $reader, AuthLogicResolver $resolver)
     {
         $this->reader = $reader;
         $this->resolver = $resolver;
@@ -53,17 +53,23 @@ class AnnotationLoader
         // Read class annotations.
         $classes = array_reverse($classes);
         foreach ($classes as $class) {
-            foreach ($this->reader->getClassAnnotations($class) as $annotation) {
-                if ($annotation instanceof Annotation) {
-                    $this->loadAnnotation($context, $annotation);
+            $annotations = $this->reader->getClassAnnotations($class);
+            if (count($annotations) > 0) {
+                foreach ($annotations as $annotation) {
+                    if ($annotation instanceof Annotation) {
+                        $this->loadAnnotation($context, $annotation);
+                    }
                 }
             }
         }
 
         // Read method annotations.
-        foreach ($this->reader->getMethodAnnotations($method) as $annotation) {
-            if ($annotation instanceof Annotation) {
-                $this->loadAnnotation($context, $annotation);
+        $annotations = $this->reader->getMethodAnnotations($method);
+        if (count($annotations) > 0) {
+            foreach ($annotations as $annotation) {
+                if ($annotation instanceof Annotation) {
+                    $this->loadAnnotation($context, $annotation);
+                }
             }
         }
 
@@ -112,8 +118,8 @@ class AnnotationLoader
             $context->setDomain($annotation->domain());
         }
 
-        if (null !== $annotation->strategy()) {
-            $context->setStrategy($this->resolver->resolveAuthStrategy($annotation->strategy()));
+        if (null !== $annotation->auth()) {
+            $context->setAuthLogic($this->resolver->resolveAuthLogic($annotation->auth()));
         }
 
         if (null !== $annotation->forward()) {
@@ -130,10 +136,10 @@ class AnnotationLoader
     {
         $context->getPreviousUrlHolder()->setup($context->getDomain());
 
-        if (null === $context->getStrategy()) {
-            $context->setStrategy($this->resolver->resolveAuthStrategy(self::DEFAULT_STRATEGY));
+        if (null === $context->getAuthLogic()) {
+            $context->setAuthLogic($this->resolver->resolveAuthLogic(self::DEFAULT_AUTH_LOGIC));
         }
 
-        $context->getStrategy()->setDomain($context->getDomain());
+        $context->getAuthLogic()->setDomain($context->getDomain());
     }
 }

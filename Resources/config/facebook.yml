@@ -1,7 +1,7 @@
 services:
-    crocos_security.auth_strategy.facebook:
-        class: Crocos\SecurityBundle\Security\AuthStrategy\FacebookAuth
+    crocos_security.auth_logic.facebook:
+        class: Crocos\SecurityBundle\Security\AuthLogic\FacebookAuth
         arguments:
             - @facebook.api
         tags:
-            - { name: crocos_security.strategy, alias: facebook }
+            - { name: crocos_security.auth_logic, alias: facebook }

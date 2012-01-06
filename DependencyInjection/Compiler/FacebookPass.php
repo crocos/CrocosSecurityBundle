@@ -2,6 +2,7 @@
 
 namespace Crocos\SecurityBundle\DependencyInjection\Compiler;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
@@ -18,7 +19,7 @@ class FacebookPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('facebook.api')) {
+        if (!$container->has('facebook.api')) {
             return;
         }
 

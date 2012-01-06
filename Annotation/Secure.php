@@ -11,7 +11,14 @@ namespace Crocos\SecurityBundle\Annotation;
  */
 class Secure extends Annotation
 {
+    /**
+     * @var boolean
+     */
     protected $disabled = false;
+
+    /**
+     * @var array
+     */
     protected $roles;
 
     /**

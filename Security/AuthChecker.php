@@ -2,18 +2,15 @@
 
 namespace Crocos\SecurityBundle\Security;
 
+use Crocos\SecurityBundle\Exception\AuthException;
+
 /**
- * SecurityChecker.
+ * AuthChecker.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class SecurityChecker
+class AuthChecker
 {
-    /**
-     * @var SecurityContext
-     */
-    protected $context;
-
     /**
      * @var AnnotationLoader
      */
@@ -27,13 +24,11 @@ class SecurityChecker
     /**
      * Constructor.
      *
-     * @param SecurityContext $context
      * @param AnnotationLoader $loader
      * @param ForwardingControllerMatcher $matcher
      */
-    public function __construct(SecurityContext $context, AnnotationLoader $loader, ForwardingControllerMatcher $matcher)
+    public function __construct(AnnotationLoader $loader, ForwardingControllerMatcher $matcher)
     {
-        $this->context = $context;
         $this->loader = $loader;
         $this->matcher = $matcher;
     }
@@ -51,34 +46,30 @@ class SecurityChecker
     /**
      * Check security.
      *
+     * @param SecurityContext $context
      * @param object $object
      * @param string $method
      * @return string Forwarding cotroller
      *
      * @throws \LogicException If forwarding controller is unconfigured
      */
-    public function checkSecurity($_object, $_method)
+    public function authenticate(SecurityContext $context, $_object, $_method)
     {
         $object = new \ReflectionObject($_object);
         $method = $object->getMethod($_method);
 
-        $this->loader->load($this->context, $object, $method);
+        $this->loader->load($context, $object, $method);
 
-        if (!$this->context->isSecure() || $this->matcher->isForwardingController($this->context, $object, $method)) {
+        // not secure
+        if (!$context->isSecure() || $this->matcher->isForwardingController($context, $object, $method)) {
             return;
         }
 
-        if ($this->context->isAuthenticated()) {
-            // @todo Authorize roles
-
+        // authenticated
+        if ($context->isAuthenticated()) {
             return;
         }
 
-        $forwardingController = $this->context->getForwardingController();
-        if (null === $forwardingController) {
-            throw new \LogicException('You must configure "forward" attribute in @Secure annotation that will be used as a login controller.');
-        }
-
-        return $forwardingController;
+        throw new AuthException('Login required');
     }
 }

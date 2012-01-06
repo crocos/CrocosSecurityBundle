@@ -3,6 +3,7 @@
 namespace Crocos\SecurityBundle\Security;
 
 use Crocos\SecurityBundle\Annotation\Secure;
+use Crocos\SecurityBundle\Exception\ConfigException;
 
 /**
  * SecurityContext.
@@ -11,11 +12,34 @@ use Crocos\SecurityBundle\Annotation\Secure;
  */
 class SecurityContext
 {
+    /**
+     * @var boolean
+     */
     protected $secure = false;
+
+    /**
+     * @var array
+     */
     protected $requiredRoles = array();
+
+    /**
+     * @var string
+     */
     protected $domain = 'default';
-    protected $strategy;
+
+    /**
+     * @var string
+     */
     protected $forwardingController;
+
+    /**
+     * @var AuthLogicInterface
+     */
+    protected $authLogic;
+
+    /**
+     * @var PreviousUrlHolder
+     */
     protected $previousUrlHolder;
 
     /**
@@ -79,23 +103,23 @@ class SecurityContext
     }
 
     /**
-     * Set authentication/authorization strategy.
+     * Set authentication/authorization logic.
      *
-     * @param AuthStrategyInterface $strategy
+     * @param AuthLogicInterface $authLogic
      */
-    public function setStrategy($strategy)
+    public function setAuthLogic($authLogic)
     {
-        $this->strategy = $strategy;
+        $this->authLogic = $authLogic;
     }
 
     /**
-     * Get authentication/authorization strategy.
+     * Get authentication/authorization logic.
      *
-     * @return AuthStrategyInterface
+     * @return AuthLogicInterface
      */
-    public function getStrategy()
+    public function getAuthLogic()
     {
-        return $this->strategy;
+        return $this->authLogic;
     }
 
     /**
@@ -125,7 +149,11 @@ class SecurityContext
      */
     public function login($user)
     {
-        $this->strategy->login($user);
+        if (null === $this->authLogic) {
+            throw new ConfigException('Login error: No auth logic');
+        }
+
+        $this->authLogic->login($user);
     }
 
     /**
@@ -133,7 +161,11 @@ class SecurityContext
      */
     public function logout()
     {
-        $this->strategy->logout();
+        if (null === $this->authLogic) {
+            throw new ConfigException('Logout error: No auth logic');
+        }
+
+        $this->authLogic->logout();
     }
 
     /**
@@ -143,7 +175,11 @@ class SecurityContext
      */
     public function isAuthenticated()
     {
-        return $this->strategy->isAuthenticated();
+        if (null === $this->authLogic) {
+            return false;
+        }
+
+        return $this->authLogic->isAuthenticated();
     }
 
     /**
@@ -153,7 +189,11 @@ class SecurityContext
      */
     public function getUser()
     {
-        return $this->strategy->getUser();
+        if (null === $this->authLogic) {
+            return null;
+        }
+
+        return $this->authLogic->getUser();
     }
 
     /**
@@ -181,6 +221,10 @@ class SecurityContext
      */
     public function hasPreviousUrl()
     {
+        if (null === $this->previousUrlHolder) {
+            return false;
+        }
+
         return $this->previousUrlHolder->has();
     }
 
@@ -189,6 +233,10 @@ class SecurityContext
      */
     public function setPreviousUrl($url)
     {
+        if (null === $this->previousUrlHolder) {
+            return null;
+        }
+
         $this->previousUrlHolder->set($url);
     }
 
@@ -197,6 +245,10 @@ class SecurityContext
      */
     public function getPreviousUrl()
     {
+        if (null === $this->previousUrlHolder) {
+            return null;
+        }
+
         return $this->previousUrlHolder->get();
     }
 }

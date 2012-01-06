@@ -1,6 +1,6 @@
 <?php
 
-namespace Crocos\SecurityBundle\Security\AuthStrategy;
+namespace Crocos\SecurityBundle\Security\AuthLogic;
 
 use Symfony\Component\HttpFoundation\Session;
 
@@ -9,10 +9,21 @@ use Symfony\Component\HttpFoundation\Session;
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class SessionAuth implements AuthStrategyInterface
+class SessionAuth implements AuthLogicInterface
 {
+    /**
+     * @var Session
+     */
     protected $session;
+
+    /**
+     * @var string $domain
+     */
     protected $domain;
+
+    /**
+     * @var mixed
+     */
     protected $user;
 
     /**
