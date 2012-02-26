@@ -87,7 +87,7 @@ class AuthListener
 
         $forwardingController = $this->context->getForwardingController();
         if (null === $forwardingController) {
-            throw new \LogicException('You must configure "forward" attribute in @Secure annotation that will be used as a login controller.');
+            throw new \LogicException('You must configure "forward" attribute in @SecureConfig annotation');
         }
 
         // Save actual url.
