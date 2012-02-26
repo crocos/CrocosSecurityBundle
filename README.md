@@ -416,3 +416,13 @@ AuthException
             // do login
         }
     }
+
+
+Twig連携
+----------
+
+    CrocosSecurityBundleを読み込むとTwigテンプレート内で `_security` 変数が有効になります。`_security` 変数は `SecurityContext` オブジェクトへの参照を持ちます。これを用いてテンプレート内で条件分岐などを行えます。
+
+    {% if _security.isAuthenticated %}
+      <p>Logged in as {{ _security.user }}</p>
+    {% endif %}
