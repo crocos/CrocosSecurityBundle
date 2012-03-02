@@ -6,11 +6,11 @@ use Symfony\Component\HttpFoundation\Session;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
- * EntityAuth.
+ * SessionEntityAuth.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class EntityAuth extends SessionAuth
+class SessionEntityAuth extends SessionAuth
 {
     const FORMAT_VERSION = 1;
 

@@ -1,8 +1,8 @@
 services:
-    crocos_security.auth_logic.entity:
-        class: Crocos\SecurityBundle\Security\AuthLogic\EntityAuth
+    crocos_security.auth_logic.session_entity:
+        class: Crocos\SecurityBundle\Security\AuthLogic\SessionEntityAuth
         arguments:
             - @session
             - @doctrine
         tags:
-            - { name: crocos_security.auth_logic, alias: entity }
+            - { name: crocos_security.auth_logic, alias: session.entity }
