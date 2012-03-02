@@ -7,6 +7,7 @@ use Crocos\SecurityBundle\Annotation\Annotation;
 use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Annotation\SecureConfig;
 use Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver;
+use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactoryInterface;
 
 /**
  * AnnotationLoader.
@@ -23,15 +24,26 @@ class AnnotationLoader
     protected $reader;
 
     /**
+     * @var AuthLogicResolver
+     */
+    protected $resolver;
+
+    /**
+     * @var HttpAuthFactoryInterface
+     */
+    protected $httpAuthFactory;
+
+    /**
      * Constructor.
      *
      * @param Reader $reader Annotation reader
      * @param AuthLogicResolver $resolver
      */
-    public function __construct(Reader $reader, AuthLogicResolver $resolver)
+    public function __construct(Reader $reader, AuthLogicResolver $resolver, HttpAuthFactoryInterface $httpAuthFactory = null)
     {
         $this->reader = $reader;
         $this->resolver = $resolver;
+        $this->httpAuthFactory = $httpAuthFactory;
     }
 
     /**
@@ -125,6 +137,10 @@ class AnnotationLoader
         if (null !== $annotation->forward()) {
             $context->setForwardingController($annotation->forward());
         }
+
+        if (null !== $annotation->basic()) {
+            $this->loadHttpAuth($context, 'basic', $annotation->basic());
+        }
     }
 
     /**
@@ -141,5 +157,25 @@ class AnnotationLoader
         }
 
         $context->getAuthLogic()->setDomain($context->getDomain());
+    }
+
+    /**
+     * Load http auth.
+     *
+     * @param SecurityContext $context
+     * @param string $type
+     * @param string $value
+     *
+     * @see HttpAuthFactoryInterface
+     */
+    protected function loadHttpAuth(SecurityContext $context, $type, $value)
+    {
+        if (null === $this->httpAuthFactory) {
+            return;
+        }
+
+        $httpAuth = $this->httpAuthFactory->create($type, $value, $context->getDomain());
+
+        $context->setHttpAuth($httpAuth);
     }
 }

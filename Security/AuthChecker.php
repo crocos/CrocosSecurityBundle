@@ -2,7 +2,9 @@
 
 namespace Crocos\SecurityBundle\Security;
 
+use Symfony\Component\HttpFoundation\Request;
 use Crocos\SecurityBundle\Exception\AuthException;
+use Crocos\SecurityBundle\Exception\HttpAuthException;
 
 /**
  * AuthChecker.
@@ -34,31 +36,27 @@ class AuthChecker
     }
 
     /**
-     * Get security context.
-     *
-     * @return SecurityContext
-     */
-    public function getContext()
-    {
-        return $this->context;
-    }
-
-    /**
      * Check security.
      *
      * @param SecurityContext $context
      * @param object $object
      * @param string $method
+     * @param Request $request
      * @return string Forwarding cotroller
      *
      * @throws \LogicException If forwarding controller is unconfigured
      */
-    public function authenticate(SecurityContext $context, $_object, $_method)
+    public function authenticate(SecurityContext $context, $_object, $_method, Request $request = null)
     {
         $object = new \ReflectionObject($_object);
         $method = $object->getMethod($_method);
 
         $this->loader->load($context, $object, $method);
+
+        // http auth
+        if ($request && $context->useHttpAuth() && false === $context->getHttpAuth()->authenticate($request)) {
+            throw new HttpAuthException('Authentication required');
+        }
 
         // not secure
         if (!$context->isSecure() || $this->matcher->isForwardingController($context, $object, $method)) {

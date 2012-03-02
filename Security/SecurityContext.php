@@ -4,6 +4,7 @@ namespace Crocos\SecurityBundle\Security;
 
 use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Exception\ConfigException;
+use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthInterface;
 
 /**
  * SecurityContext.
@@ -41,6 +42,11 @@ class SecurityContext
      * @var PreviousUrlHolder
      */
     protected $previousUrlHolder;
+
+    /**
+     * @var HttpAuthInterface
+     */
+    protected $httpAuth;
 
     /**
      * Set secure.
@@ -250,5 +256,35 @@ class SecurityContext
         }
 
         return $this->previousUrlHolder->get();
+    }
+
+    /**
+     * Use http auth.
+     *
+     * @return boolean
+     */
+    public function useHttpAuth()
+    {
+        return (null !== $this->httpAuth);
+    }
+
+    /**
+     * Set http auth.
+     *
+     * @param HttpAuthInterface $httpAuth
+     */
+    public function setHttpAuth(HttpAuthInterface $httpAuth = null)
+    {
+        $this->httpAuth = $httpAuth;
+    }
+
+    /**
+     * Get http auth.
+     *
+     * @return HttpAuthInterface
+     */
+    public function getHttpAuth()
+    {
+        return $this->httpAuth;
     }
 }
