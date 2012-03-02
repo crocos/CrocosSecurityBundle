@@ -29,6 +29,7 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEmpty($context->getUser());
         $this->assertFalse($context->isAuthenticated());
+        $this->assertEquals('secured', $context->getDomain());
     }
 
     public function testDelegateToLogic()

@@ -12,28 +12,28 @@ class BasicAuthTest extends \PHPUnit_Framework_TestCase
 {
     public function testAuthenticate()
     {
-        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Private Area');
+        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Secured Area');
 
         $this->assertTrue($basicAuth->authenticate($this->request('foo', 'foopass')));
     }
 
     public function testUnauthenticateInvalidUser()
     {
-        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Private Area');
+        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Secured Area');
 
         $this->assertFalse($basicAuth->authenticate($this->request('wozozo', 'foopass')));
     }
 
     public function testUnauthenticateInvalidPassword()
     {
-        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Private Area');
+        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Secured Area');
 
         $this->assertFalse($basicAuth->authenticate($this->request('foo', 'wozozo')));
     }
 
     public function testAuthenticateMultiUsers()
     {
-        $basicAuth = new BasicAuth(array('foo' => 'foopass', 'bar' => 'barpass'), 'Private Area');
+        $basicAuth = new BasicAuth(array('foo' => 'foopass', 'bar' => 'barpass'), 'Secured Area');
 
         $this->assertTrue($basicAuth->authenticate($this->request('foo', 'foopass')));
         $this->assertTrue($basicAuth->authenticate($this->request('bar', 'barpass')));
@@ -41,11 +41,11 @@ class BasicAuthTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateUnauthorizedResponse()
     {
-        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Private Area');
+        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Secured Area');
 
         $response = $basicAuth->createUnauthorizedResponse($this->request('foo', 'foopass'), new HttpAuthException('Auth error'));
 
-        $this->assertEquals('Basic realm="Private Area"', $response->headers->get('WWW-Authenticate'));
+        $this->assertEquals('Basic realm="Secured Area"', $response->headers->get('WWW-Authenticate'));
         $this->assertEquals(401, $response->getStatusCode());
     }
 

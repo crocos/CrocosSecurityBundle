@@ -22,42 +22,42 @@ class PreviousUrlHolderTest extends \PHPUnit_Framework_TestCase
 
     public function testHasUrl()
     {
-        Phake::when($this->session)->get('default._previous_url')->thenReturn('http://localhost/');
+        Phake::when($this->session)->get('secured._previous_url')->thenReturn('http://localhost/');
 
-        $this->holder->setup('default');
+        $this->holder->setup('secured');
 
         $this->assertTrue($this->holder->has());
     }
 
     public function testHasNotUrl()
     {
-        Phake::when($this->session)->get('default._previous_url')->thenReturn(null);
+        Phake::when($this->session)->get('secured._previous_url')->thenReturn(null);
 
-        $this->holder->setup('default');
+        $this->holder->setup('secured');
 
         $this->assertFalse($this->holder->has());
     }
 
     public function testSetUrl()
     {
-        $this->holder->setup('default');
+        $this->holder->setup('secured');
 
         $this->holder->set('http://localhost/previous');
 
-        Phake::verify($this->session)->set('default._previous_url', 'http://localhost/previous');
+        Phake::verify($this->session)->set('secured._previous_url', 'http://localhost/previous');
 
         $this->assertEquals($this->holder->get(), 'http://localhost/previous');
     }
 
     public function testGetUrl()
     {
-        Phake::when($this->session)->get('default._previous_url')->thenReturn('http://localhost/previous');
+        Phake::when($this->session)->get('secured._previous_url')->thenReturn('http://localhost/previous');
 
-        $this->holder->setup('default');
+        $this->holder->setup('secured');
 
         $this->assertEquals('http://localhost/previous', $this->holder->get());
 
-        Phake::verify($this->session)->remove('default._previous_url');
+        Phake::verify($this->session)->remove('secured._previous_url');
 
         $this->assertEquals('http://localhost/previous', $this->holder->get());
     }

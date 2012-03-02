@@ -26,7 +26,7 @@ class SecurityContext
     /**
      * @var string
      */
-    protected $domain = 'default';
+    protected $domain = 'secured';
 
     /**
      * @var string

@@ -29,7 +29,7 @@ class BasicAuth implements HttpAuthInterface
      * @param array $users
      * @param string $realm
      */
-    public function __construct(array $users, $realm = 'Private area')
+    public function __construct(array $users, $realm)
     {
         $this->users = $users;
         $this->realm = $realm;
@@ -60,5 +60,15 @@ class BasicAuth implements HttpAuthInterface
         $response->setStatusCode(401);
 
         return $response;
+    }
+
+    /**
+     * Get realm.
+     *
+     * @return string
+     */
+    public function getRealm()
+    {
+        return $this->realm;
     }
 }

@@ -11,19 +11,21 @@ class HttpAuthFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $factory = Phake::partialMock('Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactory');
 
-        $factory->create('basic', 'foo:foopass', 'private');
+        $basicAuth = $factory->create('basic', 'foo:foopass', 'secured');
 
-        Phake::verify($factory)->createBasicAuth('foo:foopass', 'private');
+        $this->assertEquals('Secured Area', $basicAuth->getRealm());
+
+        Phake::verify($factory)->createBasicAuth('foo:foopass', 'secured');
     }
 
     public function testReturnNullIfEmptyValueGiven()
     {
         $factory = Phake::partialMock('Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactory');
 
-        $factory->create('basic', false, 'private');
-        $factory->create('basic', null, 'private');
+        $factory->create('basic', false, 'secured');
+        $factory->create('basic', null, 'secured');
 
-        Phake::verify($factory, Phake::times(0))->createBasicAuth('foo:foopass', 'private');
+        Phake::verify($factory, Phake::times(0))->createBasicAuth('foo:foopass', 'secured');
     }
 
     /**
@@ -33,6 +35,6 @@ class HttpAuthFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $factory = new HttpAuthFactory();
 
-        $factory->create('wozozo', 'foo:foopass', 'private');
+        $factory->create('wozozo', 'foo:foopass', 'secured');
     }
 }

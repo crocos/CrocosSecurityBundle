@@ -6,7 +6,7 @@ use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Annotation\SecureConfig;
 
 /**
- * @SecureConfig(domain="admin", basic="foo:foopass")
+ * @SecureConfig(basic="foo:foopass")
  */
 class BasicSecurityController
 {

@@ -58,16 +58,16 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         return array(
             // object, method, secure, roles, domain, auth, forward
 
-            array(new Fixtures\UserController(), 'securedAction', true, array(), 'default', 'session', $uforward),
-            array(new Fixtures\UserController(), 'publicAction', false, array(), 'default', 'session', $uforward),
-            array(new Fixtures\UserController(), 'loginAction', false, array(), 'default', 'session', $uforward),
+            array(new Fixtures\UserController(), 'securedAction', true, array(), 'secured', 'session', $uforward),
+            array(new Fixtures\UserController(), 'publicAction', false, array(), 'secured', 'session', $uforward),
+            array(new Fixtures\UserController(), 'loginAction', false, array(), 'secured', 'session', $uforward),
 
             array(new Fixtures\AdminController(), 'securedAction', true, array(), 'admin', 'session', $aforward),
             array(new Fixtures\AdminController(), 'publicAction', false, array(), 'admin', 'session', $aforward),
             array(new Fixtures\AdminController(), 'adminAction', true, array('admin'), 'admin', 'session', $aforward),
             array(new Fixtures\AdminController(), 'loginAction', true, array(), 'admin', 'session', $aforward),
 
-            array(new Fixtures\BasicSecurityController(), 'securedAction', false, array(), 'admin', null, null, 'foo:foopass')
+            array(new Fixtures\BasicSecurityController(), 'securedAction', false, array(), 'secured', null, null, 'foo:foopass')
         );
     }
 }

@@ -45,6 +45,7 @@ class HttpAuthFactory implements HttpAuthFactoryInterface
             $users[$secret[0]] = $secret[1];
         }
 
+        // domain="secured" -> realm="Secured Area"
         $realm = sprintf('%s Area', ucwords(str_replace('_', ' ', $domain)));
 
         $auth = new BasicAuth($users, $realm);
