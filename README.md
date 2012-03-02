@@ -153,7 +153,7 @@ forwardに指定したコントローラへのアクセスは、無限ループ�
 
 BASIC認証を有効にします。値には「ユーザ名:パスワード」形式の文字列、もしくはその文字列の配列(= 複数ユーザ)を指定します。
 
-　@SecureConfig(domain="secured", basic="user:pass")
+    @SecureConfig(domain="secured", basic="user:pass")
 
 認証領域(realm)はdomainの値を元に設定されます。上記の場合は "Secured Area" となります。
 
