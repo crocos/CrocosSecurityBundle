@@ -109,15 +109,15 @@ CrocosSecurityBundle - README
 
 #### disabled
 
-> - type: boolean
-> - default: false
+- type: boolean
+- default: false
 
 trueに設定した場合、認証不要であることを表します。初期値はfalseなので、引数なしで `Secure` アノテーションを設定した場合は認証が必要になります。
 
 #### roles
 
-> - type: array
-> - default: []
+- type: array
+- default: []
 
 必要な権限を配列で設定します。*現在この値を用いた認可処理は未実装です。*
 
@@ -138,8 +138,8 @@ trueに設定した場合、認証不要であることを表します。初期�
 
 #### auth
 
-> - type: string
-> - default: "session"
+- type: string
+- default: "session"
 
 認証状態の管理方法を指定します。初期値は "session" で、セッションを用いて認証状態の管理を行います。
 
@@ -147,7 +147,7 @@ trueに設定した場合、認証不要であることを表します。初期�
 
 #### forward
 
-> - type: string
+- type: string
 
 非ログイン状態で認証が必要なコントローラにアクセスした場合、ここに指定したコントローラが呼び出されます。コントローラのメソッド名（クラス::メソッド）を指定するか、Symfonyの短縮形式（バンドル名:コントローラ名:アクション名）でも指定できます。forwardが指定されていない場合に認証が必要なコントローラにアクセスした場合はエラーになります。
 
@@ -155,7 +155,7 @@ forwardに指定したコントローラへのアクセスは、無限ループ�
 
 #### basic
 
-> - type: string|array
+- type: string|array
 
 BASIC認証を有効にします。値には「ユーザ名:パスワード」形式の文字列、もしくはその文字列の配列(= 複数ユーザ)を指定します。
 
