@@ -9,6 +9,7 @@ CrocosSecurityBundle - README
 - アノテーションのみを用いて設定を行います
 - ログイン、ログアウトの状態切り替えは開発者が明示的に行います
 
+
 インストール方法
 -----------------
 
@@ -33,7 +34,6 @@ CrocosSecurityBundle - README
 
 `security.yml` を読み込んでいる行は削除します。
 
-
 ### app/autoload.php
 
 `Crocos` プレフィックスをクラスローダに登録します。
@@ -45,8 +45,8 @@ CrocosSecurityBundle - README
     ));
 
 
-使い方
---------
+イントロダクション
+--------------------
 
 `Secure` アノテーション、`SecureConfig` アノテーションをコントローラのメソッドもしくはクラスに設定します。
 
@@ -98,6 +98,9 @@ CrocosSecurityBundle - README
     }
 
 
+アノテーション
+----------------
+
 ### Secure アノテーション
 
 `Secure` アノテーションを付与したコントローラは認証が必要として扱います。クラスに設定した場合はすべてのアクションに、メソッドに設定した場合は指定したアクションのみが対象です。
@@ -106,18 +109,17 @@ CrocosSecurityBundle - README
 
 #### disabled
 
-- type: boolean
-- default: false
+> - type: boolean
+> - default: false
 
 trueに設定した場合、認証不要であることを表します。初期値はfalseなので、引数なしで `Secure` アノテーションを設定した場合は認証が必要になります。
 
 #### roles
 
-- type: array
-- default: []
+> - type: array
+> - default: []
 
 必要な権限を配列で設定します。*現在この値を用いた認可処理は未実装です。*
-
 
 ### SecureConfig アノテーション
 
@@ -136,8 +138,8 @@ trueに設定した場合、認証不要であることを表します。初期�
 
 #### auth
 
-- type: string
-- default: "session"
+> - type: string
+> - default: "session"
 
 認証状態の管理方法を指定します。初期値は "session" で、セッションを用いて認証状態の管理を行います。
 
@@ -145,7 +147,7 @@ trueに設定した場合、認証不要であることを表します。初期�
 
 #### forward
 
-- type: string
+> - type: string
 
 非ログイン状態で認証が必要なコントローラにアクセスした場合、ここに指定したコントローラが呼び出されます。コントローラのメソッド名（クラス::メソッド）を指定するか、Symfonyの短縮形式（バンドル名:コントローラ名:アクション名）でも指定できます。forwardが指定されていない場合に認証が必要なコントローラにアクセスした場合はエラーになります。
 
@@ -153,14 +155,13 @@ forwardに指定したコントローラへのアクセスは、無限ループ�
 
 #### basic
 
-- type: string|array
+> - type: string|array
 
 BASIC認証を有効にします。値には「ユーザ名:パスワード」形式の文字列、もしくはその文字列の配列(= 複数ユーザ)を指定します。
 
     @SecureConfig(domain="secured", basic="user:pass")
 
 認証領域(realm)はdomainの値を元に設定されます。上記の場合は "Secured Area" となります。
-
 
 > ### アノテーションの読み込み
 >
@@ -173,13 +174,14 @@ BASIC認証を有効にします。値には「ユーザ名:パスワード」�
 disabled属性を指定しなかった場合は認証が必要として上書きされますが、その他の属性は指定しない限り上書きされません。メソッドのアノテーションが読み込まれた段階で指定されていない場合のみ、デフォルト値が設定されます。
 
 
-### サンプルコード
+サンプルコード
+----------------
 
 次のコードはアノテーションを用いて認証を行うサンプルコードです。
 
 > `CrocosSecurityBundle` を使用する際は、設定をしやすくするためにアプリケーションごとに共通のコントローラクラスを作成することを推奨します。
 
-#### 基本的なサンプル
+### 基本的なサンプル
 
     AppController
     ├── AccountController
@@ -274,8 +276,7 @@ disabled属性を指定しなかった場合は認証が必要として上書き
         }
     }
 
-
-#### 管理者用ページ向けのサンプル
+### 管理者用ページ向けのサンプル
 
 管理者用のコントローラを作る場合、次のようにdomain属性を指定して、別の認証領域とします。`AppController` に `Secure` アノテーションが指定されているため、すべてのコントローラで認証が必要となります。
 
@@ -318,8 +319,7 @@ disabled属性を指定しなかった場合は認証が必要として上書き
 
 #### Basic認証を設定する
 
-Basic認証を設定するには `SecureConfig` アノテーションにbasic属性を指定します。この例ではユーザ名に"admin"、パスワードに"password"を設定しています。なおBasic認証の設定は `Secure` アノテーションの設定とは関連せず、basic属性が設定されている場合は認証領域内のすべてのアクションでBasic認証が行われます。部分的にBasic認証を無効にしたい場合はbasic属性のfalseを設定します。
-
+Basic認証を設定するには `SecureConfig` アノテーションにbasic属性を指定します。この例ではユーザ名に"admin"、パスワードに"password"を設定しています。なおBasic認証の設定は `Secure` アノテーションの設定とは関連せず、basic属性が設定されている場合は認証領域内のすべてのアクションでBasic認証が行われます。部分的にBasic認証を無効にしたい場合はbasic属性のfalseを設定します。もちろんauthやforward属性などを設定することでPHP側での認証も設定化のです。
 
     <?php
 
@@ -351,7 +351,6 @@ SecurityContext
 
     $user = $userRepository->findUser('Katsuhiro Ogawa');
     $this->get('crocos_security.context')->login($user);
-
 
 ### ログイン状態の確認
 
@@ -405,7 +404,6 @@ Auth Logic は認証状態の管理方法を切り替える仕組みです。`Se
 `login()` および `logout()` メソッドは使用できません。`BaseFacebook::getLoginUrl()` を用いて認証してください。
 
 `FacebookAuth` を利用する場合は、`facebook.api` というキーで `Facebook` オブジェクトをDIコンテナにサービス登録してください。
-
 
 ### カスタムAuth Logic
 
@@ -477,7 +475,7 @@ AuthException
 Twig連携
 ----------
 
-    CrocosSecurityBundleを読み込むとTwigテンプレート内で `_security` 変数が有効になります。`_security` 変数は `SecurityContext` オブジェクトへの参照を持ちます。これを用いてテンプレート内で条件分岐などを行えます。
+CrocosSecurityBundleを読み込むとTwigテンプレート内で `_security` 変数が有効になります。`_security` 変数は `SecurityContext` オブジェクトへの参照を持ちます。これを用いてテンプレート内で条件分岐などを行えます。
 
     {% if _security.isAuthenticated %}
       <p>Logged in as {{ _security.user }}</p>
