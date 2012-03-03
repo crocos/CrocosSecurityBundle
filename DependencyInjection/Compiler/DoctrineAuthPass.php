@@ -11,19 +11,19 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
- * FacebookPass.
+ * DoctrineAuthPass.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class FacebookPass implements CompilerPassInterface
+class DoctrineAuthPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has('facebook.api')) {
+        if (!$container->has('doctrine')) {
             return;
         }
 
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config'));
-        $loader->load('facebook.yml');
+        $loader->load('doctrine.yml');
     }
 }

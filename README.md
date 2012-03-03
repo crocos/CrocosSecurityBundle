@@ -4,10 +4,11 @@ CrocosSecurityBundle - README
 概要
 ------
 
-**CrocosSecurityBundle** はよりシンプルに認証状態の管理を行うためにのSymfony用のバンドルで、複雑な SecurityBundle を置き換えるために開発されました。SecurityBundle と比べ、次のような違いがあります。
+**CrocosSecurityBundle** はよりシンプルに認証状態の管理を行うためにのSymfony用のバンドルで、複雑な `SecurityBundle` を置き換えるために開発されました。`SecurityBundle` と比べ、次のような違いがあります。
 
 - アノテーションのみを用いて設定を行います
 - ログイン、ログアウトの状態切り替えは開発者が明示的に行います
+
 
 インストール方法
 -----------------
@@ -16,7 +17,7 @@ CrocosSecurityBundle - README
 
 ### app/AppKernel.php
 
-CrocosSecurityBundle を登録します。
+`CrocosSecurityBundle` を登録します。
 
     public function registerBundles()
     {
@@ -33,10 +34,9 @@ CrocosSecurityBundle を登録します。
 
 `security.yml` を読み込んでいる行は削除します。
 
-
 ### app/autoload.php
 
-`Crocos` プレフィックスを ClassLoader に登録します。
+`Crocos` プレフィックスをクラスローダに登録します。
 
     $loader->registerNamespaces(array(
         // ...
@@ -45,8 +45,8 @@ CrocosSecurityBundle を登録します。
     ));
 
 
-使い方
---------
+イントロダクション
+--------------------
 
 `Secure` アノテーション、`SecureConfig` アノテーションをコントローラのメソッドもしくはクラスに設定します。
 
@@ -58,20 +58,22 @@ CrocosSecurityBundle を登録します。
     /**
      * @SecureConfig(forward="CrocosAppBundle:Security:login")
      */
-    class AppController
+    abstract class AppController
     {
     }
+
 
     class SampleController extends AppController
     {
         /**
          * @Secure
          */
-        public function secureAction()
+        public function securedAction()
         {
             $user = $this->get('crocos_security.context')->getUser();
         }
     }
+
 
     /**
      * @Secure
@@ -96,6 +98,9 @@ CrocosSecurityBundle を登録します。
     }
 
 
+アノテーション
+----------------
+
 ### Secure アノテーション
 
 `Secure` アノテーションを付与したコントローラは認証が必要として扱います。クラスに設定した場合はすべてのアクションに、メソッドに設定した場合は指定したアクションのみが対象です。
@@ -107,66 +112,87 @@ CrocosSecurityBundle を登録します。
 - type: boolean
 - default: false
 
-trueに設定した場合、認証不要であることを表します。初期値はfalseなので、単に `Secure` アノテーションを設定した場合は認証が必要になります。
+trueに設定した場合、認証不要であることを表します。初期値はfalseなので、引数なしで `Secure` アノテーションを設定した場合は認証が必要になります。
 
 #### roles
-
-必要な権限を配列で設定します。現在この値を用いた認可処理は未実装です。
 
 - type: array
 - default: []
 
+必要な権限を配列で設定します。*現在この値を用いた認可処理は未実装です。*
 
 ### SecureConfig アノテーション
 
-`SecureConfig` アノテーションは認証に関する設定を行います。適応可能範囲は `Secure` アノテーションと同じです。
+`SecureConfig` アノテーションは認証に関する設定を行います。`Secure` アノテーションと同様に、コントローラのクラスやメソッドに対して設定します。
 
 `SecureConfig` アノテーションは次の属性が設定可能です。
 
 #### domain
 
+- type: string
+- default: "secured"
+
 同一プロジェクト内で異なる認証処理を行わなければならない場合（ユーザ専用ページ、管理者専用ページなど）、認証状況が適応される領域を指定したい場合に指定します。
 
 デフォルトではセッションを用いて認証状態を保持しますが、domainはセッションの名前空間として利用されます。
 
-- type: string
-- default: "default"
-
 #### auth
-
-認証状態の管理方法を指定します。初期値は "session" で、セッションを用いた認証状態の管理を行います。
-
-この他にも、FacebookのPHP-SDKの状態と連動させた "facebook" や、独自の方法を指定することもできます。
 
 - type: string
 - default: "session"
 
+認証状態の管理方法を指定します。初期値は "session" で、セッションを用いて認証状態の管理を行います。
+
+この他にも、FacebookのPHP-SDKの状態と連動させた "facebook" などが用意されており、また独自の管理方法を設定することもできます。
+
 #### forward
+
+- type: string
 
 非ログイン状態で認証が必要なコントローラにアクセスした場合、ここに指定したコントローラが呼び出されます。コントローラのメソッド名（クラス::メソッド）を指定するか、Symfonyの短縮形式（バンドル名:コントローラ名:アクション名）でも指定できます。forwardが指定されていない場合に認証が必要なコントローラにアクセスした場合はエラーになります。
 
 forwardに指定したコントローラへのアクセスは、無限ループを防ぐため、認証が必須と設定されている場合であっても制御は行いません。
 
-- type: string
+#### basic
 
+- type: string|array
 
-### クラスに設定したアノテーション
+BASIC認証を有効にします。値には「ユーザ名:パスワード」形式の文字列、もしくはその文字列の配列(= 複数ユーザ)を指定します。
 
-`Secure` アノテーションがクラスに設定されている場合はすべてのメソッドに同じ内容が適応されます。親クラスに設定されている値も読み込まれます。親クラス -> 子クラス -> メソッド の順番に読み込まれ、あとに読み込まれた値で上書きされます。
+    @SecureConfig(domain="secured", basic="user:pass")
+
+認証領域(realm)はdomainの値を元に設定されます。上記の場合は "Secured Area" となります。
+
+> ### アノテーションの読み込み
+>
+> `Secure` アノテーションがクラスに設定されている場合はすべてのアクションに同じ内容が適応されます。親クラスに設定されている値も読み込まれます。次の順番で読み込まれ、あとに読み込まれた値で上書きされます。
+>
+> 1. 親クラス
+> 2. 子クラス
+> 3. メソッド
 
 disabled属性を指定しなかった場合は認証が必要として上書きされますが、その他の属性は指定しない限り上書きされません。メソッドのアノテーションが読み込まれた段階で指定されていない場合のみ、デフォルト値が設定されます。
 
 
-### サンプルコード
+サンプルコード
+----------------
 
 次のコードはアノテーションを用いて認証を行うサンプルコードです。
 
 > `CrocosSecurityBundle` を使用する際は、設定をしやすくするためにアプリケーションごとに共通のコントローラクラスを作成することを推奨します。
 
-#### 基本的なサンプル
+### 基本的なサンプル
 
-AppController を継承した ProductController と AccountController が定義されています。ProductController の buyAction には Secure アノテーションが指定されているので認証が必要となります。
-AccountController はクラスに Secure アノテーションが指定してあるため、すべてのアクションで認証が必要です。ただし、AppController の SecureConfig アノテーションで loginAction が forward に指定されているため、loginAction は常に認証が不要になります。
+    AppController
+    ├── AccountController
+    │   ├── indexAction()
+    │   └── loginAction()
+    └── ProductController
+        ├── buyAction()
+        └── showAction()
+
+`AppController` を継承した `ProductController` と `AccountController` が定義されています。`ProductController` の `buyAction` には `Secure` アノテーションが指定されているので認証が必要となります。
+`AccountController` はクラスに `Secure` アノテーションが指定してあるため、すべてのアクションで認証が必要です。ただし、`AppController` の `SecureConfig` アノテーションで `loginAction` が forward に指定されているため、`loginAction` は常に認証が不要になります。
 
     <?php
 
@@ -190,6 +216,7 @@ AccountController はクラスに Secure アノテーションが指定してあ
         }
     }
 
+
     /**
      * @Route("/product")
      */
@@ -212,6 +239,7 @@ AccountController はクラスに Secure アノテーションが指定してあ
             // ...
         }
     }
+
 
     /**
      * @Secure
@@ -248,10 +276,9 @@ AccountController はクラスに Secure アノテーションが指定してあ
         }
     }
 
+### 管理者用ページ向けのサンプル
 
-#### 管理者用ページ向けのサンプル
-
-管理者用のコントローラを作る場合、次のようにdomain属性を指定して、別の認証領域とします。AppController に Secure アノテーションが指定されているため、すべてのコントローラで認証が必要となります。
+管理者用のコントローラを作る場合、次のようにdomain属性を指定して、別の認証領域とします。`AppController` に `Secure` アノテーションが指定されているため、すべてのコントローラで認証が必要となります。
 
     <?php
 
@@ -290,6 +317,28 @@ AccountController はクラスに Secure アノテーションが指定してあ
         }
     }
 
+#### Basic認証を設定する
+
+Basic認証を設定するには `SecureConfig` アノテーションにbasic属性を指定します。この例ではユーザ名に"admin"、パスワードに"password"を設定しています。なおBasic認証の設定は `Secure` アノテーションの設定とは関連せず、basic属性が設定されている場合は認証領域内のすべてのアクションでBasic認証が行われます。部分的にBasic認証を無効にしたい場合はbasic属性のfalseを設定します。もちろんauthやforward属性などを設定することでPHP側での認証も設定化のです。
+
+    <?php
+
+    namespace Crocos\AppBundle\Controller\Admin;
+
+    use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+    use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+    use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+    use Symfony\Component\HttpFoundation\Request;
+    use Crocos\SecurityBundle\Annotation\Secure;
+    use Crocos\SecurityBundle\Annotation\SecureConfig;
+
+    /**
+     * @SecureConfig(domain="admin", basic="admin:password")
+     */
+    abstract class AppController extends Controller
+    {
+    }
+
 
 SecurityContext
 -----------------
@@ -302,7 +351,6 @@ SecurityContext
 
     $user = $userRepository->findUser('Katsuhiro Ogawa');
     $this->get('crocos_security.context')->login($user);
-
 
 ### ログイン状態の確認
 
@@ -331,7 +379,7 @@ SecurityContext
 Auth Logic
 --------------
 
-Auth Logic は認証状態の管理方法を切り替える仕組みです。`Secure` アノテーションの `auth` と対応しています。標準では、セッションを用いて認証状態の管理を行う `SessionAuth` (auth="session")、Facebook PHP SDKに状態管理を委譲する `FacebookAuth` (auth="facebook") の2つがあります。また、既存の Auth Logic を拡張したり、独自に作成することも可能です。
+Auth Logic は認証状態の管理方法を切り替える仕組みです。`Secure` アノテーションの `auth` と対応しています。標準では、セッションを用いて認証状態の管理を行う `SessionAuth` (auth="session")、セッションにエンティティを格納することを考慮した`SessionEntityAuth`、FacebookのPHP-SDKに状態管理を委譲する `FacebookAuth` (auth="facebook") の3つがあります。また、既存の Auth Logic を拡張したり、独自に作成することも可能です。
 
 ### SessionAuth
 
@@ -339,17 +387,23 @@ Auth Logic は認証状態の管理方法を切り替える仕組みです。`Se
 
 `SessionAuth` はセッションを用いて認証状態を管理する仕組みです。
 
+### SessionEntityAuth
+
+    @SecureConfig(auth="session.entity")
+
+`SessionEntityAuth` はログインユーザにエンティティが使用されることを想定したもので、基本的には `SessionAuth` と同等です。`SessionAuth` を用いた場合、ログイン中のユーザ情報はセッションにシリアライズして格納されます。ユーザ情報がオブジェクトの場合、オブジェクトがシリアライズされて保存されます。`SessionEntityAuth` を用いた場合、クラス名とIDのみをセッションへ格納し、アクセスがあるたびにリポジトリからエンティティを取得します。
+
+`SessionEntityAuth` を用いるにあたって、ログイン対象のエンティティには必ず `getId()` メソッドを実装する必要があります。この値はセッションからエンティティを復元する際、リポジトリの `find()` メソッドに渡されます。また、ログイン中のユーザの有効性を確認したい場合、エンティティに `isEnabled()` メソッドを実装することで、エンティティ取得後に有効性の確認が可能です。ログインしていても `isEnabled()` がfalseであれば、ログアウトされます。
 
 ### FacebookAuth
 
     @SecureConfig(auth="facebook")
 
-`FacebookAuth` はFacebook PHP SDKを用いて認証を行います。
+`FacebookAuth` はFacebookのPHP-SDKを用いて認証を行います。
 
 `login()` および `logout()` メソッドは使用できません。`BaseFacebook::getLoginUrl()` を用いて認証してください。
 
 `FacebookAuth` を利用する場合は、`facebook.api` というキーで `Facebook` オブジェクトをDIコンテナにサービス登録してください。
-
 
 ### カスタムAuth Logic
 
@@ -357,9 +411,9 @@ Auth Logic は認証状態の管理方法を切り替える仕組みです。`Se
 
 - setDomain($domain)
 - login($user)
-- function logout()
-- function isAuthenticated()
-- function getUser()
+- logout()
+- isAuthenticated()
+- getUser()
 
 `setDomain()` メソッド以外は `SecurityContext` クラスから委譲される形で呼び出されます。`setDomain()` メソッドはアノテーションで読み込まれた `domain` の値が渡されます。
 
@@ -421,7 +475,7 @@ AuthException
 Twig連携
 ----------
 
-    CrocosSecurityBundleを読み込むとTwigテンプレート内で `_security` 変数が有効になります。`_security` 変数は `SecurityContext` オブジェクトへの参照を持ちます。これを用いてテンプレート内で条件分岐などを行えます。
+CrocosSecurityBundleを読み込むとTwigテンプレート内で `_security` 変数が有効になります。`_security` 変数は `SecurityContext` オブジェクトへの参照を持ちます。これを用いてテンプレート内で条件分岐などを行えます。
 
     {% if _security.isAuthenticated %}
       <p>Logged in as {{ _security.user }}</p>

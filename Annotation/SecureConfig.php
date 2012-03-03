@@ -27,6 +27,11 @@ class SecureConfig extends Annotation
     protected $forward;
 
     /**
+     * @var string|array
+     */
+    protected $basic;
+
+    /**
      * @return string
      */
     public function domain()
@@ -48,5 +53,13 @@ class SecureConfig extends Annotation
     public function forward()
     {
         return $this->forward;
+    }
+
+    /**
+     * @return string|array
+     */
+    public function basic()
+    {
+        return $this->basic;
     }
 }
