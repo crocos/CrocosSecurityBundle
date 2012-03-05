@@ -3,7 +3,6 @@
 namespace Crocos\SecurityBundle\Security;
 
 use Crocos\SecurityBundle\Annotation\Secure;
-use Crocos\SecurityBundle\Exception\ConfigException;
 use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthInterface;
 
 /**
@@ -156,7 +155,7 @@ class SecurityContext
     public function login($user)
     {
         if (null === $this->authLogic) {
-            throw new ConfigException('Login error: No auth logic');
+            throw new \LogicException('Login error: No auth logic');
         }
 
         $this->authLogic->login($user);
@@ -168,7 +167,7 @@ class SecurityContext
     public function logout()
     {
         if (null === $this->authLogic) {
-            throw new ConfigException('Logout error: No auth logic');
+            throw new \LogicException('Logout error: No auth logic');
         }
 
         $this->authLogic->logout();
