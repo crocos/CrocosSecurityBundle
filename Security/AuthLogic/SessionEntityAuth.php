@@ -14,6 +14,9 @@ class SessionEntityAuth extends SessionAuth
 {
     const FORMAT_VERSION = 1;
 
+    /**
+     * @var RegistryInterface
+     */
     protected $managerRegistry;
 
     /**

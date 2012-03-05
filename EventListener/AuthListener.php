@@ -86,6 +86,7 @@ class AuthListener
             return;
         }
 
+        $response = null;
         if ($exception instanceof HttpAuthException) {
             if (!$this->context->useHttpAuth()) {
                 throw new \InvalidArgumentException(sprintf('Cought a HttpAuthException, but no http auth configuration existing'));
@@ -104,6 +105,8 @@ class AuthListener
             $response = $event->getKernel()->forward($forwardingController, $exception->getAttributes());
         }
 
-        $event->setResponse($response);
+        if (null !== $response) {
+            $event->setResponse($response);
+        }
     }
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <phpunit bootstrap="./Tests/bootstrap.php" color="true">
   <php>
     <server name="SYMFONY" value="../../../symfony/src" />
     <server name="PHAKE" value="../../../phake" />
     <server name="DOCTRINE_COMMON" value="../../../doctrine-common/lib" />
+    <server name="DOCTRINE_DBAL" value="../../../doctrine-dbal/lib" />
+    <server name="DOCTRINE_ORM" value="../../../doctrine/lib" />
     <server name="FACEBOOK" value="../../../facebook/src" />
   </php>
 
