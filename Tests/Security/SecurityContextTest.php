@@ -105,4 +105,36 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->context->useHttpAuth());
     }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testLoginThrowLogicExceptionIfNoAuthLogicConfigured()
+    {
+        $context = new SecurityContext();
+        $context->login('user');
+    }
+
+    /**
+     * @expectedException LogicException
+     */
+    public function testLogoutThrowLogicExceptionIfNoAuthLogicConfigured()
+    {
+        $context = new SecurityContext();
+        $context->logout();
+    }
+
+    public function testIsAuthenticatedReturnsFalseIfNoAuthLogicConfigured()
+    {
+        $context = new SecurityContext();
+
+        $this->assertFalse($context->isAuthenticated());
+    }
+
+    public function testGetUserReturnsNullIfNoAuthLogicConfigured()
+    {
+        $context = new SecurityContext();
+
+        $this->assertEmpty($context->getUser());
+    }
 }
