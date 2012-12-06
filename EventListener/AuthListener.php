@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Crocos\SecurityBundle\Exception\AuthException;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
-use Crocos\SecurityBundle\Security\AuthChecker;
+use Crocos\SecurityBundle\Security\AuthCheckerInterface;
 use Crocos\SecurityBundle\Security\SecurityContext;
 
 /**
@@ -19,7 +19,7 @@ use Crocos\SecurityBundle\Security\SecurityContext;
 class AuthListener
 {
     /**
-     * @var AuthChecker
+     * @var AuthCheckerInterface
      */
     protected $checker;
 
@@ -37,10 +37,10 @@ class AuthListener
      * Constructor.
      *
      * @param SecurityContext $context
-     * @param AuthChecker $checker
+     * @param AuthCheckerInterface $checker
      * @param ControllerResolverInterface $resolver
      */
-    public function __construct(SecurityContext $context, AuthChecker $checker, ControllerResolverInterface $resolver)
+    public function __construct(SecurityContext $context, AuthCheckerInterface $checker, ControllerResolverInterface $resolver)
     {
         $this->context = $context;
         $this->checker = $checker;
