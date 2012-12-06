@@ -113,8 +113,8 @@ class AnnotationLoader
     {
         $context->setSecure(!$annotation->disabled());
 
-        if (null !== $annotation->roles()) {
-            $context->setRequiredRoles($annotation->roles());
+        if (null !== $annotation->allow()) {
+            $context->setAllowedRoles($annotation->allow());
         }
     }
 

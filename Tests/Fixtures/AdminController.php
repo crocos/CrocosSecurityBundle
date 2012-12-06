@@ -11,14 +11,14 @@ class AdminController extends SecureController
     }
 
     /**
-     * @Secure(disabled = true)
+     * @Secure(disabled=true)
      */
     public function publicAction()
     {
     }
 
     /**
-     * @Secure(roles={"admin"})
+     * @Secure(allow={"admin"})
      */
     public function adminAction()
     {

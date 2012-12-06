@@ -68,7 +68,7 @@ class AuthListener
             return;
         }
 
-        // If not authenticated, will be thrown AuthException
+        // If not authenticated, will be thrown an AuthException
         $this->checker->authenticate($this->context, $controller[0], $controller[1], $request);
     }
 

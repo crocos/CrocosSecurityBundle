@@ -20,7 +20,7 @@ class SecurityContext
     /**
      * @var array
      */
-    protected $requiredRoles = array();
+    protected $allowedRoles = array();
 
     /**
      * @var string
@@ -72,9 +72,9 @@ class SecurityContext
      *
      * @param array $roles
      */
-    public function setRequiredRoles(array $roles)
+    public function setAllowedRoles(array $roles)
     {
-        $this->requiredRoles = $roles;
+        $this->allowedRoles = $roles;
     }
 
     /**
@@ -82,9 +82,9 @@ class SecurityContext
      *
      * @return array
      */
-    public function getRequiredRoles()
+    public function getAllowedRoles()
     {
-        return $this->requiredRoles;
+        return $this->allowedRoles;
     }
 
     /**

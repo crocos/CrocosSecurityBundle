@@ -35,7 +35,7 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         $loader->load($context, $reflObject, $reflObject->getMethod($method));
 
         $this->assertEquals($secure, $context->isSecure());
-        $this->assertEquals($roles, $context->getRequiredRoles());
+        $this->assertEquals($roles, $context->getAllowedRoles());
         $this->assertEquals($forward, $context->getForwardingController());
         $this->assertEquals($authLogic, $context->getAuthLogic());
 
