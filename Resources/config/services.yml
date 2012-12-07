@@ -39,3 +39,11 @@ services:
 
     crocos_security.http_auth_factory:
         class: Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactory
+
+    crocos_security.role_manager:
+        alias: crocos_security.role_manager.session
+
+    crocos_security.role_manager.session:
+        class: Crocos\SecurityBundle\Security\Role\SessionRoleManager
+        arguments:
+            - @session
