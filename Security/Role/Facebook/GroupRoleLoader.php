@@ -22,7 +22,7 @@ class GroupRoleLoader implements RoleLoaderInterface
         try {
             $result = $facebook->api("{$user}/groups");
         } catch (\FacebookApiException $e) {
-            return array();
+            throw new \RuntimeException('Cannot fetch groups', 0, $e);
         }
 
         $roles = array();

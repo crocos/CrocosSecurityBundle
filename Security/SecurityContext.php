@@ -398,10 +398,14 @@ class SecurityContext
     {
         if ($this->authLogic !== null && $this->authLogic instanceof RolePreloadableInterface) {
             if ($this->authLogic->isRolePreloadable() && !$this->roleManager->isPreloaded()) {
-                $roles = $this->authLogic->preloadRoles();
-                $this->roleManager->addRoles($roles);
+                try {
+                    $roles = $this->authLogic->preloadRoles();
+                    $this->roleManager->addRoles($roles);
 
-                $this->roleManager->setPreloaded();
+                    $this->roleManager->setPreloaded();
+                } catch (\RuntimeException $e) {
+                    // todo
+                }
             }
         }
     }

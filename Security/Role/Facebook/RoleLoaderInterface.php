@@ -15,6 +15,8 @@ interface RoleLoaderInterface
      * @param \BaceFacebook $facebook
      * @param array $roleMappings
      * @return array
+     *
+     * @throws \RuntimeException
      */
     function loadRoles(\BaseFacebook $facebook, array $roleMappings);
 }
