@@ -19,7 +19,7 @@ class Secure extends Annotation
     /**
      * @var array
      */
-    protected $roles;
+    protected $allow;
 
     /**
      * @return boolean
@@ -32,8 +32,8 @@ class Secure extends Annotation
     /**
      * @return array
      */
-    public function roles()
+    public function allow()
     {
-        return $this->roles;
+        return $this->allow;
     }
 }

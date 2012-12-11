@@ -114,12 +114,12 @@ CrocosSecurityBundle - README
 
 trueに設定した場合、認証不要であることを表します。初期値はfalseなので、引数なしで `Secure` アノテーションを設定した場合は認証が必要になります。
 
-#### roles
+#### allow
 
 - type: array
 - default: []
 
-必要な権限を配列で設定します。*現在この値を用いた認可処理は未実装です。*
+必要な権限を配列で設定します。
 
 ### SecureConfig アノテーション
 

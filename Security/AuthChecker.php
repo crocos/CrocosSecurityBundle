@@ -11,7 +11,7 @@ use Crocos\SecurityBundle\Exception\HttpAuthException;
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class AuthChecker
+class AuthChecker implements AuthCheckerInterface
 {
     /**
      * @var AnnotationLoader
@@ -36,15 +36,7 @@ class AuthChecker
     }
 
     /**
-     * Check security.
-     *
-     * @param SecurityContext $context
-     * @param object $object
-     * @param string $method
-     * @param Request $request
-     * @return string Forwarding cotroller
-     *
-     * @throws \LogicException If forwarding controller is unconfigured
+     * {@inheritDoc}
      */
     public function authenticate(SecurityContext $context, $_object, $_method, Request $request = null)
     {
@@ -58,16 +50,25 @@ class AuthChecker
             throw new HttpAuthException('Authentication required');
         }
 
-        // not secure
+        // non secure controller or forwarding controller
         if (!$context->isSecure() || $this->matcher->isForwardingController($context, $object, $method)) {
             return;
         }
 
-        // authenticated
-        if ($context->isAuthenticated()) {
-            return;
+        // authenticate
+        if (!$context->isAuthenticated()) {
+            throw new AuthException('Login required');
         }
+    }
 
-        throw new AuthException('Login required');
+    /**
+     * {@inheritDoc}
+     */
+    public function authorize(SecurityContext $context)
+    {
+        // authorize
+        if (!$context->hasRole($context->getAllowedRoles())) {
+            throw new AuthException('Access not allowed');
+        }
     }
 }
