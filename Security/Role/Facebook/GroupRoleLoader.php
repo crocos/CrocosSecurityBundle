@@ -7,12 +7,12 @@ namespace Crocos\SecurityBundle\Security\Role\Facebook;
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class GroupRoleLoader
+class GroupRoleLoader implements RoleLoaderInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function loadRoles(\BaseFacebook $facebook, array $definedRoles)
+    public function loadRoles(\BaseFacebook $facebook, array $roleMappings)
     {
         $user = $facebook->getUser();
         if (!$user) {
@@ -28,8 +28,8 @@ class GroupRoleLoader
         $roles = array();
         if (isset($result['data'])) {
             foreach ($result['data'] as $group) {
-                if (isset($definedRoles[$group['id']])) {
-                    $roles[] = $definedRoles[$group['id']];
+                if (isset($roleMappings[$group['id']])) {
+                    $roles[] = $roleMappings[$group['id']];
                 }
             }
         }

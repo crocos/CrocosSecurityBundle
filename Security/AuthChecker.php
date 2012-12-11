@@ -50,7 +50,7 @@ class AuthChecker implements AuthCheckerInterface
             throw new HttpAuthException('Authentication required');
         }
 
-        // not secure
+        // non secure controller or forwarding controller
         if (!$context->isSecure() || $this->matcher->isForwardingController($context, $object, $method)) {
             return;
         }
@@ -58,6 +58,17 @@ class AuthChecker implements AuthCheckerInterface
         // authenticate
         if (!$context->isAuthenticated()) {
             throw new AuthException('Login required');
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function authorize(SecurityContext $context)
+    {
+        // authorize
+        if (!$context->hasRole($context->getAllowedRoles())) {
+            throw new AuthException('Access not allowed');
         }
     }
 }

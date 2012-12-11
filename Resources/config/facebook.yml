@@ -7,6 +7,6 @@ services:
             - { name: crocos_security.auth_logic, alias: facebook }
 
     crocos_security.facebook_role_loader.group:
-        class: Crocos\SecurityBundle\Security\Role\Facebook\GroupLoader
+        class: Crocos\SecurityBundle\Security\Role\Facebook\GroupRoleLoader
         tags:
             - { name: crocos_security.facebook_role_loader, alias: group }

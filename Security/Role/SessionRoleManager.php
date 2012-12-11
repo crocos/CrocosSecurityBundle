@@ -34,9 +34,40 @@ class SessionRoleManager implements RoleManagerInterface
     /**
      * {@inheritDoc}
      */
+    public function hasRole($roles)
+    {
+        if (!is_array($roles)) {
+            $roles = array($roles);
+        }
+
+        if (count($roles) === 0) {
+            return true;
+        }
+
+        $grantedRoles = $this->getRoles();
+
+        if (count(array_intersect($roles, $grantedRoles)) === 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setRoles($roles)
     {
-        $this->setAttribute('roles', $roles);
+        $this->setAttribute('roles', (array)$roles);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addRoles($roles)
+    {
+        $roles = array_unique(array_merge($this->getRoles(), (array)$roles), SORT_STRING);
+        $this->setRoles($roles);
     }
 
     /**
@@ -48,6 +79,31 @@ class SessionRoleManager implements RoleManagerInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function clearRoles()
+    {
+        $this->setAttribute('roles', array());
+        $this->setAttribute('preloaded', false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isPreloaded()
+    {
+        return $this->getAttribute('preloaded', false);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPreloaded($preloaded = true)
+    {
+        $this->setAttribute('preloaded', (bool)$preloaded);
+    }
+
+    /**
      * Set attribute to session.
      *
      * @param string $key
@@ -55,9 +111,7 @@ class SessionRoleManager implements RoleManagerInterface
      */
     protected function setAttribute($key, $value)
     {
-        $acutualKey = $this->domain . '/' . $key;
-
-        $this->session->set($acutualKey, $value);
+        $this->session->set($this->computeAttributeKey($key), $value);
     }
 
     /**
@@ -69,8 +123,15 @@ class SessionRoleManager implements RoleManagerInterface
      */
     protected function getAttribute($key, $default = null)
     {
-        $acutualKey = $this->domain . '/' . $key;
+        return $this->session->get($this->computeAttributeKey($key), $default);
+    }
 
-        return $this->session->get($acutualKey, $default);
+    /**
+     * @param string $key
+     * @return string
+     */
+    protected function computeAttributeKey($key)
+    {
+        return "{$this->domain}/role/{$key}";
     }
 }

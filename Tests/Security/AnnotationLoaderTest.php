@@ -14,7 +14,7 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getLoadAnnotationData
      */
-    public function testLoadAnnotation($object, $method, $secure, $roles, $domain, $auth, $forward, $basic = null)
+    public function testLoadAnnotation($object, $method, $secure, $allow, $domain, $options, $auth, $forward, $basic = null)
     {
         $context = new SecurityContext();
 
@@ -28,16 +28,17 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         $reflObject = new \ReflectionObject($object);
 
         $resolver = Phake::mock('Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver');
-        $authLogic = Phake::mock('Crocos\SecurityBundle\Security\AuthLogic\AuthLogicInterface');
+        $authLogic = Phake::mock('Crocos\SecurityBundle\Tests\Fixtures\ComplexedAuthLogicInterface');
         Phake::when($resolver)->resolveAuthLogic($auth ?: AnnotationLoader::DEFAULT_AUTH_LOGIC)->thenReturn($authLogic);
 
         $loader = new AnnotationLoader(new AnnotationReader(), $resolver, $httpAuthFacory);
         $loader->load($context, $reflObject, $reflObject->getMethod($method));
 
         $this->assertEquals($secure, $context->isSecure());
-        $this->assertEquals($roles, $context->getAllowedRoles());
+        $this->assertEquals($allow, $context->getAllowedRoles());
         $this->assertEquals($forward, $context->getForwardingController());
         $this->assertEquals($authLogic, $context->getAuthLogic());
+        $this->assertEquals($options, $context->getOptions());
 
         if ($basic) {
             $this->assertTrue($context->useHttpAuth());
@@ -54,20 +55,22 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $uforward = 'Crocos\SecurityBundle\Tests\Fixtures\UserController::loginAction';
         $aforward = 'Crocos\SecurityBundle\Tests\Fixtures\AdminController::loginAction';
+        $fforward = 'Crocos\SecurityBundle\Tests\Fixtures\FacebookController::loginAction';
 
         return array(
-            // object, method, secure, roles, domain, auth, forward
+            // object, method, secure, allow, domain, options, auth, forward [, basic]
 
-            array(new Fixtures\UserController(), 'securedAction', true, array(), 'secured', 'session', $uforward),
-            array(new Fixtures\UserController(), 'publicAction', false, array(), 'secured', 'session', $uforward),
-            array(new Fixtures\UserController(), 'loginAction', false, array(), 'secured', 'session', $uforward),
+            array(new Fixtures\UserController(), 'securedAction', true, array(), 'secured', array(), 'session', $uforward),
+            array(new Fixtures\UserController(), 'publicAction', false, array(), 'secured', array(), 'session', $uforward),
+            array(new Fixtures\UserController(), 'loginAction',  false, array(), 'secured', array(), 'session', $uforward),
 
-            array(new Fixtures\AdminController(), 'securedAction', true, array(), 'admin', 'session', $aforward),
-            array(new Fixtures\AdminController(), 'publicAction', false, array(), 'admin', 'session', $aforward),
-            array(new Fixtures\AdminController(), 'adminAction', true, array('admin'), 'admin', 'session', $aforward),
-            array(new Fixtures\AdminController(), 'loginAction', true, array(), 'admin', 'session', $aforward),
+            array(new Fixtures\AdminController(), 'securedAction', true, array(), 'admin', array(), 'session', $aforward),
+            array(new Fixtures\AdminController(), 'publicAction', false, array(), 'admin', array(), 'session', $aforward),
+            array(new Fixtures\AdminController(), 'adminAction',   true, array('admin'), 'admin', array(), 'session', $aforward),
 
-            array(new Fixtures\BasicSecurityController(), 'securedAction', false, array(), 'secured', null, null, 'foo:foopass')
+            array(new Fixtures\FacebookController(), 'securedAction', true, array(), 'facebook', array('group' => array('10000001' => 'ADMIN')), 'facebook', $fforward),
+
+            array(new Fixtures\BasicSecurityController(), 'securedAction', false, array(), 'secured', array(), null, null, 'foo:foopass')
         );
     }
 }

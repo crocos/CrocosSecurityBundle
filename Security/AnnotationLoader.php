@@ -8,6 +8,7 @@ use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Annotation\SecureConfig;
 use Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver;
 use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactoryInterface;
+use Crocos\SecurityBundle\Security\SecureOptionsAcceptableInterface;
 
 /**
  * AnnotationLoader.
@@ -114,7 +115,11 @@ class AnnotationLoader
         $context->setSecure(!$annotation->disabled());
 
         if (null !== $annotation->allow()) {
-            $context->setAllowedRoles($annotation->allow());
+            if (is_array($annotation->allow())) {
+                $context->setAllowedRoles($annotation->allow());
+            } elseif (strtolower($annotation->allow()) === 'all') {
+                $context->setAllowedRoles(array());
+            }
         }
     }
 
@@ -128,6 +133,10 @@ class AnnotationLoader
     {
         if (null !== $annotation->domain()) {
             $context->setDomain($annotation->domain());
+        }
+
+        if (null !== $annotation->options()) {
+            $context->setOptions($annotation->options());
         }
 
         if (null !== $annotation->auth()) {
@@ -157,6 +166,10 @@ class AnnotationLoader
         }
 
         $context->getAuthLogic()->setDomain($context->getDomain());
+
+        if ($context->getAuthLogic() instanceof SecureOptionsAcceptableInterface) {
+            $context->getAuthLogic()->setOptions($context->getOptions());
+        }
     }
 
     /**

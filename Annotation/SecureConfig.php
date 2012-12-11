@@ -32,6 +32,11 @@ class SecureConfig extends Annotation
     protected $basic;
 
     /**
+     * @var array
+     */
+    protected $options = array();
+
+    /**
      * @return string
      */
     public function domain()
@@ -61,5 +66,13 @@ class SecureConfig extends Annotation
     public function basic()
     {
         return $this->basic;
+    }
+
+    /**
+     * @return array
+     */
+    public function options()
+    {
+        return $this->options;
     }
 }

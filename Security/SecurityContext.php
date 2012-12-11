@@ -3,7 +3,10 @@
 namespace Crocos\SecurityBundle\Security;
 
 use Crocos\SecurityBundle\Annotation\Secure;
+use Crocos\SecurityBundle\Security\AuthLogic\AuthLogicInterface;
+use Crocos\SecurityBundle\Security\AuthLogic\RolePreloadableInterface;
 use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthInterface;
+use Crocos\SecurityBundle\Security\Role\RoleManagerInterface;
 
 /**
  * SecurityContext.
@@ -28,6 +31,11 @@ class SecurityContext
     protected $domain = 'secured';
 
     /**
+     * @var options
+     */
+    protected $options = array();
+
+    /**
      * @var string
      */
     protected $forwardingController;
@@ -38,14 +46,19 @@ class SecurityContext
     protected $authLogic;
 
     /**
-     * @var PreviousUrlHolder
-     */
-    protected $previousUrlHolder;
-
-    /**
      * @var HttpAuthInterface
      */
     protected $httpAuth;
+
+    /**
+     * @var RoleManagerInterface
+     */
+    protected $roleManager;
+
+    /**
+     * @var PreviousUrlHolder
+     */
+    protected $previousUrlHolder;
 
     /**
      * Set secure.
@@ -68,7 +81,7 @@ class SecurityContext
     }
 
     /**
-     * Set required roles.
+     * Set allowed roles.
      *
      * @param array $roles
      */
@@ -78,7 +91,7 @@ class SecurityContext
     }
 
     /**
-     * Get required roles.
+     * Get allowed roles.
      *
      * @return array
      */
@@ -108,23 +121,23 @@ class SecurityContext
     }
 
     /**
-     * Set authentication/authorization logic.
+     * Set secure options.
      *
-     * @param AuthLogicInterface $authLogic
+     * @param array $options
      */
-    public function setAuthLogic($authLogic)
+    public function setOptions($options)
     {
-        $this->authLogic = $authLogic;
+        $this->options = (array)$options;
     }
 
     /**
-     * Get authentication/authorization logic.
+     * Get secure options.
      *
-     * @return AuthLogicInterface
+     * @return array
      */
-    public function getAuthLogic()
+    public function getOptions()
     {
-        return $this->authLogic;
+        return $this->options;
     }
 
     /**
@@ -170,6 +183,8 @@ class SecurityContext
             throw new \LogicException('Logout error: No auth logic');
         }
 
+        $this->roleManager->clearRoles();
+
         $this->authLogic->logout();
     }
 
@@ -202,23 +217,65 @@ class SecurityContext
     }
 
     /**
-     * Set PreviousUrlHolder.
+     * Use http auth.
      *
-     * @param PreviousUrlHolder $previousUrlHolder
+     * @return boolean
      */
-    public function setPreviousUrlHolder(PreviousUrlHolder $previousUrlHolder)
+    public function useHttpAuth()
     {
-        $this->previousUrlHolder = $previousUrlHolder;
+        return (null !== $this->httpAuth);
     }
 
     /**
-     * Get PreviousUrlHolder.
+     * Has role.
      *
-     * @return PreviousUrlHolder.
+     * @param array|string $roles
      */
-    public function getPreviousUrlHolder()
+    public function hasRole($roles)
     {
-        return $this->previousUrlHolder;
+        $this->preloadRoles();
+
+        return $this->roleManager->hasRole($roles);
+    }
+
+    /**
+     * Set roles.
+     *
+     * @param array $roles
+     */
+    public function setRoles($roles)
+    {
+        $this->roleManager->setRoles($roles);
+    }
+
+    /**
+     * Add roles.
+     *
+     * @param array $roles
+     */
+    public function addRoles($roles)
+    {
+        $this->roleManager->addRoles($roles);
+    }
+
+    /**
+     * Get roles.
+     *
+     * @return array
+     */
+    public function getRoles()
+    {
+        $this->preloadRoles();
+
+        return $this->roleManager->getRoles();
+    }
+
+    /**
+     * Clear roles.
+     */
+    public function clearRoles()
+    {
+        $this->roleManager->clearRoles();
     }
 
     /**
@@ -258,13 +315,23 @@ class SecurityContext
     }
 
     /**
-     * Use http auth.
+     * Set authentication/authorization logic.
      *
-     * @return boolean
+     * @param AuthLogicInterface $authLogic
      */
-    public function useHttpAuth()
+    public function setAuthLogic(AuthLogicInterface $authLogic)
     {
-        return (null !== $this->httpAuth);
+        $this->authLogic = $authLogic;
+    }
+
+    /**
+     * Get authentication/authorization logic.
+     *
+     * @return AuthLogicInterface
+     */
+    public function getAuthLogic()
+    {
+        return $this->authLogic;
     }
 
     /**
@@ -285,5 +352,57 @@ class SecurityContext
     public function getHttpAuth()
     {
         return $this->httpAuth;
+    }
+
+    /**
+     * Set role manager.
+     *
+     * @param RoleManagerInterface $roleManager
+     */
+    public function setRoleManager(RoleManagerInterface $roleManager)
+    {
+        $this->roleManager = $roleManager;
+    }
+
+    /**
+     * Get role manager.
+     *
+     * @return RoleManagerInterface
+     */
+    public function getRoleManager()
+    {
+        return $this->roleManager;
+    }
+
+    /**
+     * Set PreviousUrlHolder.
+     *
+     * @param PreviousUrlHolder $previousUrlHolder
+     */
+    public function setPreviousUrlHolder(PreviousUrlHolder $previousUrlHolder)
+    {
+        $this->previousUrlHolder = $previousUrlHolder;
+    }
+
+    /**
+     * Get PreviousUrlHolder.
+     *
+     * @return PreviousUrlHolder.
+     */
+    public function getPreviousUrlHolder()
+    {
+        return $this->previousUrlHolder;
+    }
+
+    protected function preloadRoles()
+    {
+        if ($this->authLogic !== null && $this->authLogic instanceof RolePreloadableInterface) {
+            if ($this->authLogic->isRolePreloadable() && !$this->roleManager->isPreloaded()) {
+                $roles = $this->authLogic->preloadRoles();
+                $this->roleManager->addRoles($roles);
+
+                $this->roleManager->setPreloaded();
+            }
+        }
     }
 }

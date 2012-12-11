@@ -3,17 +3,28 @@
 namespace Crocos\SecurityBundle\Security;
 
 use Symfony\Component\HttpFoundation\Request;
+use Crocos\SecurityBundle\Exception\AuthException;
 
 interface AuthCheckerInterface
 {
     /**
-     * Check security.
+     * Authenticate user.
      *
      * @param SecurityContext $context
      * @param object $object
      * @param string $method
      * @param Request $request
-     * @return string Forwarding cotroller
+     *
+     * @throws AuthException If user doesn't authenticated
      */
     function authenticate(SecurityContext $context, $_object, $_method, Request $request = null);
+
+    /**
+     * Authorize
+     *
+     * @param SecurityContext $context
+     *
+     * @throws AuthException If user doesn't authorized
+     */
+    function authorize(SecurityContext $context);
 }

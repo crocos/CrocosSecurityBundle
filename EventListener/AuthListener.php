@@ -70,6 +70,7 @@ class AuthListener
 
         // If not authenticated, will be thrown an AuthException
         $this->checker->authenticate($this->context, $controller[0], $controller[1], $request);
+        $this->checker->authorize($this->context);
     }
 
     /**
@@ -89,7 +90,7 @@ class AuthListener
         $response = null;
         if ($exception instanceof HttpAuthException) {
             if (!$this->context->useHttpAuth()) {
-                throw new \InvalidArgumentException(sprintf('Cought a HttpAuthException, but no http auth configuration existing'));
+                throw new \InvalidArgumentException(sprintf('Caught an HttpAuthException, but http auth not configured'));
             }
 
             $response = $this->context->getHttpAuth()->createUnauthorizedResponse($request, $exception);

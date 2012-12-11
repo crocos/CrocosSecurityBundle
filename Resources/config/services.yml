@@ -2,6 +2,7 @@ services:
     crocos_security.context:
         class: Crocos\SecurityBundle\Security\SecurityContext
         calls:
+            - [ setRoleManager, [ @crocos_security.role_manager ] ]
             - [ setPreviousUrlHolder, [ @crocos_security.previous_url_holder ] ]
 
     crocos_security.checker:
