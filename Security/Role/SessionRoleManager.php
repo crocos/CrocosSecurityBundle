@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Session;
 class SessionRoleManager implements RoleManagerInterface
 {
     protected $domain;
+    protected $session;
 
     /**
      * Constructor.

@@ -222,4 +222,18 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(array('FOO', 'BAR'), $this->context->getRoles());
     }
+
+    public function testFixDomain()
+    {
+        $holder = Phake::mock('Crocos\SecurityBundle\Security\PreviousUrlHolder');
+        $this->context->setPreviousUrlHolder($holder);
+
+        $this->context->setDomain('secured');
+
+        $this->context->fixDomain();
+
+        Phake::verify($this->authLogic)->setDomain('secured');
+        Phake::verify($this->roleManager)->setDomain('secured');
+        Phake::verify($holder)->setup('secured');
+    }
 }

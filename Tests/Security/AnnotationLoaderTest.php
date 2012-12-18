@@ -16,7 +16,10 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadAnnotation($object, $method, $secure, $allow, $domain, $options, $auth, $forward, $basic = null)
     {
-        $context = new SecurityContext();
+        $context = Phake::partialMock('Crocos\SecurityBundle\Security\SecurityContext');
+
+        $roleManager = Phake::mock('Crocos\SecurityBundle\Security\Role\RoleManagerInterface');
+        $context->setRoleManager($roleManager);
 
         $previousUrlHolder = Phake::mock('Crocos\SecurityBundle\Security\PreviousUrlHolder');
         $context->setPreviousUrlHolder($previousUrlHolder);
@@ -47,8 +50,7 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
             $this->assertFalse($context->useHttpAuth());
         }
 
-        Phake::verify($authLogic)->setDomain($domain);
-        Phake::verify($previousUrlHolder)->setup($domain);
+        Phake::verify($context)->fixDomain();
     }
 
     public function getLoadAnnotationData()

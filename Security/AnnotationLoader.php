@@ -159,17 +159,15 @@ class AnnotationLoader
      */
     protected function fixContext(SecurityContext $context)
     {
-        $context->getPreviousUrlHolder()->setup($context->getDomain());
-
         if (null === $context->getAuthLogic()) {
             $context->setAuthLogic($this->resolver->resolveAuthLogic(self::DEFAULT_AUTH_LOGIC));
         }
 
-        $context->getAuthLogic()->setDomain($context->getDomain());
-
         if ($context->getAuthLogic() instanceof SecureOptionsAcceptableInterface) {
             $context->getAuthLogic()->setOptions($context->getOptions());
         }
+
+        $context->fixDomain();
     }
 
     /**

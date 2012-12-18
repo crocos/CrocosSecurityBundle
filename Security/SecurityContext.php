@@ -161,6 +161,24 @@ class SecurityContext
     }
 
     /**
+     * Fix domain.
+     */
+    public function fixDomain()
+    {
+        if (null !== $this->authLogic) {
+            $this->authLogic->setDomain($this->domain);
+        }
+
+        if (null !== $this->roleManager) {
+            $this->roleManager->setDomain($this->domain);
+        }
+
+        if (null !== $this->previousUrlHolder) {
+            $this->previousUrlHolder->setup($this->domain);
+        }
+    }
+
+    /**
      * Log in.
      *
      * @param user $user
@@ -296,7 +314,7 @@ class SecurityContext
     public function setPreviousUrl($url)
     {
         if (null === $this->previousUrlHolder) {
-            return null;
+            return;
         }
 
         $this->previousUrlHolder->set($url);
@@ -308,7 +326,7 @@ class SecurityContext
     public function getPreviousUrl()
     {
         if (null === $this->previousUrlHolder) {
-            return null;
+            return;
         }
 
         return $this->previousUrlHolder->get();
