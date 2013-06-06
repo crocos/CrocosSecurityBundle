@@ -1,1 +1,4 @@
-Tests/bootstrap-local.php
+coverage
+phpunit.xml
+vendor
+composer.lock
