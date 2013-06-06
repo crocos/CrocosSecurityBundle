@@ -1,7 +1,10 @@
 CrocosSecurityBundle - README
 ===============================
 
-[![Build Status](https://travis-ci.org/crocos/CrocosSecurityBundle.png)](https://travis-ci.org/crocos/CrocosSecurityBundle)
+Build Status:
+
+* master: [![Build Status](https://travis-ci.org/crocos/CrocosSecurityBundle.png?branch=master)](https://travis-ci.org/crocos/CrocosSecurityBundle)
+* develop: [![Build Status](https://travis-ci.org/crocos/CrocosSecurityBundle.png?branch=develop)](https://travis-ci.org/crocos/CrocosSecurityBundle)
 
 概要
 ------
