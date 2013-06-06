@@ -1,13 +1,18 @@
 CrocosSecurityBundle - README
 ===============================
 
+Build Status:
+
+* master: [![Build Status](https://travis-ci.org/crocos/CrocosSecurityBundle.png?branch=master)](https://travis-ci.org/crocos/CrocosSecurityBundle)
+* develop: [![Build Status](https://travis-ci.org/crocos/CrocosSecurityBundle.png?branch=develop)](https://travis-ci.org/crocos/CrocosSecurityBundle)
+
 概要
 ------
 
 **CrocosSecurityBundle** はよりシンプルに認証状態の管理を行うためにのSymfony用のバンドルで、複雑な `SecurityBundle` を置き換えるために開発されました。`SecurityBundle` と比べ、次のような違いがあります。
 
-- アノテーションのみを用いて設定を行います
-- ログイン、ログアウトの状態切り替えは開発者が明示的に行います
+* アノテーションのみを用いて設定を行います
+* ログイン、ログアウトの状態切り替えは開発者が明示的に行います
 
 
 インストール方法
@@ -109,15 +114,15 @@ CrocosSecurityBundle - README
 
 #### disabled
 
-- type: boolean
-- default: false
+* type: `boolean`
+* default: `false`
 
 trueに設定した場合、認証不要であることを表します。初期値はfalseなので、引数なしで `Secure` アノテーションを設定した場合は認証が必要になります。
 
 #### allow
 
-- type: array
-- default: []
+* type: `array`
+* default: `[]`
 
 必要な権限を配列で設定します。
 
@@ -129,8 +134,8 @@ trueに設定した場合、認証不要であることを表します。初期�
 
 #### domain
 
-- type: string
-- default: "secured"
+* type: `string`
+* default: `"secured"`
 
 同一プロジェクト内で異なる認証処理を行わなければならない場合（ユーザ専用ページ、管理者専用ページなど）、認証状況が適応される領域を指定したい場合に指定します。
 
@@ -138,30 +143,30 @@ trueに設定した場合、認証不要であることを表します。初期�
 
 #### auth
 
-- type: string
-- default: "session"
+* type: `string`
+* default: `"session"`
 
-認証状態の管理方法を指定します。初期値は "session" で、セッションを用いて認証状態の管理を行います。
+認証状態の管理方法を指定します。初期値は `"session"` で、セッションを用いて認証状態の管理を行います。
 
-この他にも、FacebookのPHP-SDKの状態と連動させた "facebook" などが用意されており、また独自の管理方法を設定することもできます。
+この他にも、FacebookのPHP-SDKの状態と連動させた `"facebook"` などが用意されており、また独自の管理方法を設定することもできます。
 
 #### forward
 
-- type: string
+* type: `string`
 
-非ログイン状態で認証が必要なコントローラにアクセスした場合、ここに指定したコントローラが呼び出されます。コントローラのメソッド名（クラス::メソッド）を指定するか、Symfonyの短縮形式（バンドル名:コントローラ名:アクション名）でも指定できます。forwardが指定されていない場合に認証が必要なコントローラにアクセスした場合はエラーになります。
+非ログイン状態で認証が必要なコントローラにアクセスした場合、ここに指定したコントローラが呼び出されます。コントローラのメソッド名（クラス::メソッド）を指定するか、Symfonyの短縮形式（バンドル名:コントローラ名:アクション名）でも指定できます。 `forward` が指定されていない場合に認証が必要なコントローラにアクセスした場合はエラーになります。
 
 forwardに指定したコントローラへのアクセスは、無限ループを防ぐため、認証が必須と設定されている場合であっても制御は行いません。
 
 #### basic
 
-- type: string|array
+* type: `string|array`
 
 BASIC認証を有効にします。値には「ユーザ名:パスワード」形式の文字列、もしくはその文字列の配列(= 複数ユーザ)を指定します。
 
     @SecureConfig(domain="secured", basic="user:pass")
 
-認証領域(realm)はdomainの値を元に設定されます。上記の場合は "Secured Area" となります。
+認証領域(realm)は `domain` の値を元に設定されます。`"secured"` の場合は `"Secured Area"` となります。
 
 > ### アノテーションの読み込み
 >
@@ -171,7 +176,17 @@ BASIC認証を有効にします。値には「ユーザ名:パスワード」�
 > 2. 子クラス
 > 3. メソッド
 
-disabled属性を指定しなかった場合は認証が必要として上書きされますが、その他の属性は指定しない限り上書きされません。メソッドのアノテーションが読み込まれた段階で指定されていない場合のみ、デフォルト値が設定されます。
+`disabled` 属性を指定しなかった場合は認証が必要として上書きされますが、その他の属性は指定しない限り上書きされません。メソッドのアノテーションが読み込まれた段階で指定されていない場合のみ、デフォルト値が設定されます。
+
+#### roleManager
+
+* type: `string`
+* default: `"session"`
+
+権限の管理方法を指定します。初期値は `"session"` で、セッションを用いて認証状態の管理を行います。
+
+`"in_memory"` を指定すると、権限を設定したプロセス中のみ保持され、プロセスが終了すると破棄されるようになります。
+
 
 
 サンプルコード
@@ -278,7 +293,7 @@ disabled属性を指定しなかった場合は認証が必要として上書き
 
 ### 管理者用ページ向けのサンプル
 
-管理者用のコントローラを作る場合、次のようにdomain属性を指定して、別の認証領域とします。`AppController` に `Secure` アノテーションが指定されているため、すべてのコントローラで認証が必要となります。
+管理者用のコントローラを作る場合、次のように `domain` 属性を指定して、別の認証領域とします。`AppController` に `Secure` アノテーションが指定されているため、すべてのコントローラで認証が必要となります。
 
     <?php
 
@@ -319,7 +334,7 @@ disabled属性を指定しなかった場合は認証が必要として上書き
 
 #### Basic認証を設定する
 
-Basic認証を設定するには `SecureConfig` アノテーションにbasic属性を指定します。この例ではユーザ名に"admin"、パスワードに"password"を設定しています。なおBasic認証の設定は `Secure` アノテーションの設定とは関連せず、basic属性が設定されている場合は認証領域内のすべてのアクションでBasic認証が行われます。部分的にBasic認証を無効にしたい場合はbasic属性のfalseを設定します。もちろんauthやforward属性などを設定することでPHP側での認証も設定化のです。
+Basic認証を設定するには `SecureConfig` アノテーションに `basic` 属性を指定します。この例ではユーザ名に `"admin"` 、パスワードに `"password"` を設定しています。なおBasic認証の設定は `Secure` アノテーションの設定とは関連せず、 `basic` 属性が設定されている場合は認証領域内のすべてのアクションでBasic認証が行われます。部分的にBasic認証を無効にしたい場合は `basic` 属性の `false` を設定します。もちろん `auth` や `forward` 属性などを設定することでPHP側での認証も設定化のです。
 
     <?php
 
@@ -379,7 +394,7 @@ SecurityContext
 Auth Logic
 --------------
 
-Auth Logic は認証状態の管理方法を切り替える仕組みです。`Secure` アノテーションの `auth` と対応しています。標準では、セッションを用いて認証状態の管理を行う `SessionAuth` (auth="session")、セッションにエンティティを格納することを考慮した`SessionEntityAuth`、FacebookのPHP-SDKに状態管理を委譲する `FacebookAuth` (auth="facebook") の3つがあります。また、既存の Auth Logic を拡張したり、独自に作成することも可能です。
+Auth Logic は認証状態の管理方法を切り替える仕組みです。`Secure` アノテーションの `auth` と対応しています。標準では、セッションを用いて認証状態の管理を行う `SessionAuth` (`auth="session"`)、セッションにエンティティを格納することを考慮した`SessionEntityAuth`、FacebookのPHP-SDKに状態管理を委譲する `FacebookAuth` (`auth="facebook"`) の3つがあります。また、既存の Auth Logic を拡張したり、独自に作成することも可能です。
 
 ### SessionAuth
 
@@ -393,7 +408,7 @@ Auth Logic は認証状態の管理方法を切り替える仕組みです。`Se
 
 `SessionEntityAuth` はログインユーザにエンティティが使用されることを想定したもので、基本的には `SessionAuth` と同等です。`SessionAuth` を用いた場合、ログイン中のユーザ情報はセッションにシリアライズして格納されます。ユーザ情報がオブジェクトの場合、オブジェクトがシリアライズされて保存されます。`SessionEntityAuth` を用いた場合、クラス名とIDのみをセッションへ格納し、アクセスがあるたびにリポジトリからエンティティを取得します。
 
-`SessionEntityAuth` を用いるにあたって、ログイン対象のエンティティには必ず `getId()` メソッドを実装する必要があります。この値はセッションからエンティティを復元する際、リポジトリの `find()` メソッドに渡されます。また、ログイン中のユーザの有効性を確認したい場合、エンティティに `isEnabled()` メソッドを実装することで、エンティティ取得後に有効性の確認が可能です。ログインしていても `isEnabled()` がfalseであれば、ログアウトされます。
+`SessionEntityAuth` を用いるにあたって、ログイン対象のエンティティには必ず `getId()` メソッドを実装する必要があります。この値はセッションからエンティティを復元する際、リポジトリの `find()` メソッドに渡されます。また、ログイン中のユーザの有効性を確認したい場合、エンティティに `isEnabled()` メソッドを実装することで、エンティティ取得後に有効性の確認が可能です。ログインしていても `isEnabled()` が `false` であれば、ログアウトされます。
 
 ### FacebookAuth
 
@@ -409,11 +424,11 @@ Auth Logic は認証状態の管理方法を切り替える仕組みです。`Se
 
 独自の Auth Logic を作成するにはまず、 `Crocos\SecurityBundle\Security\AuthLogic\AuthLogicInterface` インターフェイスを実装したクラスを作成します。Auth Logic には次の5つのメソッドを定義する必要があります。
 
-- setDomain($domain)
-- login($user)
-- logout()
-- isAuthenticated()
-- getUser()
+* setDomain($domain)
+* login($user)
+* logout()
+* isAuthenticated()
+* getUser()
 
 `setDomain()` メソッド以外は `SecurityContext` クラスから委譲される形で呼び出されます。`setDomain()` メソッドはアノテーションで読み込まれた `domain` の値が渡されます。
 
@@ -440,7 +455,7 @@ Auth Logic を作成したら、DIコンテナに登録する必要がありま�
 AuthException
 ---------------
 
-任意の場所でログイン画面に遷移したい場合は、 `Crocos\SecurityBundle\Exception\AuthException` オブジェクトをスローします。なお、AuthExceptionのコンストラクタの第2引数にattributes配列を指定でき、ログイン画面へ遷移する際にルーティングのパラメータとして渡されます。
+任意の場所でログイン画面に遷移したい場合は、 `Crocos\SecurityBundle\Exception\AuthException` オブジェクトをスローします。なお、 `AuthException` のコンストラクタの第2引数に `attributes` 配列を指定でき、ログイン画面へ遷移する際にルーティングのパラメータとして渡されます。
 
     use Crocos\SecurityBundle\Annotation\Secure;
     use Crocos\SecurityBundle\Annotation\SecureConfig;
