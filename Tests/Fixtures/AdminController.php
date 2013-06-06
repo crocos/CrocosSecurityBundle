@@ -3,7 +3,11 @@
 namespace Crocos\SecurityBundle\Tests\Fixtures;
 
 use Crocos\SecurityBundle\Annotation\Secure;
+use Crocos\SecurityBundle\Annotation\SecureConfig;
 
+/**
+ * @SecureConfig(roleManager="in_memory")
+ */
 class AdminController extends SecureController
 {
     public function securedAction()

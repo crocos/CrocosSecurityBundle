@@ -7,6 +7,7 @@ use Crocos\SecurityBundle\Annotation\Annotation;
 use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Annotation\SecureConfig;
 use Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver;
+use Crocos\SecurityBundle\Security\Role\RoleManagerResolver;
 use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactoryInterface;
 use Crocos\SecurityBundle\Security\SecureOptionsAcceptableInterface;
 
@@ -18,6 +19,7 @@ use Crocos\SecurityBundle\Security\SecureOptionsAcceptableInterface;
 class AnnotationLoader
 {
     const DEFAULT_AUTH_LOGIC = 'session';
+    const DEFAULT_ROLE_MANAGER = 'session';
 
     /**
      * @var Reader
@@ -30,6 +32,11 @@ class AnnotationLoader
     protected $resolver;
 
     /**
+     * @var RoleManagerResolver
+     */
+    protected $roleManagerResolver;
+
+    /**
      * @var HttpAuthFactoryInterface
      */
     protected $httpAuthFactory;
@@ -39,11 +46,14 @@ class AnnotationLoader
      *
      * @param Reader $reader Annotation reader
      * @param AuthLogicResolver $resolver
+     * @param RoleManagerResolver $roleManagerResolver
+     * @param HttpAuthFactoryInterface $httpAuthFactory
      */
-    public function __construct(Reader $reader, AuthLogicResolver $resolver, HttpAuthFactoryInterface $httpAuthFactory = null)
+    public function __construct(Reader $reader, AuthLogicResolver $resolver, RoleManagerResolver $roleManagerResolver, HttpAuthFactoryInterface $httpAuthFactory = null)
     {
         $this->reader = $reader;
         $this->resolver = $resolver;
+        $this->roleManagerResolver = $roleManagerResolver;
         $this->httpAuthFactory = $httpAuthFactory;
     }
 
@@ -143,6 +153,10 @@ class AnnotationLoader
             $context->setAuthLogic($this->resolver->resolveAuthLogic($annotation->auth()));
         }
 
+        if (null !== $annotation->roleManager()) {
+            $context->setRoleManager($this->roleManagerResolver->resolveRoleManager($annotation->roleManager()));
+        }
+
         if (null !== $annotation->forward()) {
             $context->setForwardingController($annotation->forward());
         }
@@ -161,6 +175,10 @@ class AnnotationLoader
     {
         if (null === $context->getAuthLogic()) {
             $context->setAuthLogic($this->resolver->resolveAuthLogic(self::DEFAULT_AUTH_LOGIC));
+        }
+
+        if (null === $context->getRoleManager()) {
+            $context->setRoleManager($this->roleManagerResolver->resolveRoleManager(self::DEFAULT_ROLE_MANAGER));
         }
 
         if ($context->getAuthLogic() instanceof SecureOptionsAcceptableInterface) {

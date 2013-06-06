@@ -14,12 +14,9 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getLoadAnnotationData
      */
-    public function testLoadAnnotation($object, $method, $secure, $allow, $domain, $options, $auth, $forward, $basic = null)
+    public function testLoadAnnotation($object, $method, $secure, $allow, $domain, $options, $auth, $roleMng, $forward, $basic = null)
     {
         $context = Phake::partialMock('Crocos\SecurityBundle\Security\SecurityContext');
-
-        $roleManager = Phake::mock('Crocos\SecurityBundle\Security\Role\RoleManagerInterface');
-        $context->setRoleManager($roleManager);
 
         $previousUrlHolder = Phake::mock('Crocos\SecurityBundle\Security\PreviousUrlHolder');
         $context->setPreviousUrlHolder($previousUrlHolder);
@@ -31,16 +28,20 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         $reflObject = new \ReflectionObject($object);
 
         $resolver = Phake::mock('Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver');
+        $roleManagerResolver = Phake::mock('Crocos\SecurityBundle\Security\Role\RoleManagerResolver');
         $authLogic = Phake::mock('Crocos\SecurityBundle\Tests\Fixtures\ComplexedAuthLogicInterface');
+        $roleManager = Phake::mock('Crocos\SecurityBundle\Security\Role\RoleManagerInterface');
         Phake::when($resolver)->resolveAuthLogic($auth ?: AnnotationLoader::DEFAULT_AUTH_LOGIC)->thenReturn($authLogic);
+        Phake::when($roleManagerResolver)->resolveRoleManager($roleMng ?: AnnotationLoader::DEFAULT_ROLE_MANAGER)->thenReturn($roleManager);
 
-        $loader = new AnnotationLoader(new AnnotationReader(), $resolver, $httpAuthFacory);
+        $loader = new AnnotationLoader(new AnnotationReader(), $resolver, $roleManagerResolver, $httpAuthFacory);
         $loader->load($context, $reflObject, $reflObject->getMethod($method));
 
         $this->assertEquals($secure, $context->isSecure());
         $this->assertEquals($allow, $context->getAllowedRoles());
         $this->assertEquals($forward, $context->getForwardingController());
         $this->assertEquals($authLogic, $context->getAuthLogic());
+        $this->assertEquals($roleManager, $context->getRoleManager());
         $this->assertEquals($options, $context->getOptions());
 
         if ($basic) {
@@ -60,19 +61,19 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         $fforward = 'Crocos\SecurityBundle\Tests\Fixtures\FacebookController::loginAction';
 
         return array(
-            // object, method, secure, allow, domain, options, auth, forward [, basic]
+            // object, method, secure, allow, domain, options, auth, roleManager, forward [, basic]
 
-            array(new Fixtures\UserController(), 'securedAction', true, array(), 'secured', array(), 'session', $uforward),
-            array(new Fixtures\UserController(), 'publicAction', false, array(), 'secured', array(), 'session', $uforward),
-            array(new Fixtures\UserController(), 'loginAction',  false, array(), 'secured', array(), 'session', $uforward),
+            array(new Fixtures\UserController(), 'securedAction', true, array(), 'secured', array(), 'session', 'session', $uforward),
+            array(new Fixtures\UserController(), 'publicAction', false, array(), 'secured', array(), 'session', 'session', $uforward),
+            array(new Fixtures\UserController(), 'loginAction',  false, array(), 'secured', array(), 'session', 'session', $uforward),
 
-            array(new Fixtures\AdminController(), 'securedAction', true, array(), 'admin', array(), 'session', $aforward),
-            array(new Fixtures\AdminController(), 'publicAction', false, array(), 'admin', array(), 'session', $aforward),
-            array(new Fixtures\AdminController(), 'adminAction',   true, array('admin'), 'admin', array(), 'session', $aforward),
+            array(new Fixtures\AdminController(), 'securedAction', true, array(), 'admin', array(), 'session', 'in_memory', $aforward),
+            array(new Fixtures\AdminController(), 'publicAction', false, array(), 'admin', array(), 'session', 'in_memory', $aforward),
+            array(new Fixtures\AdminController(), 'adminAction',   true, array('admin'), 'admin', array(), 'session', 'in_memory', $aforward),
 
-            array(new Fixtures\FacebookController(), 'securedAction', true, array(), 'facebook', array('group' => array('10000001' => 'ADMIN')), 'facebook', $fforward),
+            array(new Fixtures\FacebookController(), 'securedAction', true, array(), 'facebook', array('group' => array('10000001' => 'ADMIN')), 'facebook', 'session', $fforward),
 
-            array(new Fixtures\BasicSecurityController(), 'securedAction', false, array(), 'secured', array(), null, null, 'foo:foopass')
+            array(new Fixtures\BasicSecurityController(), 'securedAction', false, array(), 'secured', array(), null, null, null, 'foo:foopass')
         );
     }
 }
