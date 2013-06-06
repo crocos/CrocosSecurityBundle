@@ -18,7 +18,18 @@ Build Status:
 インストール方法
 -----------------
 
-`PROJECT_ROOT/vendor/bundles/Crocos/SecurityBundle` に配置します。
+### Composerを使ったインストール
+
+[crocos/security-bundle](https://packagist.org/packages/crocos/security-bundle) を `composer.json` に追加します。
+
+    // composer.json
+    {
+        // ...
+        require: {
+            // ...
+            "crocos/security-bundle": "dev-master"
+        }
+    }
 
 ### app/AppKernel.php
 
@@ -38,16 +49,6 @@ Build Status:
 ### app/config/config.yml
 
 `security.yml` を読み込んでいる行は削除します。
-
-### app/autoload.php
-
-`Crocos` プレフィックスをクラスローダに登録します。
-
-    $loader->registerNamespaces(array(
-        // ...
-        'Crocos'  => array(__DIR__.'/../src', __DIR__.'/../vendor/bundles'),
-        // ...
-    ));
 
 
 イントロダクション
@@ -424,11 +425,11 @@ Auth Logic は認証状態の管理方法を切り替える仕組みです。`Se
 
 独自の Auth Logic を作成するにはまず、 `Crocos\SecurityBundle\Security\AuthLogic\AuthLogicInterface` インターフェイスを実装したクラスを作成します。Auth Logic には次の5つのメソッドを定義する必要があります。
 
-* setDomain($domain)
-* login($user)
-* logout()
-* isAuthenticated()
-* getUser()
+* `setDomain($domain)`
+* `login($user)`
+* `logout()`
+* `isAuthenticated()`
+* `getUser()`
 
 `setDomain()` メソッド以外は `SecurityContext` クラスから委譲される形で呼び出されます。`setDomain()` メソッドはアノテーションで読み込まれた `domain` の値が渡されます。
 
