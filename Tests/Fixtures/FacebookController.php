@@ -6,23 +6,18 @@ use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Annotation\SecureConfig;
 
 /**
- * @SecureConfig(roleManager="in_memory")
+ * @Secure
+ * @SecureConfig(domain="facebook", forward="Crocos\SecurityBundle\Tests\Fixtures\FacebookController::loginAction",
+ *     auth="facebook", options={"group"={"10000001" = "ADMIN"}})
  */
-class AdminController extends SecureController
+class FacebookController
 {
     public function securedAction()
     {
     }
 
     /**
-     * @Secure(disabled=true)
-     */
-    public function publicAction()
-    {
-    }
-
-    /**
-     * @Secure(allow={"admin"})
+     * @Secure(allow={"ADMIN"})
      */
     public function adminAction()
     {

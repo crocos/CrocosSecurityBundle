@@ -10,41 +10,84 @@ use Phake;
 class SecurityContextTest extends \PHPUnit_Framework_TestCase
 {
     protected $context;
-    protected $auth;
+    protected $authLogic;
+    protected $roleManager;
 
     protected function setUp()
     {
         $context = new SecurityContext();
 
-        $auth = Phake::mock('Crocos\SecurityBundle\Security\AuthLogic\AuthLogicInterface');
-        $context->setAuthLogic($auth);
+        $authLogic = Phake::mock('Crocos\SecurityBundle\Tests\Fixtures\ComplexedAuthLogicInterface');
+        $context->setAuthLogic($authLogic);
+
+        $roleManager = Phake::mock('Crocos\SecurityBundle\Security\Role\RoleManagerInterface');
+        $context->setRoleManager($roleManager);
 
         $this->context = $context;
-        $this->auth = $auth;
+        $this->authLogic = $authLogic;
+        $this->roleManager = $roleManager;
     }
 
     public function testContextBeforeLoading()
     {
         $context = new SecurityContext();
 
+        $this->assertFalse($context->isSecure());
+        $this->assertEmpty($context->getAllowedRoles());
+        $this->assertEquals('secured', $context->getDomain());
+
         $this->assertEmpty($context->getUser());
         $this->assertFalse($context->isAuthenticated());
-        $this->assertEquals('secured', $context->getDomain());
     }
 
-    public function testDelegateToLogic()
+    public function testSetSecure()
     {
-        $context = $this->context;
+        $this->context->setSecure(true);
 
-        $context->login('user');
-        $context->logout();
-        $context->getUser();
-        $context->isAuthenticated();
+        $this->assertTrue($this->context->isSecure());
+    }
 
-        Phake::verify($this->auth)->login('user');
-        Phake::verify($this->auth)->logout();
-        Phake::verify($this->auth)->getUser();
-        Phake::verify($this->auth)->isAuthenticated();
+    public function testSetAllowedRoles()
+    {
+        $this->context->setAllowedRoles(array('FOO', 'BAR'));
+
+        $this->assertEquals(array('FOO', 'BAR'), $this->context->getAllowedRoles());
+    }
+
+    public function testSetDomain()
+    {
+        $this->context->setDomain('private');
+
+        $this->assertEquals('private', $this->context->getDomain());
+    }
+
+    public function testLogin()
+    {
+        $this->context->login('user');
+
+        Phake::verify($this->authLogic)->login('user');
+    }
+
+    public function testLogout()
+    {
+        $this->context->logout();
+
+        Phake::verify($this->roleManager)->clearRoles();
+        Phake::verify($this->authLogic)->logout();
+    }
+
+    public function testGetUser()
+    {
+        $this->context->getUser();
+
+        Phake::verify($this->authLogic)->getUser();
+    }
+
+    public function testIsAuthenticated()
+    {
+        $this->context->isAuthenticated();
+
+        Phake::verify($this->authLogic)->isAuthenticated();
     }
 
     public function testForwardingController()
@@ -136,5 +179,61 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
         $context = new SecurityContext();
 
         $this->assertEmpty($context->getUser());
+    }
+
+    public function testHasRole()
+    {
+        $manager = Phake::mock('Crocos\SecurityBundle\Security\Role\RoleManagerInterface');
+        Phake::when($manager)->hasRole('FOO')->thenReturn(true);
+
+        $this->context->setRoleManager($manager);
+
+        $this->assertEquals(true, $this->context->hasRole('FOO'));
+    }
+
+    public function testSetRoles()
+    {
+        $manager = Phake::mock('Crocos\SecurityBundle\Security\Role\RoleManagerInterface');
+
+        $this->context->setRoleManager($manager);
+
+        $this->context->setRoles(array('FOO', 'BAR'));
+
+        Phake::verify($manager)->setRoles(array('FOO', 'BAR'));
+    }
+
+    public function testAddRoles()
+    {
+        $manager = Phake::mock('Crocos\SecurityBundle\Security\Role\RoleManagerInterface');
+
+        $this->context->setRoleManager($manager);
+
+        $this->context->addRoles(array('FOO', 'BAR'));
+
+        Phake::verify($manager)->addRoles(array('FOO', 'BAR'));
+    }
+
+    public function testGetRoles()
+    {
+        $manager = Phake::mock('Crocos\SecurityBundle\Security\Role\RoleManagerInterface');
+        Phake::when($manager)->getRoles()->thenReturn(array('FOO', 'BAR'));
+
+        $this->context->setRoleManager($manager);
+
+        $this->assertEquals(array('FOO', 'BAR'), $this->context->getRoles());
+    }
+
+    public function testFixDomain()
+    {
+        $holder = Phake::mock('Crocos\SecurityBundle\Security\PreviousUrlHolder');
+        $this->context->setPreviousUrlHolder($holder);
+
+        $this->context->setDomain('secured');
+
+        $this->context->fixDomain();
+
+        Phake::verify($this->authLogic)->setDomain('secured');
+        Phake::verify($this->roleManager)->setDomain('secured');
+        Phake::verify($holder)->setup('secured');
     }
 }

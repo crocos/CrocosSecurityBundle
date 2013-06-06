@@ -1,0 +1,27 @@
+{
+    "name": "crocos/security-bundle",
+    "description": "This bundle provides a way to configure security with annotations",
+    "keywords": ["annotations","security","authentication","authorization"],
+    "type": "symfony-bundle",
+    "homepage": "https://github.com/crocos/CrocosSecurityBundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "OGAWA Katsuhiro",
+            "email": "ogawa@crocos.co.jp"
+        }
+    ],
+    "require": {
+        "symfony/symfony": "2.0.*@dev",
+        "doctrine/common": "2.1.*",
+        "doctrine/dbal": "2.1.*",
+        "doctrine/orm": "2.1.*",
+        "facebook/php-sdk": "dev-master",
+        "phake/phake": "2.0.*@dev"
+    },
+    "autoload": {
+        "psr-0": { "Crocos\\SecurityBundle": "" }
+    },
+    "target-dir": "Crocos/SecurityBundle",
+    "minimum-stability": "dev"
+}

@@ -52,6 +52,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
         $listener->onKernelRequest($event);
 
         Phake::verify($this->checker)->authenticate($this->context, $controller[0], $controller[1], $this->request);
+        Phake::verify($this->checker)->authorize($this->context);
     }
 
     public function testHandleAuthException()

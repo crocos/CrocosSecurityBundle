@@ -8,7 +8,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Crocos\SecurityBundle\Exception\AuthException;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
-use Crocos\SecurityBundle\Security\AuthChecker;
+use Crocos\SecurityBundle\Security\AuthCheckerInterface;
 use Crocos\SecurityBundle\Security\SecurityContext;
 
 /**
@@ -19,7 +19,7 @@ use Crocos\SecurityBundle\Security\SecurityContext;
 class AuthListener
 {
     /**
-     * @var AuthChecker
+     * @var AuthCheckerInterface
      */
     protected $checker;
 
@@ -37,10 +37,10 @@ class AuthListener
      * Constructor.
      *
      * @param SecurityContext $context
-     * @param AuthChecker $checker
+     * @param AuthCheckerInterface $checker
      * @param ControllerResolverInterface $resolver
      */
-    public function __construct(SecurityContext $context, AuthChecker $checker, ControllerResolverInterface $resolver)
+    public function __construct(SecurityContext $context, AuthCheckerInterface $checker, ControllerResolverInterface $resolver)
     {
         $this->context = $context;
         $this->checker = $checker;
@@ -68,8 +68,9 @@ class AuthListener
             return;
         }
 
-        // If not authenticated, will be thrown AuthException
+        // If not authenticated, will be thrown an AuthException
         $this->checker->authenticate($this->context, $controller[0], $controller[1], $request);
+        $this->checker->authorize($this->context);
     }
 
     /**
@@ -86,9 +87,10 @@ class AuthListener
             return;
         }
 
+        $response = null;
         if ($exception instanceof HttpAuthException) {
             if (!$this->context->useHttpAuth()) {
-                throw new \InvalidArgumentException(sprintf('Cought a HttpAuthException, but no http auth configuration existing'));
+                throw new \InvalidArgumentException(sprintf('Caught an HttpAuthException, but http auth not configured'));
             }
 
             $response = $this->context->getHttpAuth()->createUnauthorizedResponse($request, $exception);
@@ -104,6 +106,8 @@ class AuthListener
             $response = $event->getKernel()->forward($forwardingController, $exception->getAttributes());
         }
 
-        $event->setResponse($response);
+        if (null !== $response) {
+            $event->setResponse($response);
+        }
     }
 }

@@ -24,12 +24,22 @@ class SecureConfig extends Annotation
     /**
      * @var string
      */
+    protected $roleManager;
+
+    /**
+     * @var string
+     */
     protected $forward;
 
     /**
      * @var string|array
      */
     protected $basic;
+
+    /**
+     * @var array
+     */
+    protected $options = array();
 
     /**
      * @return string
@@ -50,6 +60,14 @@ class SecureConfig extends Annotation
     /**
      * @return string
      */
+    public function roleManager()
+    {
+        return $this->roleManager;
+    }
+
+    /**
+     * @return string
+     */
     public function forward()
     {
         return $this->forward;
@@ -61,5 +79,13 @@ class SecureConfig extends Annotation
     public function basic()
     {
         return $this->basic;
+    }
+
+    /**
+     * @return array
+     */
+    public function options()
+    {
+        return $this->options;
     }
 }

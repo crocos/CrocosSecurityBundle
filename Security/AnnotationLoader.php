@@ -7,7 +7,9 @@ use Crocos\SecurityBundle\Annotation\Annotation;
 use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Annotation\SecureConfig;
 use Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver;
+use Crocos\SecurityBundle\Security\Role\RoleManagerResolver;
 use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactoryInterface;
+use Crocos\SecurityBundle\Security\SecureOptionsAcceptableInterface;
 
 /**
  * AnnotationLoader.
@@ -17,6 +19,7 @@ use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactoryInterface;
 class AnnotationLoader
 {
     const DEFAULT_AUTH_LOGIC = 'session';
+    const DEFAULT_ROLE_MANAGER = 'session';
 
     /**
      * @var Reader
@@ -29,6 +32,11 @@ class AnnotationLoader
     protected $resolver;
 
     /**
+     * @var RoleManagerResolver
+     */
+    protected $roleManagerResolver;
+
+    /**
      * @var HttpAuthFactoryInterface
      */
     protected $httpAuthFactory;
@@ -38,11 +46,14 @@ class AnnotationLoader
      *
      * @param Reader $reader Annotation reader
      * @param AuthLogicResolver $resolver
+     * @param RoleManagerResolver $roleManagerResolver
+     * @param HttpAuthFactoryInterface $httpAuthFactory
      */
-    public function __construct(Reader $reader, AuthLogicResolver $resolver, HttpAuthFactoryInterface $httpAuthFactory = null)
+    public function __construct(Reader $reader, AuthLogicResolver $resolver, RoleManagerResolver $roleManagerResolver, HttpAuthFactoryInterface $httpAuthFactory = null)
     {
         $this->reader = $reader;
         $this->resolver = $resolver;
+        $this->roleManagerResolver = $roleManagerResolver;
         $this->httpAuthFactory = $httpAuthFactory;
     }
 
@@ -113,8 +124,12 @@ class AnnotationLoader
     {
         $context->setSecure(!$annotation->disabled());
 
-        if (null !== $annotation->roles()) {
-            $context->setRequiredRoles($annotation->roles());
+        if (null !== $annotation->allow()) {
+            if (is_array($annotation->allow())) {
+                $context->setAllowedRoles($annotation->allow());
+            } elseif (strtolower($annotation->allow()) === 'all') {
+                $context->setAllowedRoles(array());
+            }
         }
     }
 
@@ -130,8 +145,16 @@ class AnnotationLoader
             $context->setDomain($annotation->domain());
         }
 
+        if (null !== $annotation->options()) {
+            $context->setOptions($annotation->options());
+        }
+
         if (null !== $annotation->auth()) {
             $context->setAuthLogic($this->resolver->resolveAuthLogic($annotation->auth()));
+        }
+
+        if (null !== $annotation->roleManager()) {
+            $context->setRoleManager($this->roleManagerResolver->resolveRoleManager($annotation->roleManager()));
         }
 
         if (null !== $annotation->forward()) {
@@ -150,13 +173,19 @@ class AnnotationLoader
      */
     protected function fixContext(SecurityContext $context)
     {
-        $context->getPreviousUrlHolder()->setup($context->getDomain());
-
         if (null === $context->getAuthLogic()) {
             $context->setAuthLogic($this->resolver->resolveAuthLogic(self::DEFAULT_AUTH_LOGIC));
         }
 
-        $context->getAuthLogic()->setDomain($context->getDomain());
+        if (null === $context->getRoleManager()) {
+            $context->setRoleManager($this->roleManagerResolver->resolveRoleManager(self::DEFAULT_ROLE_MANAGER));
+        }
+
+        if ($context->getAuthLogic() instanceof SecureOptionsAcceptableInterface) {
+            $context->getAuthLogic()->setOptions($context->getOptions());
+        }
+
+        $context->fixDomain();
     }
 
     /**
