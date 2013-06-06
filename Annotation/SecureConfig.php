@@ -24,6 +24,11 @@ class SecureConfig extends Annotation
     /**
      * @var string
      */
+    protected $roleManager;
+
+    /**
+     * @var string
+     */
     protected $forward;
 
     /**
@@ -50,6 +55,14 @@ class SecureConfig extends Annotation
     public function auth()
     {
         return $this->auth;
+    }
+
+    /**
+     * @return string
+     */
+    public function roleManager()
+    {
+        return $this->roleManager;
     }
 
     /**

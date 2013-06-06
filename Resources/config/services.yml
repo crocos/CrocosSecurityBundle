@@ -2,7 +2,6 @@ services:
     crocos_security.context:
         class: Crocos\SecurityBundle\Security\SecurityContext
         calls:
-            - [ setRoleManager, [ @crocos_security.role_manager ] ]
             - [ setPreviousUrlHolder, [ @crocos_security.previous_url_holder ] ]
 
     crocos_security.checker:
@@ -16,6 +15,7 @@ services:
         arguments:
             - @annotation_reader
             - @crocos_security.auth_logic_resolver
+            - @crocos_security.role_manager_resolver
             - @crocos_security.http_auth_factory
 
     crocos_security.forwarding_controller_matcher:
@@ -41,10 +41,17 @@ services:
     crocos_security.http_auth_factory:
         class: Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactory
 
-    crocos_security.role_manager:
-        alias: crocos_security.role_manager.session
+    crocos_security.role_manager_resolver:
+        class: Crocos\SecurityBundle\Security\Role\RoleManagerResolver
 
     crocos_security.role_manager.session:
         class: Crocos\SecurityBundle\Security\Role\SessionRoleManager
         arguments:
             - @session
+        tags:
+            - { name: crocos_security.role_manager, alias: session }
+
+    crocos_security.role_manager.in_memory:
+        class: Crocos\SecurityBundle\Security\Role\InMemoryRoleManager
+        tags:
+            - { name: crocos_security.role_manager, alias: in_memory }

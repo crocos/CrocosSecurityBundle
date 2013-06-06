@@ -22,5 +22,6 @@ class CrocosSecurityBundle extends Bundle
         $container->addCompilerPass(new Compiler\TwigGlobalPass());
 
         $container->addCompilerPass(new Compiler\AuthLogicPass());
+        $container->addCompilerPass(new Compiler\RoleManagerPass());
     }
 }
