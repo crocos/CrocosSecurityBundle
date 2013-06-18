@@ -125,11 +125,7 @@ class AnnotationLoader
         $context->setSecure(!$annotation->disabled());
 
         if (null !== $annotation->allow()) {
-            if (is_array($annotation->allow())) {
-                $context->setAllowedRoles($annotation->allow());
-            } elseif (strtolower($annotation->allow()) === 'all') {
-                $context->setAllowedRoles(array());
-            }
+            $context->setAllowedRoles($annotation->allow());
         }
     }
 

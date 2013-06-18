@@ -67,9 +67,12 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
             array(new Fixtures\UserController(), 'publicAction', false, array(), 'secured', array(), 'session', 'session', $uforward),
             array(new Fixtures\UserController(), 'loginAction',  false, array(), 'secured', array(), 'session', 'session', $uforward),
 
-            array(new Fixtures\AdminController(), 'securedAction', true, array(), 'admin', array(), 'session', 'in_memory', $aforward),
-            array(new Fixtures\AdminController(), 'publicAction', false, array(), 'admin', array(), 'session', 'in_memory', $aforward),
-            array(new Fixtures\AdminController(), 'adminAction',   true, array('admin'), 'admin', array(), 'session', 'in_memory', $aforward),
+            array(new Fixtures\AdminController(), 'securedAction', true, array('admin'), 'admin', array(), 'session', 'in_memory', $aforward),
+            array(new Fixtures\AdminController(), 'publicAction', false, array('admin'), 'admin', array(), 'session', 'in_memory', $aforward),
+
+            array(new Fixtures\SuperAdminController(), 'superAction', true, array('superadmin'), 'admin', array(), 'session', 'in_memory', $aforward),
+            array(new Fixtures\SuperAdminController(), 'hyperAction', true, array('hyperadmin'), 'admin', array(), 'session', 'in_memory', $aforward),
+            array(new Fixtures\SuperAdminController(), 'hyper2Action', true, array('hyper2admin'), 'admin', array(), 'session', 'in_memory', $aforward),
 
             array(new Fixtures\FacebookController(), 'securedAction', true, array(), 'facebook', array('group' => array('10000001' => 'ADMIN')), 'facebook', 'session', $fforward),
 
