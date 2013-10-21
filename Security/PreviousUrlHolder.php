@@ -2,7 +2,7 @@
 
 namespace Crocos\SecurityBundle\Security;
 
-use Symfony\Component\HttpFoundation\Session;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * PreviousUrlHolder.

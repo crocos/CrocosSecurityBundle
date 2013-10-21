@@ -11,7 +11,7 @@ class InMemoryRoleManagerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $session = Phake::mock('Symfony\Component\HttpFoundation\Session');
+        $session = Phake::mock('Symfony\Component\HttpFoundation\Session\Session');
         $roleManager = new InMemoryRoleManager();
         $roleManager->setDomain('secured');
 

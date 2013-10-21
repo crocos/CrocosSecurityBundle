@@ -2,7 +2,7 @@
 
 namespace Crocos\SecurityBundle\Security\Role;
 
-use Symfony\Component\HttpFoundation\Session;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * SessionRoleManager.
