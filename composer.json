@@ -12,18 +12,17 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": "2.0.*@dev",
-        "symfony/http-foundation": "2.0.*@dev",
-        "doctrine/common": "2.1.*"
+        "symfony/framework-bundle": "2.3.*@dev",
+        "symfony/http-foundation": "2.3.*@dev",
+        "doctrine/common": "2.2.*"
     },
     "require-dev": {
-        "symfony/config": "2.0.*@dev",
-        "symfony/dependency-injection": "2.0.*@dev",
-        "symfony/doctrine-bridge": "2.0.*@dev",
-        "symfony/event-dispatcher": "2.0.*@dev",
-        "symfony/http-kernel": "2.0.*@dev",
-        "doctrine/dbal": "2.1.*",
-        "doctrine/orm": "2.1.*",
+        "symfony/config": "2.3.*@dev",
+        "symfony/dependency-injection": "2.3.*@dev",
+        "symfony/doctrine-bridge": "2.3.*@dev",
+        "symfony/event-dispatcher": "2.3.*@dev",
+        "symfony/http-kernel": "2.3.*@dev",
+        "doctrine/orm": ">=2.2.3,<2.4-dev",
         "facebook/php-sdk": "dev-master",
         "phake/phake": "2.0.*@dev"
     },
