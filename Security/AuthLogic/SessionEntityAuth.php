@@ -68,8 +68,7 @@ class SessionEntityAuth extends SessionAuth
         $class = $data['class'];
         $id = $data['id'];
 
-        // todo compat-2.0
-        $manager = $this->managerRegistry->getEntityManagerForClass($class);
+        $manager = $this->managerRegistry->getManagerForClass($class);
         $repository = $manager->getRepository($class);
 
         $user = $repository->find($id);

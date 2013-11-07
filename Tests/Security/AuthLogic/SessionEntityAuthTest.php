@@ -113,7 +113,7 @@ class SessionEntityAuthTest extends \PHPUnit_Framework_TestCase
         $manager = Phake::mock('Doctrine\ORM\EntityManager');
         $repository = Phake::mock('Doctrine\ORM\EntityRepository');
 
-        Phake::when($this->managerRegistry)->getEntityManagerForClass($class)->thenReturn($manager);
+        Phake::when($this->managerRegistry)->getManagerForClass($class)->thenReturn($manager);
         Phake::when($manager)->getRepository($class)->thenReturn($repository);
 
         return $repository;
