@@ -31,7 +31,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
         $resolver = Phake::mock('Symfony\Component\HttpKernel\Controller\ControllerResolverInterface');
 
-        $kernel = Phake::mock('Symfony\Bundle\FrameworkBundle\HttpKernel');
+        $kernel = Phake::mock('Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel');
 
         $this->checker = $checker;
         $this->context = $context;
@@ -57,7 +57,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
     public function testHandleAuthException()
     {
-        $controller = array(new Fixtures\AdminController(), 'securedAction');
+        $controller = array(Phake::mock('Crocos\SecurityBundle\Tests\Fixtures\AdminController'), 'securedAction');
         Phake::when($this->resolver)->getController($this->request)->thenReturn($controller);
 
         $event = Phake::mock('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent');
@@ -71,7 +71,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->context)->getForwardingController()->thenReturn($forwardingController);
 
         $response = new Response('test');
-        Phake::when($this->kernel)->forward($forwardingController, $attrs)->thenReturn($response);
+        Phake::when($controller[0])->forward($forwardingController, $attrs)->thenReturn($response);
 
         $listener = new AuthListener($this->context, $this->checker, $this->resolver);
         $listener->onKernelException($event);

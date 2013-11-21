@@ -103,7 +103,8 @@ class AuthListener
             // Save actual url.
             $this->context->setPreviousUrl($request->getUri());
 
-            $response = $event->getKernel()->forward($forwardingController, $exception->getAttributes());
+            $controller = $this->resolver->getController($request);
+            $response = $controller[0]->forward($forwardingController, $exception->getAttributes());
         }
 
         if (null !== $response) {
