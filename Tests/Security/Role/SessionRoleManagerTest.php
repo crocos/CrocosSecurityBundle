@@ -12,7 +12,7 @@ class SessionRoleManagerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $session = Phake::mock('Symfony\Component\HttpFoundation\Session');
+        $session = Phake::mock('Symfony\Component\HttpFoundation\Session\SessionInterface');
         $roleManager = new SessionRoleManager($session);
         $roleManager->setDomain('secured');
 

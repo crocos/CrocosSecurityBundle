@@ -2,7 +2,7 @@
 
 namespace Crocos\SecurityBundle\Security\AuthLogic;
 
-use Symfony\Component\HttpFoundation\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * SessionAuth.
@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Session;
 class SessionAuth implements AuthLogicInterface
 {
     /**
-     * @var Session
+     * @var SessionInterface
      */
     protected $session;
 
@@ -29,9 +29,9 @@ class SessionAuth implements AuthLogicInterface
     /**
      * Constructor.
      *
-     * @param Session $session
+     * @param SessionInterface $session
      */
-    public function __construct(Session $session)
+    public function __construct(SessionInterface $session)
     {
         $this->session = $session;
     }

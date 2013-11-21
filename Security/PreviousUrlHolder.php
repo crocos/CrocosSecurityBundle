@@ -2,7 +2,7 @@
 
 namespace Crocos\SecurityBundle\Security;
 
-use Symfony\Component\HttpFoundation\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * PreviousUrlHolder.
@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Session;
 class PreviousUrlHolder
 {
     /**
-     * @var Session
+     * @var SessionInterface
      */
     protected $session;
 
@@ -29,9 +29,9 @@ class PreviousUrlHolder
     /**
      * Constructor.
      *
-     * @param Session $session
+     * @param SessionInterface $session
      */
-    public function __construct(Session $session)
+    public function __construct(SessionInterface $session)
     {
         $this->session = $session;
     }

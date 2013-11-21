@@ -25,4 +25,8 @@ class AdminController extends SecureController
     public function loginAction()
     {
     }
+
+    public function forward()
+    {
+    }
 }
