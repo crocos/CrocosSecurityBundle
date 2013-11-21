@@ -12,8 +12,16 @@
         }
     ],
     "require": {
-        "symfony/symfony": "2.0.*@dev",
-        "doctrine/common": "2.1.*",
+        "symfony/framework-bundle": "2.0.*@dev",
+        "symfony/http-foundation": "2.0.*@dev",
+        "doctrine/common": "2.1.*"
+    },
+    "require-dev": {
+        "symfony/config": "2.0.*@dev",
+        "symfony/dependency-injection": "2.0.*@dev",
+        "symfony/doctrine-bridge": "2.0.*@dev",
+        "symfony/event-dispatcher": "2.0.*@dev",
+        "symfony/http-kernel": "2.0.*@dev",
         "doctrine/dbal": "2.1.*",
         "doctrine/orm": "2.1.*",
         "facebook/php-sdk": "dev-master",
