@@ -12,7 +12,7 @@ class SessionAuthTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $session = Phake::mock('Symfony\Component\HttpFoundation\Session\Session');
+        $session = Phake::mock('Symfony\Component\HttpFoundation\Session\SessionInterface');
         $auth = new SessionAuth($session);
         $auth->setDomain('secured');
 

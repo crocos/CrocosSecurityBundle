@@ -2,7 +2,7 @@
 
 namespace Crocos\SecurityBundle\Security\Role;
 
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * SessionRoleManager.
@@ -12,16 +12,16 @@ use Symfony\Component\HttpFoundation\Session\Session;
 class SessionRoleManager extends AbstractRoleManager
 {
     /**
-     * @var Session $session
+     * @var SessionInterface $session
      */
     protected $session;
 
     /**
      * Constructor.
      *
-     * @param Session $session
+     * @param SessionInterface $session
      */
-    public function __construct(Session $session)
+    public function __construct(SessionInterface $session)
     {
         $this->session = $session;
     }
