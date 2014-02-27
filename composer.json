@@ -25,6 +25,7 @@
         "symfony/http-kernel": "2.3.*@dev",
         "doctrine/orm": ">=2.2.3,<2.4-dev",
         "facebook/php-sdk": "dev-master",
+        "phpunit/phpunit": "3.7.*",
         "phake/phake": "2.0.*@dev"
     },
     "autoload": {
