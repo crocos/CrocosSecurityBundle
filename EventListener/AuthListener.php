@@ -104,7 +104,7 @@ class AuthListener
             $this->context->setPreviousUrl($request->getUri());
 
             $controller = $this->resolver->getController($request);
-            $response = $controller[0]->forward($forwardingController, $exception->getAttributes());
+            $response = $controller[0]->forward($forwardingController, $exception->getAttributes(), $request->query->all());
         }
 
         if (null !== $response) {

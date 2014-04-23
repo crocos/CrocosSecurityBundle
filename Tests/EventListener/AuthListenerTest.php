@@ -27,7 +27,8 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
         $context = Phake::mock('Crocos\SecurityBundle\Security\SecurityContext');
 
-        $request = Request::create('/');
+        $query = ['a' => 'b'];
+        $request = Request::create('/', 'GET', $query);
 
         $resolver = Phake::mock('Symfony\Component\HttpKernel\Controller\ControllerResolverInterface');
 
@@ -35,6 +36,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->checker = $checker;
         $this->context = $context;
+        $this->query = $query;
         $this->request = $request;
         $this->resolver = $resolver;
         $this->kernel = $kernel;
@@ -71,7 +73,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->context)->getForwardingController()->thenReturn($forwardingController);
 
         $response = new Response('test');
-        Phake::when($controller[0])->forward($forwardingController, $attrs)->thenReturn($response);
+        Phake::when($controller[0])->forward($forwardingController, $attrs, $this->query)->thenReturn($response);
 
         $listener = new AuthListener($this->context, $this->checker, $this->resolver);
         $listener->onKernelException($event);
