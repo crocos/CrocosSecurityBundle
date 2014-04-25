@@ -38,5 +38,7 @@ class CrocosSecurityExtension extends Extension
 
         $loader->load('services.yml');
         $loader->load('listeners.yml');
+
+        $container->setParameter('crocos_security.checker.https_requiring', $config['https_requiring']);
     }
 }

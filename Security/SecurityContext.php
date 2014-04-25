@@ -31,6 +31,11 @@ class SecurityContext
     protected $domain = 'secured';
 
     /**
+     * @var boolean
+     */
+    protected $httpsRequired;
+
+    /**
      * @var options
      */
     protected $options = array();
@@ -118,6 +123,36 @@ class SecurityContext
     public function getDomain()
     {
         return $this->domain;
+    }
+
+    /**
+     * Set httpsRequired.
+     *
+     * @param boolean httpsRequired
+     */
+    public function setHttpsRequired($httpsRequired)
+    {
+        $this->httpsRequired = (bool) $httpsRequired;
+    }
+
+    /**
+     * Get httpsRequired.
+     *
+     * @return boolean
+     */
+    public function getHttpsRequired()
+    {
+        return $this->httpsRequired;
+    }
+
+    /**
+     * Is httpsRequired.
+     *
+     * @return boolean
+     */
+    public function isHttpsRequired()
+    {
+        return $this->getHttpsRequired();
     }
 
     /**

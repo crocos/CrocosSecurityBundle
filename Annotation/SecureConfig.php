@@ -17,6 +17,11 @@ class SecureConfig extends Annotation
     protected $domain;
 
     /**
+     * @var boolean
+     */
+    protected $httpsRequired;
+
+    /**
      * @var string
      */
     protected $auth;
@@ -47,6 +52,14 @@ class SecureConfig extends Annotation
     public function domain()
     {
         return $this->domain;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function httpsRequired()
+    {
+        return $this->httpsRequired;
     }
 
     /**
