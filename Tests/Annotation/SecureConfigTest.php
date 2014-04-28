@@ -10,12 +10,12 @@ class SecureConfigTest extends \PHPUnit_Framework_TestCase
     public function testLoad()
     {
         $secure = new SecureConfig(array(
-            'domain'          => 'secured',
+            'domain'        => 'secured',
             'httpsRequired' => 'https',
-            'auth'            => 'session',
-            'roleManager'     => 'session',
-            'forward'         => 'AdminController::loginAction',
-            'basic'           => 'foo:foopass',
+            'auth'          => 'session',
+            'roleManager'   => 'session',
+            'forward'       => 'AdminController::loginAction',
+            'basic'         => 'foo:foopass',
         ));
 
         $this->assertEquals('secured', $secure->domain());
