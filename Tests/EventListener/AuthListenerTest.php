@@ -81,6 +81,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
         Phake::verify($this->context)->setPreviousUrl($this->request->getUri());
         Phake::verify($event)->setResponse($response);
+        $this->assertEquals(200 , $response->headers->get('X-Status-Code'));
     }
 
     public function testHandleHttpAuthException()
@@ -105,6 +106,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
         Phake::verify($httpAuth)->createUnauthorizedResponse($this->request, $exception);
         Phake::verify($event)->setResponse($response);
+        $this->assertEquals(200 , $response->headers->get('X-Status-Code'));
     }
 
     public function testHandleHttpsRequiredAuthException()
@@ -124,6 +126,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
         Phake::verify($event)->setResponse(Phake::capture($redirectResponse));
 
         $this->assertStringStartsWith('https://', $redirectResponse->getTargetUrl());
+        $this->assertEquals(200 , $redirectResponse->headers->get('X-Status-Code'));
     }
 
     protected function fixKernelEventMock($event)
