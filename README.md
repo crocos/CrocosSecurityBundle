@@ -206,7 +206,7 @@ BASIC認証を有効にします。値には「ユーザ名:パスワード」�
 @SecureConfig(httpsRequired=true)
 ```
 
-なお、開発環境などhttpsの設定を行っていない場合では、 `app/config/config_dev.yml` などに `https_requiring: false` を設定することで、 `httpsRequired` の指定を無視してアクセスできるようにすることも可能です。
+なお、開発用サーバなどでSSL通信設定を行っていない環境では、 `app/config/config_dev.yml` などに `https_requiring: false` を設定することで、httpsへの強制リダイレクトを無効にできます。 (デフォルでは有効になっています)
 
 ```yml
 crocos_security:
