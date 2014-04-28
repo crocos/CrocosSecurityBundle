@@ -195,6 +195,24 @@ BASIC認証を有効にします。値には「ユーザ名:パスワード」�
 
 `"in_memory"` を指定すると、権限を設定したプロセス中のみ保持され、プロセスが終了すると破棄されるようになります。
 
+#### httpsRequired
+
+* type: `boolean`
+* default: `false`
+
+`true` を指定したコントローラに `http` でアクセスした場合、強制的に `https` にリダイレクトします。
+
+```java
+@SecureConfig(httpsRequired=true)
+```
+
+なお、開発用サーバなどでSSL通信設定を行っていない環境では、 `app/config/config_dev.yml` などに `https_requiring: false` を設定することで、httpsへの強制リダイレクトを無効にできます。 (デフォルでは有効になっています)
+
+```yml
+crocos_security:
+  https_requiring: false
+```
+
 
 サンプルコード
 ----------------

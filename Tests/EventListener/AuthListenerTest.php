@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Crocos\SecurityBundle\Exception\AuthException;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
+use Crocos\SecurityBundle\Exception\HttpsRequiredException;
 use Crocos\SecurityBundle\EventListener\AuthListener;
 use Crocos\SecurityBundle\Tests\Fixtures;
 use Phake;
@@ -104,6 +105,25 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
         Phake::verify($httpAuth)->createUnauthorizedResponse($this->request, $exception);
         Phake::verify($event)->setResponse($response);
+    }
+
+    public function testHandleHttpsRequiredAuthException()
+    {
+        $controller = array(Phake::mock('Crocos\SecurityBundle\Tests\Fixtures\AdminController'), 'securedAction');
+        Phake::when($this->resolver)->getController($this->request)->thenReturn($controller);
+
+        $event = Phake::mock('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent');
+        $this->fixKernelEventMock($event);
+
+        $exception = new HttpsRequiredException();
+        Phake::when($event)->getException()->thenReturn($exception);
+
+        $listener = new AuthListener($this->context, $this->checker, $this->resolver);
+        $listener->onKernelException($event);
+
+        Phake::verify($event)->setResponse(Phake::capture($redirectResponse));
+
+        $this->assertStringStartsWith('https://', $redirectResponse->getTargetUrl());
     }
 
     protected function fixKernelEventMock($event)

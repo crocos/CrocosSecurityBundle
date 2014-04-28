@@ -141,6 +141,10 @@ class AnnotationLoader
             $context->setDomain($annotation->domain());
         }
 
+        if (null !== $annotation->httpsRequired()) {
+            $context->setHttpsRequired($annotation->httpsRequired());
+        }
+
         if (null !== $annotation->options()) {
             $context->setOptions($annotation->options());
         }
