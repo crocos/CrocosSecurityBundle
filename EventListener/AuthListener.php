@@ -114,6 +114,7 @@ class AuthListener
         }
 
         if (null !== $response) {
+            $response->headers->set('X-Status-Code', $response->getStatusCode());
             $event->setResponse($response);
         }
     }
