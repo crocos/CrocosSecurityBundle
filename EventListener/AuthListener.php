@@ -85,7 +85,7 @@ class AuthListener
         $request = $event->getRequest();
         $exception = $event->getException();
 
-        if (!($exception instanceof AuthException || $exception instanceof HttpsRequiredException)) {
+        if (!$exception instanceof AuthException) {
             return;
         }
 

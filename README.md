@@ -195,6 +195,25 @@ BASIC認証を有効にします。値には「ユーザ名:パスワード」�
 
 `"in_memory"` を指定すると、権限を設定したプロセス中のみ保持され、プロセスが終了すると破棄されるようになります。
 
+#### httpsRequired
+
+* type: `boolean`
+* default: `false`
+
+強制的にセキュアな通信を行うよう指定します。httpでアクセスされた場合にhttps通信へリダイレクトします。
+
+```java
+@SecureConfig(httpsRequired=true)
+```
+
+この機能はバンドルの拡張機能として提供しているので、コンフィギュレーションファイルに指定することで、
+簡単に無効にすることもできます。開発環境などhttps通信が利用できない状況で設定するとよいでしょう。
+
+`app/config/config.yml`
+```yml
+crocos_security:
+    https_requiring: false
+```
 
 サンプルコード
 ----------------

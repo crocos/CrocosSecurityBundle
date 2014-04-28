@@ -7,6 +7,6 @@ namespace Crocos\SecurityBundle\Exception;
  *
  * @author Yuichi Okada <okada@crocos.co.jp>
  */
-class HttpsRequiredException extends AbstrctHttpException
+class HttpsRequiredException extends AuthException
 {
 }
