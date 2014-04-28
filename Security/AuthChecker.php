@@ -5,6 +5,7 @@ namespace Crocos\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Crocos\SecurityBundle\Exception\AuthException;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
+use Crocos\SecurityBundle\Exception\HttpsRequiredException;
 
 /**
  * AuthChecker.
@@ -24,6 +25,11 @@ class AuthChecker implements AuthCheckerInterface
     protected $matcher;
 
     /**
+     * @var boolean
+     */
+    protected $httpsRequiringEnabled;
+
+    /**
      * Constructor.
      *
      * @param AnnotationLoader $loader
@@ -36,6 +42,14 @@ class AuthChecker implements AuthCheckerInterface
     }
 
     /**
+     * @param boolean $enabled
+     */
+    public function enableHttpsRequiring($enabled)
+    {
+        $this->httpsRequiringEnabled = $enabled;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function authenticate(SecurityContext $context, $_object, $_method, Request $request = null)
@@ -45,9 +59,17 @@ class AuthChecker implements AuthCheckerInterface
 
         $this->loader->load($context, $object, $method);
 
-        // http auth
-        if ($request && $context->useHttpAuth() && false === $context->getHttpAuth()->authenticate($request)) {
-            throw new HttpAuthException('Authentication required');
+
+        if ($request !== null) {
+            // https
+            if ($this->httpsRequiringEnabled && $context->isHttpsRequired() && !$request->isSecure()) {
+                throw new HttpsRequiredException('HTTPS is required');
+            }
+
+            // http auth
+            if ($request && $context->useHttpAuth() && false === $context->getHttpAuth()->authenticate($request)) {
+                throw new HttpAuthException('Authentication required');
+            }
         }
 
         // non secure controller or forwarding controller

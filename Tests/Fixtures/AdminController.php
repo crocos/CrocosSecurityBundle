@@ -7,7 +7,7 @@ use Crocos\SecurityBundle\Annotation\SecureConfig;
 
 /**
  * @Secure(allow={"admin"})
- * @SecureConfig(roleManager="in_memory")
+ * @SecureConfig(roleManager="in_memory", httpsRequired=true)
  */
 class AdminController extends SecureController
 {
@@ -16,6 +16,7 @@ class AdminController extends SecureController
     }
 
     /**
+     * @SecureConfig(httpsRequired=false)
      * @Secure(disabled=true)
      */
     public function publicAction()

@@ -30,6 +30,14 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('crocos_security');
 
+        $rootNode
+            ->children()
+                ->booleanNode('https_requiring')
+                    ->defaultTrue()
+                ->end()
+            ->end()
+        ;
+
         return $treeBuilder;
     }
 }

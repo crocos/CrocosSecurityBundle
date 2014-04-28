@@ -2,12 +2,14 @@
 
 namespace Crocos\SecurityBundle\EventListener;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Crocos\SecurityBundle\Exception\AuthException;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
+use Crocos\SecurityBundle\Exception\HttpsRequiredException;
 use Crocos\SecurityBundle\Security\AuthCheckerInterface;
 use Crocos\SecurityBundle\Security\SecurityContext;
 
@@ -88,7 +90,11 @@ class AuthListener
         }
 
         $response = null;
-        if ($exception instanceof HttpAuthException) {
+        if ($exception instanceof HttpsRequiredException) {
+            $sslUrl = preg_replace('_^http:_', 'https:', $request->getUri());
+
+            $response = new RedirectResponse($sslUrl);
+        } elseif ($exception instanceof HttpAuthException) {
             if (!$this->context->useHttpAuth()) {
                 throw new \InvalidArgumentException(sprintf('Caught an HttpAuthException, but http auth not configured'));
             }
@@ -104,10 +110,11 @@ class AuthListener
             $this->context->setPreviousUrl($request->getUri());
 
             $controller = $this->resolver->getController($request);
-            $response = $controller[0]->forward($forwardingController, $exception->getAttributes());
+            $response = $controller[0]->forward($forwardingController, $exception->getAttributes(), $request->query->all());
         }
 
         if (null !== $response) {
+            $response->headers->set('X-Status-Code', $response->getStatusCode());
             $event->setResponse($response);
         }
     }

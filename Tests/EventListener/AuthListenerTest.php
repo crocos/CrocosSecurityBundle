@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Crocos\SecurityBundle\Exception\AuthException;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
+use Crocos\SecurityBundle\Exception\HttpsRequiredException;
 use Crocos\SecurityBundle\EventListener\AuthListener;
 use Crocos\SecurityBundle\Tests\Fixtures;
 use Phake;
@@ -27,7 +28,8 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
         $context = Phake::mock('Crocos\SecurityBundle\Security\SecurityContext');
 
-        $request = Request::create('/');
+        $query = ['a' => 'b'];
+        $request = Request::create('/', 'GET', $query);
 
         $resolver = Phake::mock('Symfony\Component\HttpKernel\Controller\ControllerResolverInterface');
 
@@ -35,6 +37,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
         $this->checker = $checker;
         $this->context = $context;
+        $this->query = $query;
         $this->request = $request;
         $this->resolver = $resolver;
         $this->kernel = $kernel;
@@ -71,13 +74,14 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->context)->getForwardingController()->thenReturn($forwardingController);
 
         $response = new Response('test');
-        Phake::when($controller[0])->forward($forwardingController, $attrs)->thenReturn($response);
+        Phake::when($controller[0])->forward($forwardingController, $attrs, $this->query)->thenReturn($response);
 
         $listener = new AuthListener($this->context, $this->checker, $this->resolver);
         $listener->onKernelException($event);
 
         Phake::verify($this->context)->setPreviousUrl($this->request->getUri());
         Phake::verify($event)->setResponse($response);
+        $this->assertEquals(200 , $response->headers->get('X-Status-Code'));
     }
 
     public function testHandleHttpAuthException()
@@ -102,6 +106,27 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
         Phake::verify($httpAuth)->createUnauthorizedResponse($this->request, $exception);
         Phake::verify($event)->setResponse($response);
+        $this->assertEquals(401 , $response->headers->get('X-Status-Code'));
+    }
+
+    public function testHandleHttpsRequiredAuthException()
+    {
+        $controller = array(Phake::mock('Crocos\SecurityBundle\Tests\Fixtures\AdminController'), 'securedAction');
+        Phake::when($this->resolver)->getController($this->request)->thenReturn($controller);
+
+        $event = Phake::mock('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent');
+        $this->fixKernelEventMock($event);
+
+        $exception = new HttpsRequiredException();
+        Phake::when($event)->getException()->thenReturn($exception);
+
+        $listener = new AuthListener($this->context, $this->checker, $this->resolver);
+        $listener->onKernelException($event);
+
+        Phake::verify($event)->setResponse(Phake::capture($redirectResponse));
+
+        $this->assertStringStartsWith('https://', $redirectResponse->getTargetUrl());
+        $this->assertEquals(302 , $redirectResponse->headers->get('X-Status-Code'));
     }
 
     protected function fixKernelEventMock($event)

@@ -9,6 +9,8 @@ services:
         arguments:
             - @crocos_security.annotation_loader
             - @crocos_security.forwarding_controller_matcher
+        calls:
+            - [ enableHttpsRequiring , [ %crocos_security.checker.https_requiring% ] ]
 
     crocos_security.annotation_loader:
         class: Crocos\SecurityBundle\Security\AnnotationLoader

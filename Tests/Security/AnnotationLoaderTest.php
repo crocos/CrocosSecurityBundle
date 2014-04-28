@@ -14,7 +14,7 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getLoadAnnotationData
      */
-    public function testLoadAnnotation($object, $method, $secure, $allow, $domain, $options, $auth, $roleMng, $forward, $basic = null)
+    public function testLoadAnnotation($object, $method, $secure, $allow, $domain, $options, $auth, $roleMng, $https, $forward, $basic = null)
     {
         $context = Phake::partialMock('Crocos\SecurityBundle\Security\SecurityContext');
 
@@ -43,6 +43,7 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($authLogic, $context->getAuthLogic());
         $this->assertEquals($roleManager, $context->getRoleManager());
         $this->assertEquals($options, $context->getOptions());
+        $this->assertEquals($https, $context->getHttpsRequired());
 
         if ($basic) {
             $this->assertTrue($context->useHttpAuth());
@@ -61,22 +62,23 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         $fforward = 'Crocos\SecurityBundle\Tests\Fixtures\FacebookController::loginAction';
 
         return array(
-            // object, method, secure, allow, domain, options, auth, roleManager, forward [, basic]
+            // object, method, secure, allow, domain, options, auth, roleManager, https, forward [, basic]
 
-            array(new Fixtures\UserController(), 'securedAction', true, array(), 'secured', array(), 'session', 'session', $uforward),
-            array(new Fixtures\UserController(), 'publicAction', false, array(), 'secured', array(), 'session', 'session', $uforward),
-            array(new Fixtures\UserController(), 'loginAction',  false, array(), 'secured', array(), 'session', 'session', $uforward),
+            array(new Fixtures\UserController(), 'securedAction', true, array(), 'secured', array(), 'session', 'session', null, $uforward),
+            array(new Fixtures\UserController(), 'publicAction', false, array(), 'secured', array(), 'session', 'session', null, $uforward),
+            array(new Fixtures\UserController(), 'loginAction',  false, array(), 'secured', array(), 'session', 'session', true, $uforward),
 
-            array(new Fixtures\AdminController(), 'securedAction', true, array('admin'), 'admin', array(), 'session', 'in_memory', $aforward),
-            array(new Fixtures\AdminController(), 'publicAction', false, array('admin'), 'admin', array(), 'session', 'in_memory', $aforward),
+            array(new Fixtures\AdminController(), 'securedAction', true, array('admin'), 'admin', array(), 'session', 'in_memory', true, $aforward),
+            array(new Fixtures\AdminController(), 'publicAction', false, array('admin'), 'admin', array(), 'session', 'in_memory', false, $aforward),
+            array(new Fixtures\AdminController(), 'securedAction', true, array('admin'), 'admin', array(), 'session', 'in_memory', true, $aforward),
 
-            array(new Fixtures\SuperAdminController(), 'superAction', true, array('superadmin'), 'admin', array(), 'session', 'in_memory', $aforward),
-            array(new Fixtures\SuperAdminController(), 'hyperAction', true, array('hyperadmin'), 'admin', array(), 'session', 'in_memory', $aforward),
-            array(new Fixtures\SuperAdminController(), 'hyper2Action', true, array('hyper2admin'), 'admin', array(), 'session', 'in_memory', $aforward),
+            array(new Fixtures\SuperAdminController(), 'superAction', true, array('superadmin'), 'admin', array(), 'session', 'in_memory', true, $aforward),
+            array(new Fixtures\SuperAdminController(), 'hyperAction', true, array('hyperadmin'), 'admin', array(), 'session', 'in_memory', true, $aforward),
+            array(new Fixtures\SuperAdminController(), 'hyper2Action', true, array('hyper2admin'), 'admin', array(), 'session', 'in_memory', true, $aforward),
 
-            array(new Fixtures\FacebookController(), 'securedAction', true, array(), 'facebook', array('group' => array('10000001' => 'ADMIN')), 'facebook', 'session', $fforward),
+            array(new Fixtures\FacebookController(), 'securedAction', true, array(), 'facebook', array('group' => array('10000001' => 'ADMIN')), 'facebook', 'session', null, $fforward),
 
-            array(new Fixtures\BasicSecurityController(), 'securedAction', false, array(), 'secured', array(), null, null, null, 'foo:foopass')
+            array(new Fixtures\BasicSecurityController(), 'securedAction', false, array(), 'secured', array(), null, null, null, null, 'foo:foopass')
         );
     }
 }

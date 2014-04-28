@@ -21,6 +21,9 @@ class UserController
     {
     }
 
+    /**
+     * @SecureConfig(httpsRequired=true)
+     */
     public function loginAction()
     {
     }
