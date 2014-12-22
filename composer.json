@@ -13,20 +13,20 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "symfony/framework-bundle": "2.3.*@dev",
-        "symfony/http-foundation": "2.3.*@dev",
-        "doctrine/common": "2.2.*"
+        "symfony/framework-bundle": ">=2.1.0@dev",
+        "symfony/http-foundation": ">=2.1.0@dev",
+        "doctrine/common": ">=2.2.0"
     },
     "require-dev": {
-        "symfony/config": "2.3.*@dev",
-        "symfony/dependency-injection": "2.3.*@dev",
-        "symfony/doctrine-bridge": "2.3.*@dev",
-        "symfony/event-dispatcher": "2.3.*@dev",
-        "symfony/http-kernel": "2.3.*@dev",
-        "doctrine/orm": ">=2.2.3,<2.4-dev",
+        "symfony/config": ">=2.1.0@dev",
+        "symfony/dependency-injection": ">=2.1.0@dev",
+        "symfony/doctrine-bridge": ">=2.1.0@dev",
+        "symfony/event-dispatcher": ">=2.1.0@dev",
+        "symfony/http-kernel": ">=2.1.0@dev",
+        "doctrine/orm": ">=2.2.3",
         "facebook/php-sdk": "dev-master",
-        "phpunit/phpunit": "3.7.*",
-        "phake/phake": "2.0.*@dev"
+        "phpunit/phpunit": ">=3.7.0",
+        "phake/phake": ">=2.0.0@dev"
     },
     "autoload": {
         "psr-0": { "Crocos\\SecurityBundle": "" }
