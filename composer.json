@@ -29,8 +29,7 @@
         "phake/phake": ">=2.0.0@dev"
     },
     "autoload": {
-        "psr-0": { "Crocos\\SecurityBundle": "" }
+        "psr-4": { "Crocos\\SecurityBundle\\": "" }
     },
-    "target-dir": "Crocos/SecurityBundle",
     "minimum-stability": "dev"
 }
