@@ -18,7 +18,9 @@ services:
             - @annotation_reader
             - @crocos_security.auth_logic_resolver
             - @crocos_security.role_manager_resolver
-            - @crocos_security.http_auth_factory
+        calls:
+            - [ setHttpAuthFactory, [ @crocos_security.http_auth_factory ] ]
+            - [ setParameterResolver, [ @crocos_security.container_parameter_resolver ] ]
 
     crocos_security.forwarding_controller_matcher:
         class: Crocos\SecurityBundle\Security\ForwardingControllerMatcher
@@ -42,6 +44,9 @@ services:
 
     crocos_security.http_auth_factory:
         class: Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactory
+
+    crocos_security.container_parameter_resolver:
+        class: Crocos\SecurityBundle\Security\ContainerParameterResolver
 
     crocos_security.role_manager_resolver:
         class: Crocos\SecurityBundle\Security\Role\RoleManagerResolver

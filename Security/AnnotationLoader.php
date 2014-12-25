@@ -41,6 +41,11 @@ class AnnotationLoader
     protected $httpAuthFactory;
 
     /**
+     * @var ParameterResolverInterface
+     */
+    protected $parameterResolver;
+
+    /**
      * Constructor.
      *
      * @param Reader                   $reader              Annotation reader
@@ -48,12 +53,27 @@ class AnnotationLoader
      * @param RoleManagerResolver      $roleManagerResolver
      * @param HttpAuthFactoryInterface $httpAuthFactory
      */
-    public function __construct(Reader $reader, AuthLogicResolver $resolver, RoleManagerResolver $roleManagerResolver, HttpAuthFactoryInterface $httpAuthFactory = null)
+    public function __construct(Reader $reader, AuthLogicResolver $resolver, RoleManagerResolver $roleManagerResolver)
     {
         $this->reader = $reader;
         $this->resolver = $resolver;
         $this->roleManagerResolver = $roleManagerResolver;
+    }
+
+    /**
+     * @param HttpAuthFactoryInterface $httpAuthFactory
+     */
+    public function setHttpAuthFactory(HttpAuthFactoryInterface $httpAuthFactory = null)
+    {
         $this->httpAuthFactory = $httpAuthFactory;
+    }
+
+    /**
+     * @param ParameterResolverInterface $parameterResolver
+     */
+    public function setParameterResolver(ParameterResolverInterface $parameterResolver)
+    {
+        $this->parameterResolver = $parameterResolver;
     }
 
     /**
@@ -141,27 +161,27 @@ class AnnotationLoader
         }
 
         if (null !== $annotation->httpsRequired()) {
-            $context->setHttpsRequired($annotation->httpsRequired());
+            $context->setHttpsRequired($this->resolveParameter($annotation->httpsRequired()));
         }
 
         if (null !== $annotation->options()) {
-            $context->setOptions($annotation->options());
+            $context->setOptions($this->resolveParameter($annotation->options()));
         }
 
         if (null !== $annotation->auth()) {
-            $context->setAuthLogic($this->resolver->resolveAuthLogic($annotation->auth()));
+            $context->setAuthLogic($this->resolveParameter($this->resolver->resolveAuthLogic($annotation->auth())));
         }
 
         if (null !== $annotation->roleManager()) {
-            $context->setRoleManager($this->roleManagerResolver->resolveRoleManager($annotation->roleManager()));
+            $context->setRoleManager($this->roleManagerResolver->resolveRoleManager($this->resolveParameter($annotation->roleManager())));
         }
 
         if (null !== $annotation->forward()) {
-            $context->setForwardingController($annotation->forward());
+            $context->setForwardingController($this->resolveParameter($annotation->forward()));
         }
 
         if (null !== $annotation->basic()) {
-            $this->loadHttpAuth($context, 'basic', $annotation->basic());
+            $this->loadHttpAuth($context, 'basic', $this->resolveParameter($annotation->basic()));
         }
     }
 
@@ -205,5 +225,24 @@ class AnnotationLoader
         $httpAuth = $this->httpAuthFactory->create($type, $value, $context->getDomain());
 
         $context->setHttpAuth($httpAuth);
+    }
+
+    /**
+     * Parse parameter.
+     *
+     * @param  string $value
+     * @return string
+     */
+    protected function resolveParameter($value)
+    {
+        if ($this->parameterResolver === null) {
+            return $value;
+        }
+
+        if (!is_string($value)) {
+            return $value;
+        }
+
+        return $this->parameterResolver->resolveValue($value);
     }
 }

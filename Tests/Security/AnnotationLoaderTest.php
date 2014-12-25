@@ -25,6 +25,19 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         $basicAuth = new HttpAuth\BasicAuth(['foo' => 'foopass'], $domain);
         Phake::when($httpAuthFacory)->create('basic', 'foo:foopass', $domain)->thenReturn($basicAuth);
 
+        $parameterResolver = Phake::mock('Crocos\SecurityBundle\Security\ParameterResolverInterface');
+        Phake::when($parameterResolver)->resolveValue(Phake::capture($param))->thenGetReturnByLambda(function () use (&$param) {
+            $param = str_replace([
+                '%auth.https%',
+                '%auth.basic%',
+            ], [
+                true,
+                'foo:foopass',
+            ], $param);
+
+            return $param;
+        });
+
         $reflObject = new \ReflectionObject($object);
 
         $resolver = Phake::mock('Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver');
@@ -34,7 +47,10 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
         Phake::when($resolver)->resolveAuthLogic($auth ?: AnnotationLoader::DEFAULT_AUTH_LOGIC)->thenReturn($authLogic);
         Phake::when($roleManagerResolver)->resolveRoleManager($roleMng ?: AnnotationLoader::DEFAULT_ROLE_MANAGER)->thenReturn($roleManager);
 
-        $loader = new AnnotationLoader(new AnnotationReader(), $resolver, $roleManagerResolver, $httpAuthFacory);
+        $loader = new AnnotationLoader(new AnnotationReader(), $resolver, $roleManagerResolver);
+        $loader->setHttpAuthFactory($httpAuthFacory);
+        $loader->setParameterResolver($parameterResolver);
+
         $loader->load($context, $reflObject, $reflObject->getMethod($method));
 
         $this->assertEquals($secure, $context->isSecure());
@@ -78,7 +94,7 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
 
             [new Fixtures\FacebookController(), 'securedAction', true, [], 'facebook', ['group' => ['10000001' => 'ADMIN']], 'facebook', 'session', null, $fforward],
 
-            [new Fixtures\BasicSecurityController(), 'securedAction', false, [], 'secured', [], null, null, null, null, 'foo:foopass'],
+            [new Fixtures\BasicSecurityController(), 'securedAction', false, [], 'secured', [], null, null, true, null, 'foo:foopass'],
         ];
     }
 }
