@@ -12,14 +12,14 @@ class InMemoryRoleManager extends AbstractRoleManager
     /**
      * @var array $attributes
      */
-    protected $attributes = array();
+    protected $attributes = [];
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->attributes = array();
+        $this->attributes = [];
     }
 
     /**

@@ -10,10 +10,10 @@ namespace Crocos\SecurityBundle\Security\HttpAuth;
 interface HttpAuthFactoryInterface
 {
     /**
-     * @param string $type
-     * @param string $value
-     * @param string $domain
+     * @param  string            $type
+     * @param  string            $value
+     * @param  string            $domain
      * @return HttpAuthInterface
      */
-    function create($type, $value, $domain);
+    public function create($type, $value, $domain);
 }

@@ -38,8 +38,8 @@ class AuthListener
     /**
      * Constructor.
      *
-     * @param SecurityContext $context
-     * @param AuthCheckerInterface $checker
+     * @param SecurityContext             $context
+     * @param AuthCheckerInterface        $checker
      * @param ControllerResolverInterface $resolver
      */
     public function __construct(SecurityContext $context, AuthCheckerInterface $checker, ControllerResolverInterface $resolver)

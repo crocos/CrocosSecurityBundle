@@ -12,44 +12,44 @@ interface RoleManagerInterface
     /**
      * @param string $domain
      */
-    function setDomain($domain);
+    public function setDomain($domain);
 
     /**
      * @param array|string $roles
      */
-    function hasRole($roles);
+    public function hasRole($roles);
 
     /**
      * @param array $roles
      */
-    function setRoles($roles);
+    public function setRoles($roles);
 
     /**
      * @param array $roles
      */
-    function addRoles($roles);
+    public function addRoles($roles);
 
     /**
      * @return array $roles
      */
-    function getRoles();
+    public function getRoles();
 
     /**
      * Clear roles.
      */
-    function clearRoles();
+    public function clearRoles();
 
     /**
      * Is role preloaded?
      *
      * @return boolean
      */
-    function isPreloaded();
+    public function isPreloaded();
 
     /**
      * Set preloaded flag.
      *
      * @param boolean $bool
      */
-    function setPreloaded($preloaded = true);
+    public function setPreloaded($preloaded = true);
 }

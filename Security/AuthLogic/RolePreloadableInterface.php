@@ -14,12 +14,12 @@ interface RolePreloadableInterface
      *
      * @return boolean
      */
-    function isRolePreloadable();
+    public function isRolePreloadable();
 
     /**
      * Preload roles.
      *
      * @return array
      */
-    function preloadRoles();
+    public function preloadRoles();
 }

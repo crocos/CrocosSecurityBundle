@@ -22,7 +22,7 @@ class SessionEntityAuth extends SessionAuth
     /**
      * Constructor.
      *
-     * @param SessionInterface $session
+     * @param SessionInterface  $session
      * @param RegistryInterface $managerRegistry
      */
     public function __construct(SessionInterface $session, RegistryInterface $managerRegistry)
@@ -47,11 +47,11 @@ class SessionEntityAuth extends SessionAuth
             throw new \InvalidArgumentException(sprintf('User must implement getId() method'));
         }
 
-        $data = array(
+        $data = [
             'v'     => self::FORMAT_VERSION,
             'class' => $class,
             'id'    => $user->getId(),
-        );
+        ];
 
         return $data;
     }

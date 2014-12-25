@@ -23,7 +23,7 @@ class SecurityContext
     /**
      * @var array
      */
-    protected $allowedRoles = array();
+    protected $allowedRoles = [];
 
     /**
      * @var string
@@ -38,7 +38,7 @@ class SecurityContext
     /**
      * @var options
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * @var string
@@ -82,7 +82,7 @@ class SecurityContext
      */
     public function isSecure()
     {
-        return (bool)$this->secure;
+        return (bool) $this->secure;
     }
 
     /**
@@ -162,7 +162,7 @@ class SecurityContext
      */
     public function setOptions($options)
     {
-        $this->options = (array)$options;
+        $this->options = (array) $options;
     }
 
     /**
@@ -263,7 +263,7 @@ class SecurityContext
     public function getUser()
     {
         if (null === $this->authLogic) {
-            return null;
+            return;
         }
 
         return $this->authLogic->getUser();

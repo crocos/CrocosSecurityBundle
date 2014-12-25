@@ -31,11 +31,11 @@ class SessionEntityAuthTest extends \PHPUnit_Framework_TestCase
 
         $this->auth->login($user);
 
-        Phake::verify($this->session)->set('secured._user', array(
+        Phake::verify($this->session)->set('secured._user', [
             'v'     => SessionEntityAuth::FORMAT_VERSION,
             'class' => get_class($user),
             'id'    => 1,
-        ));
+        ]);
     }
 
     /**
@@ -53,11 +53,11 @@ class SessionEntityAuthTest extends \PHPUnit_Framework_TestCase
         $user = Phake::mock('Crocos\SecurityBundle\Tests\Fixtures\User');
         Phake::when($user)->getId()->thenReturn(1);
 
-        Phake::when($this->session)->get('secured._user', null)->thenReturn(array(
+        Phake::when($this->session)->get('secured._user', null)->thenReturn([
             'v'     => SessionEntityAuth::FORMAT_VERSION,
             'class' => get_class($user),
             'id'    => 1,
-        ));
+        ]);
 
         $repository = $this->setupRepository($user);
         Phake::when($repository)->find(1)->thenReturn($user);
@@ -73,11 +73,11 @@ class SessionEntityAuthTest extends \PHPUnit_Framework_TestCase
         $user = Phake::mock('Crocos\SecurityBundle\Tests\Fixtures\User');
         Phake::when($user)->getId()->thenReturn(1);
 
-        Phake::when($this->session)->get('secured._user', null)->thenReturn(array(
+        Phake::when($this->session)->get('secured._user', null)->thenReturn([
             'v'     => SessionEntityAuth::FORMAT_VERSION,
             'class' => get_class($user),
             'id'    => 1,
-        ));
+        ]);
 
         $repository = $this->setupRepository($user);
         Phake::when($repository)->find(1)->thenReturn(null);
@@ -94,11 +94,11 @@ class SessionEntityAuthTest extends \PHPUnit_Framework_TestCase
         Phake::when($user)->getId()->thenReturn(1);
         Phake::when($user)->isEnabled()->thenReturn(false);
 
-        Phake::when($this->session)->get('secured._user', null)->thenReturn(array(
+        Phake::when($this->session)->get('secured._user', null)->thenReturn([
             'v'     => SessionEntityAuth::FORMAT_VERSION,
             'class' => get_class($user),
             'id'    => 1,
-        ));
+        ]);
 
         $repository = $this->setupRepository($user);
         Phake::when($repository)->find(1)->thenReturn($user);

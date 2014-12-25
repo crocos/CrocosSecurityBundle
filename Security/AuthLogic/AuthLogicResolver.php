@@ -12,12 +12,12 @@ class AuthLogicResolver
     /**
      * @var array
      */
-    protected $authLogics = array();
+    protected $authLogics = [];
 
     /**
      * Register auth logic.
      *
-     * @param string $name
+     * @param string             $name
      * @param AuthLogicInterface $authLogic
      */
     public function registerAuthLogic($name, AuthLogicInterface $authLogic)
@@ -28,7 +28,7 @@ class AuthLogicResolver
     /**
      * Resolve auth logic by name.
      *
-     * @param string $name
+     * @param  string             $name
      * @return AuthLogicInterface
      *
      * @throws \InvalidArgumentException If no auth logic matched given name

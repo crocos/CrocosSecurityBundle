@@ -3,7 +3,6 @@
 namespace Crocos\SecurityBundle\Tests\Security\AuthLogic;
 
 use Crocos\SecurityBundle\Security\AuthLogic\FacebookAuth;
-use Crocos\SecurityBundle\Tests\Fixtures;
 use Phake;
 
 class FacebookAuthTest extends \PHPUnit_Framework_TestCase

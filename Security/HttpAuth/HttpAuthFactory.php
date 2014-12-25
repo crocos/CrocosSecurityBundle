@@ -26,17 +26,17 @@ class HttpAuthFactory implements HttpAuthFactoryInterface
     }
 
     /**
-     * @param string|array $values
-     * @param string $domain
+     * @param  string|array $values
+     * @param  string       $domain
      * @return BasicAuth
      */
     protected function createBasicAuth($values, $domain)
     {
         if (!is_array($values)) {
-            $values = array($values);
+            $values = [$values];
         }
 
-        $users = array();
+        $users = [];
         foreach ($values as $value) {
             $secret = explode(':', $value);
             if (count($secret) != 2) {

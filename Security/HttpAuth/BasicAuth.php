@@ -26,7 +26,7 @@ class BasicAuth implements HttpAuthInterface
     /**
      * Constructor.
      *
-     * @param array $users
+     * @param array  $users
      * @param string $realm
      */
     public function __construct(array $users, $realm)

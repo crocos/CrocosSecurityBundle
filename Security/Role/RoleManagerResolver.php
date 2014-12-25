@@ -12,12 +12,12 @@ class RoleManagerResolver
     /**
      * @var array
      */
-    protected $roleManagers = array();
+    protected $roleManagers = [];
 
     /**
      * Register role manager.
      *
-     * @param string $name
+     * @param string               $name
      * @param RoleManagerInterface $roleManager
      */
     public function registerRoleManager($name, RoleManagerInterface $roleManager)
@@ -28,7 +28,7 @@ class RoleManagerResolver
     /**
      * Resolve role manager by name.
      *
-     * @param string $name
+     * @param  string               $name
      * @return RoleManagerInterface
      *
      * @throws \InvalidArgumentException If no role manager matched given name

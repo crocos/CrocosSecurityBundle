@@ -12,5 +12,5 @@ interface SecureOptionsAcceptableInterface
     /**
      * @param array $options
      */
-    function setOptions($options);
+    public function setOptions($options);
 }

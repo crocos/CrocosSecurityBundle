@@ -28,7 +28,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
     public function hasRole($roles)
     {
         if (!is_array($roles)) {
-            $roles = array($roles);
+            $roles = [$roles];
         }
 
         if (count($roles) === 0) {
@@ -49,7 +49,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
      */
     public function setRoles($roles)
     {
-        $this->setAttribute('roles', (array)$roles);
+        $this->setAttribute('roles', (array) $roles);
     }
 
     /**
@@ -57,7 +57,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
      */
     public function addRoles($roles)
     {
-        $roles = array_unique(array_merge($this->getRoles(), (array)$roles), SORT_STRING);
+        $roles = array_unique(array_merge($this->getRoles(), (array) $roles), SORT_STRING);
         $this->setRoles($roles);
     }
 
@@ -66,7 +66,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
      */
     public function getRoles()
     {
-        return $this->getAttribute('roles', array());
+        return $this->getAttribute('roles', []);
     }
 
     /**
@@ -74,7 +74,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
      */
     public function clearRoles()
     {
-        $this->setAttribute('roles', array());
+        $this->setAttribute('roles', []);
         $this->setAttribute('preloaded', false);
     }
 
@@ -91,22 +91,22 @@ abstract class AbstractRoleManager implements RoleManagerInterface
      */
     public function setPreloaded($preloaded = true)
     {
-        $this->setAttribute('preloaded', (bool)$preloaded);
+        $this->setAttribute('preloaded', (bool) $preloaded);
     }
 
     /**
      * Set attribute.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     abstract protected function setAttribute($key, $value);
 
     /**
      * Get attribute.
      *
-     * @param string $key
-     * @param mixed $default
+     * @param  string $key
+     * @param  mixed  $default
      * @return mixed
      */
     abstract protected function getAttribute($key, $default = null);

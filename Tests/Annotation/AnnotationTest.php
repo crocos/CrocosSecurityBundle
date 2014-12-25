@@ -11,7 +11,7 @@ class AnnotationTest extends \PHPUnit_Framework_TestCase
      */
     public function testDisabledMagicSet()
     {
-        $annot = Phake::partialMock('Crocos\SecurityBundle\Annotation\Annotation', array());
+        $annot = Phake::partialMock('Crocos\SecurityBundle\Annotation\Annotation', []);
 
         $annot->wozozo = 'unk';
     }
@@ -21,7 +21,7 @@ class AnnotationTest extends \PHPUnit_Framework_TestCase
      */
     public function testDisabledMagicGet()
     {
-        $annot = Phake::partialMock('Crocos\SecurityBundle\Annotation\Annotation', array());
+        $annot = Phake::partialMock('Crocos\SecurityBundle\Annotation\Annotation', []);
 
         $annot->wozozo;
     }

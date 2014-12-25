@@ -4,7 +4,6 @@ namespace Crocos\SecurityBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -22,7 +21,7 @@ class AuthLogicPass implements CompilerPassInterface
         // tags:
         //   - { name: crocos_security.auth_logic, alias: myauth }
         foreach ($container->findTaggedServiceIds('crocos_security.auth_logic') as $id => $attributes) {
-            $definition->addMethodCall('registerAuthLogic', array($attributes[0]['alias'], new Reference($id)));
+            $definition->addMethodCall('registerAuthLogic', [$attributes[0]['alias'], new Reference($id)]);
         }
     }
 }

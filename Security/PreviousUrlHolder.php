@@ -77,9 +77,9 @@ class PreviousUrlHolder
      */
     public function get()
     {
-         $this->session->remove($this->getKey());
+        $this->session->remove($this->getKey());
 
-         return $this->url;
+        return $this->url;
     }
 
     /**

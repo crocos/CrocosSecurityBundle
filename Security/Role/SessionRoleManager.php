@@ -43,7 +43,7 @@ class SessionRoleManager extends AbstractRoleManager
     }
 
     /**
-     * @param string $key
+     * @param  string $key
      * @return string
      */
     protected function computeAttributeKey($key)

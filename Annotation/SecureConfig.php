@@ -44,7 +44,7 @@ class SecureConfig extends Annotation
     /**
      * @var array
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * @return string

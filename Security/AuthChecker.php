@@ -32,7 +32,7 @@ class AuthChecker implements AuthCheckerInterface
     /**
      * Constructor.
      *
-     * @param AnnotationLoader $loader
+     * @param AnnotationLoader            $loader
      * @param ForwardingControllerMatcher $matcher
      */
     public function __construct(AnnotationLoader $loader, ForwardingControllerMatcher $matcher)
@@ -58,7 +58,6 @@ class AuthChecker implements AuthCheckerInterface
         $method = $object->getMethod($_method);
 
         $this->loader->load($context, $object, $method);
-
 
         if ($request !== null) {
             // https

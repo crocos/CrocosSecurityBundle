@@ -25,7 +25,7 @@ class FacebookAuth implements AuthLogicInterface, SecureOptionsAcceptableInterfa
     /**
      * @var array
      */
-    protected $roleLoaders = array();
+    protected $roleLoaders = [];
 
     /**
      * Constructor.
@@ -66,7 +66,7 @@ class FacebookAuth implements AuthLogicInterface, SecureOptionsAcceptableInterfa
      */
     public function isAuthenticated()
     {
-        return (bool)$this->facebook->getUser();
+        return (bool) $this->facebook->getUser();
     }
 
     /**
@@ -82,13 +82,13 @@ class FacebookAuth implements AuthLogicInterface, SecureOptionsAcceptableInterfa
      */
     public function setOptions($options)
     {
-        $this->options = (array)$options;
+        $this->options = (array) $options;
     }
 
     /**
      * Register RoleLoader.
      *
-     * @param string $name
+     * @param string              $name
      * @param RoleLoaderInterface $loader
      */
     public function registerRoleLoader($name, RoleLoaderInterface $loader)
@@ -115,7 +115,7 @@ class FacebookAuth implements AuthLogicInterface, SecureOptionsAcceptableInterfa
      */
     public function preloadRoles()
     {
-        $roles = array();
+        $roles = [];
 
         foreach ($this->roleLoaders as $name => $roleLoader) {
             if (isset($this->options[$name])) {

@@ -9,7 +9,6 @@ use Crocos\SecurityBundle\Annotation\SecureConfig;
 use Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver;
 use Crocos\SecurityBundle\Security\Role\RoleManagerResolver;
 use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactoryInterface;
-use Crocos\SecurityBundle\Security\SecureOptionsAcceptableInterface;
 
 /**
  * AnnotationLoader.
@@ -44,9 +43,9 @@ class AnnotationLoader
     /**
      * Constructor.
      *
-     * @param Reader $reader Annotation reader
-     * @param AuthLogicResolver $resolver
-     * @param RoleManagerResolver $roleManagerResolver
+     * @param Reader                   $reader              Annotation reader
+     * @param AuthLogicResolver        $resolver
+     * @param RoleManagerResolver      $roleManagerResolver
      * @param HttpAuthFactoryInterface $httpAuthFactory
      */
     public function __construct(Reader $reader, AuthLogicResolver $resolver, RoleManagerResolver $roleManagerResolver, HttpAuthFactoryInterface $httpAuthFactory = null)
@@ -60,15 +59,15 @@ class AnnotationLoader
     /**
      * Read security annotation.
      *
-     * @param SecurityContext $context
-     * @param \ReflectionClass $class
+     * @param SecurityContext   $context
+     * @param \ReflectionClass  $class
      * @param \ReflectionMethod $method
      */
     public function load(SecurityContext $context, \ReflectionClass $class, \ReflectionMethod $method)
     {
         // Retrieve all ancestors (parent first)
         $klass = $class;
-        $classes = array($klass);
+        $classes = [$klass];
         while ($klass = $klass->getParentClass()) {
             $classes[] = $klass;
         }
@@ -103,7 +102,7 @@ class AnnotationLoader
      * Load security annotation.
      *
      * @param SecurityContext $context
-     * @param Annotation $annotation
+     * @param Annotation      $annotation
      */
     protected function loadAnnotation(SecurityContext $context, Annotation $annotation)
     {
@@ -118,7 +117,7 @@ class AnnotationLoader
      * Load @Secure annotation.
      *
      * @param SecurityContext $context
-     * @param Secure $annotation
+     * @param Secure          $annotation
      */
     protected function loadSecureAnnotation(SecurityContext $context, Secure $annotation)
     {
@@ -133,7 +132,7 @@ class AnnotationLoader
      * Load @SecureConfig annotation.
      *
      * @param SecurityContext $context
-     * @param SecureConfig $annotation
+     * @param SecureConfig    $annotation
      */
     protected function loadSecureConfigAnnotation(SecurityContext $context, SecureConfig $annotation)
     {
@@ -192,8 +191,8 @@ class AnnotationLoader
      * Load http auth.
      *
      * @param SecurityContext $context
-     * @param string $type
-     * @param string $value
+     * @param string          $type
+     * @param string          $value
      *
      * @see HttpAuthFactoryInterface
      */
