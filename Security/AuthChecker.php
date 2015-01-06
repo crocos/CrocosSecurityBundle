@@ -66,8 +66,12 @@ class AuthChecker implements AuthCheckerInterface
             }
 
             // http auth
-            if ($request && $context->useHttpAuth() && false === $context->getHttpAuth()->authenticate($request)) {
-                throw new HttpAuthException('Authentication required');
+            if ($request && $context->useHttpAuth()) {
+                foreach ($context->getHttpAuths() as $name => $httpAuth) {
+                    if ($httpAuth->authenticate($request) === false) {
+                        throw new HttpAuthException($name, sprintf('HTTP Authentication required "%s"', $name));
+                    }
+                }
             }
         }
 

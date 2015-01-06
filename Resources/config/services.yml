@@ -19,7 +19,6 @@ services:
             - @crocos_security.auth_logic_resolver
             - @crocos_security.role_manager_resolver
         calls:
-            - [ setHttpAuthFactory, [ @crocos_security.http_auth_factory ] ]
             - [ setParameterResolver, [ @crocos_security.container_parameter_resolver ] ]
 
     crocos_security.forwarding_controller_matcher:
@@ -42,11 +41,15 @@ services:
         tags:
             - { name: crocos_security.auth_logic, alias: session }
 
-    crocos_security.http_auth_factory:
-        class: Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactory
+    crocos_security.basic_auth_factory:
+        class: Crocos\SecurityBundle\Security\HttpAuth\BasicAuthFactory
+        tags:
+            - { name: crocos_security.http_auth_factory }
 
     crocos_security.container_parameter_resolver:
         class: Crocos\SecurityBundle\Security\ContainerParameterResolver
+        arguments:
+          - @service_container
 
     crocos_security.role_manager_resolver:
         class: Crocos\SecurityBundle\Security\Role\RoleManagerResolver

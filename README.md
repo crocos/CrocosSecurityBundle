@@ -387,6 +387,19 @@ abstract class AppController extends Controller
 
 なおBasic認証の設定は `Secure` アノテーションの設定とは関連せず、 `basic` 属性が設定されている場合は認証領域内のすべてのアクションでBasic認証が行われます。部分的にBasic認証を無効にしたい場合は `basic` 属性の `false` を設定します。もちろん `auth` や `forward` 属性などを設定することでPHP側での認証も設定可能です。
 
+また、ユーザ名/パスワードはパラメータ形式で指定することも可能です。
+
+```java
+@SecureConfig(domain="admin", basic="%app.basic_auth%")
+```
+
+`app/config/parameters.yml`:
+
+```yaml
+parameters:
+    app.basic_auth: admin:password
+```
+
 
 SecurityContext
 -----------------

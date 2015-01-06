@@ -37,11 +37,6 @@ class SecureConfig extends Annotation
     protected $forward;
 
     /**
-     * @var string|array
-     */
-    protected $basic;
-
-    /**
      * @var array
      */
     protected $options = [];
@@ -84,14 +79,6 @@ class SecureConfig extends Annotation
     public function forward()
     {
         return $this->forward;
-    }
-
-    /**
-     * @return string|array
-     */
-    public function basic()
-    {
-        return $this->basic;
     }
 
     /**
