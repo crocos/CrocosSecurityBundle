@@ -20,51 +20,51 @@ class InMemoryRoleManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testHasRoleReturnsTrueIfEmptyRolesIsPasssed()
     {
-        $this->assertTrue($this->roleManager->hasRole(array()));
+        $this->assertTrue($this->roleManager->hasRole([]));
     }
 
     public function testHasRoleReturnsTrueIfAPassedRoleIsGranted()
     {
-        $this->roleManager->setRoles(array('FOO', 'BAR'));
+        $this->roleManager->setRoles(['FOO', 'BAR']);
 
         $this->assertTrue($this->roleManager->hasRole('FOO'));
     }
 
     public function testHasRoleReturnsTrueIfPassedRolesContainAnyGrantedRole()
     {
-        $this->roleManager->setRoles(array('FOO', 'BAR'));
+        $this->roleManager->setRoles(['FOO', 'BAR']);
 
-        $this->assertTrue($this->roleManager->hasRole(array('BAR', 'BAZ')));
+        $this->assertTrue($this->roleManager->hasRole(['BAR', 'BAZ']));
     }
 
     public function testHasRoleReturnsFalseIfPassedRolesDoesNotContaineGrantedRole()
     {
-        $this->roleManager->setRoles(array('FOO', 'BAR'));
+        $this->roleManager->setRoles(['FOO', 'BAR']);
 
         $this->assertFalse($this->roleManager->hasRole('XYZ'));
     }
 
     public function testSetAndGetRoles()
     {
-        $this->roleManager->setRoles(array('FOO', 'BAR'));
+        $this->roleManager->setRoles(['FOO', 'BAR']);
 
-        $this->assertSame(array('FOO', 'BAR'), $this->roleManager->getRoles());
+        $this->assertSame(['FOO', 'BAR'], $this->roleManager->getRoles());
     }
 
     public function testAddRoles()
     {
-        $this->roleManager->setRoles(array('FOO', 'BAR'));
+        $this->roleManager->setRoles(['FOO', 'BAR']);
         $this->roleManager->addRoles('BAZ');
 
-        $this->assertSame(array('FOO', 'BAR', 'BAZ'), $this->roleManager->getRoles());
+        $this->assertSame(['FOO', 'BAR', 'BAZ'], $this->roleManager->getRoles());
     }
 
     public function testClearRoles()
     {
-        $this->roleManager->setRoles(array('FOO', 'BAR'));
+        $this->roleManager->setRoles(['FOO', 'BAR']);
         $this->roleManager->clearRoles();
 
-        $this->assertSame(array(), $this->roleManager->getRoles());
+        $this->assertSame([], $this->roleManager->getRoles());
     }
 
     public function testPreload()

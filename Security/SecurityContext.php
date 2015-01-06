@@ -23,7 +23,7 @@ class SecurityContext
     /**
      * @var array
      */
-    protected $allowedRoles = array();
+    protected $allowedRoles = [];
 
     /**
      * @var string
@@ -33,12 +33,17 @@ class SecurityContext
     /**
      * @var boolean
      */
+    protected $domainFixed = false;
+
+    /**
+     * @var boolean
+     */
     protected $httpsRequired;
 
     /**
      * @var options
      */
-    protected $options = array();
+    protected $options = [];
 
     /**
      * @var string
@@ -51,9 +56,9 @@ class SecurityContext
     protected $authLogic;
 
     /**
-     * @var HttpAuthInterface
+     * @var HttpAuthInterface[]
      */
-    protected $httpAuth;
+    protected $httpAuths = [];
 
     /**
      * @var RoleManagerInterface
@@ -82,7 +87,7 @@ class SecurityContext
      */
     public function isSecure()
     {
-        return (bool)$this->secure;
+        return (bool) $this->secure;
     }
 
     /**
@@ -162,7 +167,7 @@ class SecurityContext
      */
     public function setOptions($options)
     {
-        $this->options = (array)$options;
+        $this->options = (array) $options;
     }
 
     /**
@@ -211,6 +216,16 @@ class SecurityContext
         if (null !== $this->previousUrlHolder) {
             $this->previousUrlHolder->setup($this->domain);
         }
+
+        $this->domainFixed = true;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isDomainFixed()
+    {
+        return $this->domainFixed;
     }
 
     /**
@@ -263,7 +278,7 @@ class SecurityContext
     public function getUser()
     {
         if (null === $this->authLogic) {
-            return null;
+            return;
         }
 
         return $this->authLogic->getUser();
@@ -276,7 +291,42 @@ class SecurityContext
      */
     public function useHttpAuth()
     {
-        return (null !== $this->httpAuth);
+        return count($this->httpAuths) > 0;
+    }
+
+    /**
+     * Enable http auth.
+     *
+     * @param HttpAuthInterface $httpAuth
+     */
+    public function enableHttpAuth($name, HttpAuthInterface $httpAuth)
+    {
+        $this->httpAuths[$name] = $httpAuth;
+    }
+
+    /**
+     * Get http auth.
+     *
+     * @param  string            $name
+     * @return HttpAuthInterface
+     */
+    public function getHttpAuth($name)
+    {
+        if (!isset($this->httpAuths[$name])) {
+            throw new \InvalidArgumentException(sprintf('Unknown http auth "%s"', $name));
+        }
+
+        return $this->httpAuths[$name];
+    }
+
+    /**
+     * Get http auth array.
+     *
+     * @return HttpAuthInterface[]
+     */
+    public function getHttpAuths()
+    {
+        return $this->httpAuths;
     }
 
     /**
@@ -385,26 +435,6 @@ class SecurityContext
     public function getAuthLogic()
     {
         return $this->authLogic;
-    }
-
-    /**
-     * Set http auth.
-     *
-     * @param HttpAuthInterface $httpAuth
-     */
-    public function setHttpAuth(HttpAuthInterface $httpAuth = null)
-    {
-        $this->httpAuth = $httpAuth;
-    }
-
-    /**
-     * Get http auth.
-     *
-     * @return HttpAuthInterface
-     */
-    public function getHttpAuth()
-    {
-        return $this->httpAuth;
     }
 
     /**

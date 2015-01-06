@@ -38,8 +38,8 @@ class AuthListener
     /**
      * Constructor.
      *
-     * @param SecurityContext $context
-     * @param AuthCheckerInterface $checker
+     * @param SecurityContext             $context
+     * @param AuthCheckerInterface        $checker
      * @param ControllerResolverInterface $resolver
      */
     public function __construct(SecurityContext $context, AuthCheckerInterface $checker, ControllerResolverInterface $resolver)
@@ -95,11 +95,7 @@ class AuthListener
 
             $response = new RedirectResponse($sslUrl);
         } elseif ($exception instanceof HttpAuthException) {
-            if (!$this->context->useHttpAuth()) {
-                throw new \InvalidArgumentException(sprintf('Caught an HttpAuthException, but http auth not configured'));
-            }
-
-            $response = $this->context->getHttpAuth()->createUnauthorizedResponse($request, $exception);
+            $response = $this->context->getHttpAuth($exception->getName())->createUnauthorizedResponse($request, $exception);
         } else {
             $forwardingController = $this->context->getForwardingController();
             if (null === $forwardingController) {

@@ -32,7 +32,7 @@ class AuthChecker implements AuthCheckerInterface
     /**
      * Constructor.
      *
-     * @param AnnotationLoader $loader
+     * @param AnnotationLoader            $loader
      * @param ForwardingControllerMatcher $matcher
      */
     public function __construct(AnnotationLoader $loader, ForwardingControllerMatcher $matcher)
@@ -59,7 +59,6 @@ class AuthChecker implements AuthCheckerInterface
 
         $this->loader->load($context, $object, $method);
 
-
         if ($request !== null) {
             // https
             if ($this->httpsRequiringEnabled && $context->isHttpsRequired() && !$request->isSecure()) {
@@ -67,8 +66,12 @@ class AuthChecker implements AuthCheckerInterface
             }
 
             // http auth
-            if ($request && $context->useHttpAuth() && false === $context->getHttpAuth()->authenticate($request)) {
-                throw new HttpAuthException('Authentication required');
+            if ($request && $context->useHttpAuth()) {
+                foreach ($context->getHttpAuths() as $name => $httpAuth) {
+                    if ($httpAuth->authenticate($request) === false) {
+                        throw new HttpAuthException($name, sprintf('HTTP Authentication required "%s"', $name));
+                    }
+                }
             }
         }
 

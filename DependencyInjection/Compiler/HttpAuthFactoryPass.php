@@ -8,20 +8,20 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
 /**
- * AuthLogicPass.
+ * HttpAuthFactoryPass.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class AuthLogicPass implements CompilerPassInterface
+class HttpAuthFactoryPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container)
     {
-        $definition = $container->getDefinition('crocos_security.auth_logic_resolver');
+        $definition = $container->getDefinition('crocos_security.annotation_loader');
 
         // tags:
-        //   - { name: crocos_security.auth_logic, alias: myauth }
-        foreach ($container->findTaggedServiceIds('crocos_security.auth_logic') as $id => $attributes) {
-            $definition->addMethodCall('registerAuthLogic', [$attributes[0]['alias'], new Reference($id)]);
+        //   - { name: crocos_security.http_auth_factory }
+        foreach ($container->findTaggedServiceIds('crocos_security.http_auth_factory') as $id => $attributes) {
+            $definition->addMethodCall('addHttpAuthFactory', [new Reference($id)]);
         }
     }
 }

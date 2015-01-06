@@ -4,8 +4,6 @@ namespace Crocos\SecurityBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -23,7 +21,7 @@ class FacebookAuthPass implements CompilerPassInterface
             return;
         }
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../../Resources/config'));
         $loader->load('facebook.yml');
 
         $facebookAuth = $container->getDefinition('crocos_security.auth_logic.facebook');
@@ -31,7 +29,7 @@ class FacebookAuthPass implements CompilerPassInterface
         // tags:
         //   - { name: crocos_security.facebook_role_loader, alias: group }
         foreach ($container->findTaggedServiceIds('crocos_security.facebook_role_loader') as $id => $attributes) {
-            $facebookAuth->addMethodCall('registerRoleLoader', array($attributes[0]['alias'], new Reference($id)));
+            $facebookAuth->addMethodCall('registerRoleLoader', [$attributes[0]['alias'], new Reference($id)]);
         }
     }
 }

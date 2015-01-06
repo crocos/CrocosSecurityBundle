@@ -4,7 +4,6 @@ namespace Crocos\SecurityBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 
@@ -22,7 +21,7 @@ class RoleManagerPass implements CompilerPassInterface
         // tags:
         //   - { name: crocos_security.role_manager, alias: myrolemanager }
         foreach ($container->findTaggedServiceIds('crocos_security.role_manager') as $id => $attributes) {
-            $definition->addMethodCall('registerRoleManager', array($attributes[0]['alias'], new Reference($id)));
+            $definition->addMethodCall('registerRoleManager', [$attributes[0]['alias'], new Reference($id)]);
         }
     }
 }

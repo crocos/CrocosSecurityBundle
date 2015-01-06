@@ -100,7 +100,7 @@ class SessionAuth implements AuthLogicInterface
      * Set attribute to session.
      *
      * @param string $key
-     * @param mixed $value
+     * @param mixed  $value
      */
     protected function setAttribute($key, $value)
     {
@@ -112,8 +112,8 @@ class SessionAuth implements AuthLogicInterface
     /**
      * Get attribute from session.
      *
-     * @param string $key
-     * @param mixed $default
+     * @param  string $key
+     * @param  mixed  $default
      * @return mixed
      */
     protected function getAttribute($key, $default = null)
@@ -126,7 +126,7 @@ class SessionAuth implements AuthLogicInterface
     /**
      * sleep user.
      *
-     * @param mixed $user
+     * @param  mixed $user
      * @return mixed sleepd data.
      */
     protected function sleepUser($user)
@@ -137,7 +137,7 @@ class SessionAuth implements AuthLogicInterface
     /**
      * Awake user from sleepd data.
      *
-     * @param mixed $data sleepd data made by sleep()
+     * @param  mixed $data sleepd data made by sleep()
      * @return mixed
      */
     protected function awakeUser($data)

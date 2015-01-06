@@ -12,11 +12,11 @@ interface RoleLoaderInterface
     /**
      * Load roles from Facebook with Graph API or else.
      *
-     * @param \BaceFacebook $facebook
-     * @param array $roleMappings
+     * @param  \BaceFacebook $facebook
+     * @param  array         $roleMappings
      * @return array
      *
      * @throws \RuntimeException
      */
-    function loadRoles(\BaseFacebook $facebook, array $roleMappings);
+    public function loadRoles(\BaseFacebook $facebook, array $roleMappings);
 }

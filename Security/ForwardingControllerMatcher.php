@@ -29,9 +29,9 @@ class ForwardingControllerMatcher
     /**
      * Check given controller is a forwarding controller.
      *
-     * @param SecurityContext $context
-     * @param \ReflectionClass $class
-     * @param \ReflectionMethod $method
+     * @param  SecurityContext   $context
+     * @param  \ReflectionClass  $class
+     * @param  \ReflectionMethod $method
      * @return boolean
      */
     public function isForwardingController(SecurityContext $context, \ReflectionClass $class, \ReflectionMethod $method)

@@ -17,12 +17,12 @@ class AuthException extends \RuntimeException
     /**
      * Constructor.
      *
-     * @param string $message
-     * @param array $attributes
-     * @param integer $code
+     * @param string     $message
+     * @param array      $attributes
+     * @param integer    $code
      * @param \Exception $previous
      */
-    public function __construct($message = '', array $attributes = array(), $code = 0, \Exception $previous = null)
+    public function __construct($message = '', array $attributes = [], $code = 0, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
 

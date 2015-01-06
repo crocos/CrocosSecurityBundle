@@ -12,6 +12,10 @@ class GroupRoleLoaderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        if (!class_exists('BaseFacebook')) {
+            $this->markTestSkipped('Facebook is not available.');
+        }
+
         $this->facebook = Phake::mock('BaseFacebook');
         $this->loader = new GroupRoleLoader();
     }
@@ -21,9 +25,9 @@ class GroupRoleLoaderTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->facebook)->getUser()->thenReturn('12345');
         Phake::when($this->facebook)->api('12345/groups')->thenReturn($this->getGroups());
 
-        $roles = $this->loader->loadRoles($this->facebook, array('10000001' => 'FOO', '10000002' => 'BAR'));
+        $roles = $this->loader->loadRoles($this->facebook, ['10000001' => 'FOO', '10000002' => 'BAR']);
 
-        $this->assertEquals(array('FOO', 'BAR'), $roles);
+        $this->assertEquals(['FOO', 'BAR'], $roles);
     }
 
     public function testLoadRolesReturnsEmptyRolesIfUserHasNoMatchedGroups()
@@ -31,23 +35,23 @@ class GroupRoleLoaderTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->facebook)->getUser()->thenReturn('12345');
         Phake::when($this->facebook)->api('12345/groups')->thenReturn($this->getGroups());
 
-        $roles = $this->loader->loadRoles($this->facebook, array('10000003' => 'BAZ'));
+        $roles = $this->loader->loadRoles($this->facebook, ['10000003' => 'BAZ']);
 
-        $this->assertEquals(array(), $roles);
+        $this->assertEquals([], $roles);
     }
 
     public function testLoadRolesReturnsEmptyRolesIfNotUserLoggedIn()
     {
         Phake::when($this->facebook)->getUser()->thenReturn('0');
 
-        $roles = $this->loader->loadRoles($this->facebook, array('10000001' => 'FOO', '10000002' => 'BAR'));
+        $roles = $this->loader->loadRoles($this->facebook, ['10000001' => 'FOO', '10000002' => 'BAR']);
 
-        $this->assertEquals(array(), $roles);
+        $this->assertEquals([], $roles);
         Phake::verify($this->facebook, Phake::times(0))->api('12345/groups');
     }
 
     protected function getGroups()
     {
-        return include __DIR__.'/../../../Fixtures/fb_groups.php';
+        return include __DIR__ . '/../../../Fixtures/fb_groups.php';
     }
 }

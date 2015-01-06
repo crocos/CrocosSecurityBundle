@@ -11,13 +11,13 @@ interface AuthCheckerInterface
      * Authenticate user.
      *
      * @param SecurityContext $context
-     * @param object $object
-     * @param string $method
-     * @param Request $request
+     * @param object          $object
+     * @param string          $method
+     * @param Request         $request
      *
      * @throws AuthException If user doesn't authenticated
      */
-    function authenticate(SecurityContext $context, $_object, $_method, Request $request = null);
+    public function authenticate(SecurityContext $context, $_object, $_method, Request $request = null);
 
     /**
      * Authorize
@@ -26,5 +26,5 @@ interface AuthCheckerInterface
      *
      * @throws AuthException If user doesn't authorized
      */
-    function authorize(SecurityContext $context);
+    public function authorize(SecurityContext $context);
 }

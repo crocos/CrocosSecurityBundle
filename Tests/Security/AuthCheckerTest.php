@@ -82,15 +82,17 @@ class AuthCheckerTest extends \PHPUnit_Framework_TestCase
         Phake::when($httpAuth)->authenticate($request)->thenReturn(false);
 
         Phake::when($this->context)->useHttpAuth()->thenReturn(true);
-        Phake::when($this->context)->getHttpAuth()->thenReturn($httpAuth);
+        Phake::when($this->context)->getHttpAuths()->thenReturn([
+            'test' => $httpAuth,
+        ]);
 
         $this->checker->authenticate($this->context, $this->object, $this->method, $request);
     }
 
     public function testAuthorizeDoesNotThrowAuthExceptionIfHasAllowedRoles()
     {
-        Phake::when($this->context)->getAllowedRoles()->thenReturn(array('FOO'));
-        Phake::when($this->context)->hasRole(array('FOO'))->thenReturn(true);
+        Phake::when($this->context)->getAllowedRoles()->thenReturn(['FOO']);
+        Phake::when($this->context)->hasRole(['FOO'])->thenReturn(true);
 
         $this->checker->authorize($this->context);
     }
@@ -100,8 +102,8 @@ class AuthCheckerTest extends \PHPUnit_Framework_TestCase
      */
     public function testAuthorizeThrowsAuthExceptionIfHasNotAllowedRoles()
     {
-        Phake::when($this->context)->getAllowedRoles()->thenReturn(array('FOO'));
-        Phake::when($this->context)->hasRole(array('FOO'))->thenReturn(false);
+        Phake::when($this->context)->getAllowedRoles()->thenReturn(['FOO']);
+        Phake::when($this->context)->hasRole(['FOO'])->thenReturn(false);
 
         $this->checker->authorize($this->context);
     }

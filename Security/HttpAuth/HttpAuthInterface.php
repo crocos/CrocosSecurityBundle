@@ -16,17 +16,17 @@ interface HttpAuthInterface
     /**
      * Authenticate request.
      *
-     * @param Request $request
+     * @param  Request $request
      * @return bool
      */
-    function authenticate(Request $request);
+    public function authenticate(Request $request);
 
     /**
      * Create 401 Unauthorized response.
      *
-     * @param Request $request
-     * @param HttpAuthException $exception
+     * @param  Request           $request
+     * @param  HttpAuthException $exception
      * @return Response
      */
-    function createUnauthorizedResponse(Request $request, HttpAuthException $exception);
+    public function createUnauthorizedResponse(Request $request, HttpAuthException $exception);
 }

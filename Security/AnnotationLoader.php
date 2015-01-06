@@ -9,7 +9,7 @@ use Crocos\SecurityBundle\Annotation\SecureConfig;
 use Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver;
 use Crocos\SecurityBundle\Security\Role\RoleManagerResolver;
 use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactoryInterface;
-use Crocos\SecurityBundle\Security\SecureOptionsAcceptableInterface;
+use SplPriorityQueue;
 
 /**
  * AnnotationLoader.
@@ -37,38 +37,62 @@ class AnnotationLoader
     protected $roleManagerResolver;
 
     /**
-     * @var HttpAuthFactoryInterface
+     * @var SplPriorityQueue
      */
-    protected $httpAuthFactory;
+    protected $httpAuthFactories;
+
+    /**
+     * @var ParameterResolverInterface
+     */
+    protected $parameterResolver;
 
     /**
      * Constructor.
      *
-     * @param Reader $reader Annotation reader
-     * @param AuthLogicResolver $resolver
+     * @param Reader              $reader              Annotation reader
+     * @param AuthLogicResolver   $resolver
      * @param RoleManagerResolver $roleManagerResolver
-     * @param HttpAuthFactoryInterface $httpAuthFactory
      */
-    public function __construct(Reader $reader, AuthLogicResolver $resolver, RoleManagerResolver $roleManagerResolver, HttpAuthFactoryInterface $httpAuthFactory = null)
+    public function __construct(Reader $reader, AuthLogicResolver $resolver, RoleManagerResolver $roleManagerResolver)
     {
         $this->reader = $reader;
         $this->resolver = $resolver;
         $this->roleManagerResolver = $roleManagerResolver;
-        $this->httpAuthFactory = $httpAuthFactory;
+        $this->httpAuthFactories = new SplPriorityQueue();
+    }
+
+    /**
+     * Add http auth factory.
+     *
+     * @param HttpAuthFactoryInterface $httpAuthFactory
+     */
+    public function addHttpAuthFactory(HttpAuthFactoryInterface $httpAuthFactory)
+    {
+        $this->httpAuthFactories->insert($httpAuthFactory, $httpAuthFactory->getPriority());
+
+        SecureConfig::extendAttrs([$httpAuthFactory->getName() => null]);
+    }
+
+    /**
+     * @param ParameterResolverInterface $parameterResolver
+     */
+    public function setParameterResolver(ParameterResolverInterface $parameterResolver)
+    {
+        $this->parameterResolver = $parameterResolver;
     }
 
     /**
      * Read security annotation.
      *
-     * @param SecurityContext $context
-     * @param \ReflectionClass $class
+     * @param SecurityContext   $context
+     * @param \ReflectionClass  $class
      * @param \ReflectionMethod $method
      */
     public function load(SecurityContext $context, \ReflectionClass $class, \ReflectionMethod $method)
     {
         // Retrieve all ancestors (parent first)
         $klass = $class;
-        $classes = array($klass);
+        $classes = [$klass];
         while ($klass = $klass->getParentClass()) {
             $classes[] = $klass;
         }
@@ -103,7 +127,7 @@ class AnnotationLoader
      * Load security annotation.
      *
      * @param SecurityContext $context
-     * @param Annotation $annotation
+     * @param Annotation      $annotation
      */
     protected function loadAnnotation(SecurityContext $context, Annotation $annotation)
     {
@@ -118,7 +142,7 @@ class AnnotationLoader
      * Load @Secure annotation.
      *
      * @param SecurityContext $context
-     * @param Secure $annotation
+     * @param Secure          $annotation
      */
     protected function loadSecureAnnotation(SecurityContext $context, Secure $annotation)
     {
@@ -133,7 +157,7 @@ class AnnotationLoader
      * Load @SecureConfig annotation.
      *
      * @param SecurityContext $context
-     * @param SecureConfig $annotation
+     * @param SecureConfig    $annotation
      */
     protected function loadSecureConfigAnnotation(SecurityContext $context, SecureConfig $annotation)
     {
@@ -142,28 +166,26 @@ class AnnotationLoader
         }
 
         if (null !== $annotation->httpsRequired()) {
-            $context->setHttpsRequired($annotation->httpsRequired());
+            $context->setHttpsRequired($this->resolveParameter($annotation->httpsRequired()));
         }
 
         if (null !== $annotation->options()) {
-            $context->setOptions($annotation->options());
+            $context->setOptions($this->resolveParameter($annotation->options()));
         }
 
         if (null !== $annotation->auth()) {
-            $context->setAuthLogic($this->resolver->resolveAuthLogic($annotation->auth()));
+            $context->setAuthLogic($this->resolveParameter($this->resolver->resolveAuthLogic($annotation->auth())));
         }
 
         if (null !== $annotation->roleManager()) {
-            $context->setRoleManager($this->roleManagerResolver->resolveRoleManager($annotation->roleManager()));
+            $context->setRoleManager($this->roleManagerResolver->resolveRoleManager($this->resolveParameter($annotation->roleManager())));
         }
 
         if (null !== $annotation->forward()) {
-            $context->setForwardingController($annotation->forward());
+            $context->setForwardingController($this->resolveParameter($annotation->forward()));
         }
 
-        if (null !== $annotation->basic()) {
-            $this->loadHttpAuth($context, 'basic', $annotation->basic());
-        }
+        $this->loadHttpAuth($context, $annotation);
     }
 
     /**
@@ -192,19 +214,49 @@ class AnnotationLoader
      * Load http auth.
      *
      * @param SecurityContext $context
-     * @param string $type
-     * @param string $value
-     *
-     * @see HttpAuthFactoryInterface
+     * @param SecureConfig    $annotation
      */
-    protected function loadHttpAuth(SecurityContext $context, $type, $value)
+    protected function loadHttpAuth(SecurityContext $context, SecureConfig $annotation)
     {
-        if (null === $this->httpAuthFactory) {
+        if (count($this->httpAuthFactories) === 0) {
             return;
         }
 
-        $httpAuth = $this->httpAuthFactory->create($type, $value, $context->getDomain());
+        foreach ($this->httpAuthFactories as $httpAuthFactory) {
+            $name = $httpAuthFactory->getName();
+            $value = $annotation->{$name}();
+            if ($value === null) {
+                continue;
+            }
 
-        $context->setHttpAuth($httpAuth);
+            $value = $this->resolveParameter($value);
+            if (in_array($value, [null, false, '', []], true)) {
+                continue;
+            }
+
+            $httpAuth = $httpAuthFactory->create($value, $context->getDomain());
+            if ($httpAuth) {
+                $context->enableHttpAuth($name, $httpAuth);
+            }
+        }
+    }
+
+    /**
+     * Parse parameter.
+     *
+     * @param  string $value
+     * @return string
+     */
+    protected function resolveParameter($value)
+    {
+        if ($this->parameterResolver === null) {
+            return $value;
+        }
+
+        if (!is_string($value)) {
+            return $value;
+        }
+
+        return $this->parameterResolver->resolveValue($value);
     }
 }

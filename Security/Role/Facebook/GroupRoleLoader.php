@@ -16,7 +16,7 @@ class GroupRoleLoader implements RoleLoaderInterface
     {
         $user = $facebook->getUser();
         if (!$user) {
-            return array();
+            return [];
         }
 
         try {
@@ -25,7 +25,7 @@ class GroupRoleLoader implements RoleLoaderInterface
             throw new \RuntimeException('Cannot fetch groups', 0, $e);
         }
 
-        $roles = array();
+        $roles = [];
         if (isset($result['data'])) {
             foreach ($result['data'] as $group) {
                 if (isset($roleMappings[$group['id']])) {

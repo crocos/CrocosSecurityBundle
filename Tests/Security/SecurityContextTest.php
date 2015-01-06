@@ -2,7 +2,6 @@
 
 namespace Crocos\SecurityBundle\Tests\Security;
 
-use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Security\SecurityContext;
 use Crocos\SecurityBundle\Tests\Fixtures;
 use Phake;
@@ -49,9 +48,9 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
 
     public function testSetAllowedRoles()
     {
-        $this->context->setAllowedRoles(array('FOO', 'BAR'));
+        $this->context->setAllowedRoles(['FOO', 'BAR']);
 
-        $this->assertEquals(array('FOO', 'BAR'), $this->context->getAllowedRoles());
+        $this->assertEquals(['FOO', 'BAR'], $this->context->getAllowedRoles());
     }
 
     public function testSetDomain()
@@ -136,7 +135,7 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('http://example.com/previous', $this->context->getPreviousUrl());
     }
 
-    public function testUnuseHttpAuthByDefault()
+    public function testUseHttpAuthReturnsFalseByDefault()
     {
         $this->assertFalse($this->context->useHttpAuth());
     }
@@ -144,9 +143,18 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
     public function testUseHttpAuth()
     {
         $httpAuth = Phake::mock('Crocos\SecurityBundle\Security\HttpAuth\HttpAuthInterface');
-        $this->context->setHttpAuth($httpAuth);
+        $this->context->enableHttpAuth('test', $httpAuth);
 
         $this->assertTrue($this->context->useHttpAuth());
+    }
+
+    public function testGetHttpAuth()
+    {
+        $httpAuth = Phake::mock('Crocos\SecurityBundle\Security\HttpAuth\HttpAuthInterface');
+        $this->context->enableHttpAuth('test', $httpAuth);
+
+        $this->assertEquals($httpAuth, $this->context->getHttpAuth('test'));
+        $this->assertEquals(['test' => $httpAuth], $this->context->getHttpAuths());
     }
 
     /**
@@ -197,9 +205,9 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
 
         $this->context->setRoleManager($manager);
 
-        $this->context->setRoles(array('FOO', 'BAR'));
+        $this->context->setRoles(['FOO', 'BAR']);
 
-        Phake::verify($manager)->setRoles(array('FOO', 'BAR'));
+        Phake::verify($manager)->setRoles(['FOO', 'BAR']);
     }
 
     public function testAddRoles()
@@ -208,19 +216,19 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
 
         $this->context->setRoleManager($manager);
 
-        $this->context->addRoles(array('FOO', 'BAR'));
+        $this->context->addRoles(['FOO', 'BAR']);
 
-        Phake::verify($manager)->addRoles(array('FOO', 'BAR'));
+        Phake::verify($manager)->addRoles(['FOO', 'BAR']);
     }
 
     public function testGetRoles()
     {
         $manager = Phake::mock('Crocos\SecurityBundle\Security\Role\RoleManagerInterface');
-        Phake::when($manager)->getRoles()->thenReturn(array('FOO', 'BAR'));
+        Phake::when($manager)->getRoles()->thenReturn(['FOO', 'BAR']);
 
         $this->context->setRoleManager($manager);
 
-        $this->assertEquals(array('FOO', 'BAR'), $this->context->getRoles());
+        $this->assertEquals(['FOO', 'BAR'], $this->context->getRoles());
     }
 
     public function testFixDomain()

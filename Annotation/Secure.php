@@ -35,7 +35,7 @@ class Secure extends Annotation
     public function allow()
     {
         if (is_string($this->allow)) {
-            $this->allow = (array)$this->allow;
+            $this->allow = (array) $this->allow;
         }
 
         return $this->allow;

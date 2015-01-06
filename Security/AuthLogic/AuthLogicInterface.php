@@ -12,31 +12,31 @@ interface AuthLogicInterface
     /**
      * Set authentication domain.
      */
-    function setDomain($domain);
+    public function setDomain($domain);
 
     /**
      * Log in.
      *
      * @param user $user
      */
-    function login($user);
+    public function login($user);
 
     /**
      * Log out.
      */
-    function logout();
+    public function logout();
 
     /**
      * Check is authenticated.
      *
      * @return boolean
      */
-    function isAuthenticated();
+    public function isAuthenticated();
 
     /**
      * Get user.
      *
      * @return mixed
      */
-    function getUser();
+    public function getUser();
 }

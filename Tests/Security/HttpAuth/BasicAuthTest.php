@@ -6,34 +6,33 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Crocos\SecurityBundle\Security\HttpAuth\BasicAuth;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
-use Phake;
 
 class BasicAuthTest extends \PHPUnit_Framework_TestCase
 {
     public function testAuthenticate()
     {
-        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Secured Area');
+        $basicAuth = new BasicAuth(['foo' => 'foopass'], 'Secured Area');
 
         $this->assertTrue($basicAuth->authenticate($this->request('foo', 'foopass')));
     }
 
     public function testUnauthenticateInvalidUser()
     {
-        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Secured Area');
+        $basicAuth = new BasicAuth(['foo' => 'foopass'], 'Secured Area');
 
         $this->assertFalse($basicAuth->authenticate($this->request('wozozo', 'foopass')));
     }
 
     public function testUnauthenticateInvalidPassword()
     {
-        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Secured Area');
+        $basicAuth = new BasicAuth(['foo' => 'foopass'], 'Secured Area');
 
         $this->assertFalse($basicAuth->authenticate($this->request('foo', 'wozozo')));
     }
 
     public function testAuthenticateMultiUsers()
     {
-        $basicAuth = new BasicAuth(array('foo' => 'foopass', 'bar' => 'barpass'), 'Secured Area');
+        $basicAuth = new BasicAuth(['foo' => 'foopass', 'bar' => 'barpass'], 'Secured Area');
 
         $this->assertTrue($basicAuth->authenticate($this->request('foo', 'foopass')));
         $this->assertTrue($basicAuth->authenticate($this->request('bar', 'barpass')));
@@ -41,7 +40,7 @@ class BasicAuthTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateUnauthorizedResponse()
     {
-        $basicAuth = new BasicAuth(array('foo' => 'foopass'), 'Secured Area');
+        $basicAuth = new BasicAuth(['foo' => 'foopass'], 'Secured Area');
 
         $response = $basicAuth->createUnauthorizedResponse($this->request('foo', 'foopass'), new HttpAuthException('Auth error'));
 
