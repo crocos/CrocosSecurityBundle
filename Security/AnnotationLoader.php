@@ -9,6 +9,7 @@ use Crocos\SecurityBundle\Annotation\SecureConfig;
 use Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver;
 use Crocos\SecurityBundle\Security\Role\RoleManagerResolver;
 use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactoryInterface;
+use SplPriorityQueue;
 
 /**
  * AnnotationLoader.
@@ -36,9 +37,9 @@ class AnnotationLoader
     protected $roleManagerResolver;
 
     /**
-     * @var HttpAuthFactoryInterface
+     * @var SplPriorityQueue
      */
-    protected $httpAuthFactory;
+    protected $httpAuthFactories;
 
     /**
      * @var ParameterResolverInterface
@@ -48,16 +49,16 @@ class AnnotationLoader
     /**
      * Constructor.
      *
-     * @param Reader                   $reader              Annotation reader
-     * @param AuthLogicResolver        $resolver
-     * @param RoleManagerResolver      $roleManagerResolver
-     * @param HttpAuthFactoryInterface $httpAuthFactory
+     * @param Reader              $reader              Annotation reader
+     * @param AuthLogicResolver   $resolver
+     * @param RoleManagerResolver $roleManagerResolver
      */
     public function __construct(Reader $reader, AuthLogicResolver $resolver, RoleManagerResolver $roleManagerResolver)
     {
         $this->reader = $reader;
         $this->resolver = $resolver;
         $this->roleManagerResolver = $roleManagerResolver;
+        $this->httpAuthFactories = new SplPriorityQueue();
     }
 
     /**
@@ -67,7 +68,7 @@ class AnnotationLoader
      */
     public function addHttpAuthFactory(HttpAuthFactoryInterface $httpAuthFactory)
     {
-        $this->httpAuthFactories[$httpAuthFactory->getName()] = $httpAuthFactory;
+        $this->httpAuthFactories->insert($httpAuthFactory, $httpAuthFactory->getPriority());
 
         SecureConfig::extendAttrs([$httpAuthFactory->getName() => null]);
     }
@@ -221,7 +222,8 @@ class AnnotationLoader
             return;
         }
 
-        foreach ($this->httpAuthFactories as $name => $httpAuthFactory) {
+        foreach ($this->httpAuthFactories as $httpAuthFactory) {
+            $name = $httpAuthFactory->getName();
             $value = $annotation->{$name}();
             if ($value === null) {
                 continue;

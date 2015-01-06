@@ -18,6 +18,14 @@ class BasicAuthFactory implements HttpAuthFactoryInterface
     }
 
     /**
+     * {@ihneritdoc}
+     */
+    public function getPriority()
+    {
+        return HttpAuthFactoryInterface::PRIORITY_HIGH;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function create($values, $domain)

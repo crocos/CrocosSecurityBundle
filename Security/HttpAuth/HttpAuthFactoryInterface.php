@@ -9,10 +9,19 @@ namespace Crocos\SecurityBundle\Security\HttpAuth;
  */
 interface HttpAuthFactoryInterface
 {
+    const PRIORITY_HIGH = 20;
+    const PRIORITY_MID  = 10;
+    const PRIORITY_LOW  = 0;
+
     /**
      * @return string
      */
-    public function getName();
+    public function getname();
+
+    /**
+     * @return integer
+     */
+    public function getPriority();
 
     /**
      * @param  string            $value
