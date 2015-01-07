@@ -92,14 +92,14 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
         $event = Phake::mock('Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent');
         $this->fixKernelEventMock($event);
 
-        $exception = new HttpAuthException('error');
+        $exception = new HttpAuthException('basic', 'error');
         Phake::when($event)->getException()->thenReturn($exception);
 
         $httpAuth = Phake::mock('Crocos\SecurityBundle\Security\HttpAuth\HttpAuthInterface');
         $response = new Response('Authentication required', 401);
         Phake::when($httpAuth)->createUnauthorizedResponse($this->request, $exception)->thenReturn($response);
         Phake::when($this->context)->useHttpAuth()->thenReturn(true);
-        Phake::when($this->context)->getHttpAuth()->thenReturn($httpAuth);
+        Phake::when($this->context)->getHttpAuth('basic')->thenReturn($httpAuth);
 
         $listener = new AuthListener($this->context, $this->checker, $this->resolver);
         $listener->onKernelException($event);

@@ -31,5 +31,8 @@
     "autoload": {
         "psr-4": { "Crocos\\SecurityBundle\\": "" }
     },
+    "scripts": {
+        "test": "phpunit"
+    },
     "minimum-stability": "dev"
 }

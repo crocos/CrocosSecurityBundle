@@ -61,11 +61,15 @@ class AnnotationLoader
     }
 
     /**
+     * Add http auth factory.
+     *
      * @param HttpAuthFactoryInterface $httpAuthFactory
      */
-    public function setHttpAuthFactory(HttpAuthFactoryInterface $httpAuthFactory = null)
+    public function addHttpAuthFactory(HttpAuthFactoryInterface $httpAuthFactory)
     {
-        $this->httpAuthFactory = $httpAuthFactory;
+        $this->httpAuthFactories[$httpAuthFactory->getName()] = $httpAuthFactory;
+
+        SecureConfig::extendAttrs([$httpAuthFactory->getName() => null]);
     }
 
     /**
@@ -180,9 +184,7 @@ class AnnotationLoader
             $context->setForwardingController($this->resolveParameter($annotation->forward()));
         }
 
-        if (null !== $annotation->basic()) {
-            $this->loadHttpAuth($context, 'basic', $this->resolveParameter($annotation->basic()));
-        }
+        $this->loadHttpAuth($context, $annotation);
     }
 
     /**
@@ -211,20 +213,30 @@ class AnnotationLoader
      * Load http auth.
      *
      * @param SecurityContext $context
-     * @param string          $type
-     * @param string          $value
-     *
-     * @see HttpAuthFactoryInterface
+     * @param SecureConfig    $annotation
      */
-    protected function loadHttpAuth(SecurityContext $context, $type, $value)
+    protected function loadHttpAuth(SecurityContext $context, SecureConfig $annotation)
     {
-        if (null === $this->httpAuthFactory) {
+        if (count($this->httpAuthFactories) === 0) {
             return;
         }
 
-        $httpAuth = $this->httpAuthFactory->create($type, $value, $context->getDomain());
+        foreach ($this->httpAuthFactories as $name => $httpAuthFactory) {
+            $value = $annotation->{$name}();
+            if ($value === null) {
+                continue;
+            }
 
-        $context->setHttpAuth($httpAuth);
+            $value = $this->resolveParameter($value);
+            if (in_array($value, [null, false, '', []], true)) {
+                continue;
+            }
+
+            $httpAuth = $httpAuthFactory->create($value, $context->getDomain());
+            if ($httpAuth) {
+                $context->enableHttpAuth($name, $httpAuth);
+            }
+        }
     }
 
     /**

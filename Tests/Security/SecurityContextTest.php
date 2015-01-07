@@ -135,7 +135,7 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('http://example.com/previous', $this->context->getPreviousUrl());
     }
 
-    public function testUnuseHttpAuthByDefault()
+    public function testUseHttpAuthReturnsFalseByDefault()
     {
         $this->assertFalse($this->context->useHttpAuth());
     }
@@ -143,9 +143,18 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
     public function testUseHttpAuth()
     {
         $httpAuth = Phake::mock('Crocos\SecurityBundle\Security\HttpAuth\HttpAuthInterface');
-        $this->context->setHttpAuth($httpAuth);
+        $this->context->enableHttpAuth('test', $httpAuth);
 
         $this->assertTrue($this->context->useHttpAuth());
+    }
+
+    public function testGetHttpAuth()
+    {
+        $httpAuth = Phake::mock('Crocos\SecurityBundle\Security\HttpAuth\HttpAuthInterface');
+        $this->context->enableHttpAuth('test', $httpAuth);
+
+        $this->assertEquals($httpAuth, $this->context->getHttpAuth('test'));
+        $this->assertEquals(['test' => $httpAuth], $this->context->getHttpAuths());
     }
 
     /**

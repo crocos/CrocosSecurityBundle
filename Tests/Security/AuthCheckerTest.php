@@ -82,7 +82,9 @@ class AuthCheckerTest extends \PHPUnit_Framework_TestCase
         Phake::when($httpAuth)->authenticate($request)->thenReturn(false);
 
         Phake::when($this->context)->useHttpAuth()->thenReturn(true);
-        Phake::when($this->context)->getHttpAuth()->thenReturn($httpAuth);
+        Phake::when($this->context)->getHttpAuths()->thenReturn([
+            'test' => $httpAuth,
+        ]);
 
         $this->checker->authenticate($this->context, $this->object, $this->method, $request);
     }

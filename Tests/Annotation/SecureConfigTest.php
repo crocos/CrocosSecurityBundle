@@ -14,7 +14,6 @@ class SecureConfigTest extends \PHPUnit_Framework_TestCase
             'auth'          => 'session',
             'roleManager'   => 'session',
             'forward'       => 'AdminController::loginAction',
-            'basic'         => 'foo:foopass',
         ]);
 
         $this->assertEquals('secured', $secure->domain());
@@ -22,6 +21,5 @@ class SecureConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('session', $secure->auth());
         $this->assertEquals('session', $secure->roleManager());
         $this->assertEquals('AdminController::loginAction', $secure->forward());
-        $this->assertEquals('foo:foopass', $secure->basic());
     }
 }

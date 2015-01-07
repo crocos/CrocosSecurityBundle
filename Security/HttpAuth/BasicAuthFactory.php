@@ -3,37 +3,27 @@
 namespace Crocos\SecurityBundle\Security\HttpAuth;
 
 /**
- * HttpAuthFactory.
+ * BasicAuthFactory.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class HttpAuthFactory implements HttpAuthFactoryInterface
+class BasicAuthFactory implements HttpAuthFactoryInterface
 {
     /**
      * {@inheritDoc}
      */
-    public function create($type, $value, $domain)
+    public function getName()
     {
-        if (null === $value || false === $value) {
-            return;
-        }
-
-        if ('basic' === $type) {
-            return $this->createBasicAuth($value, $domain);
-        } else {
-            throw new \InvalidArgumentException(sprintf('Unknown http auth "%s"', $type));
-        }
+        return 'basic';
     }
 
     /**
-     * @param  string|array $values
-     * @param  string       $domain
-     * @return BasicAuth
+     * {@inheritDoc}
      */
-    protected function createBasicAuth($values, $domain)
+    public function create($values, $domain)
     {
         if (!is_array($values)) {
-            $values = [$values];
+            $values = (array) $values;
         }
 
         $users = [];
