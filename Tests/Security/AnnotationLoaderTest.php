@@ -82,7 +82,6 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
     {
         $uforward = 'Crocos\SecurityBundle\Tests\Fixtures\UserController::loginAction';
         $aforward = 'Crocos\SecurityBundle\Tests\Fixtures\AdminController::loginAction';
-        $fforward = 'Crocos\SecurityBundle\Tests\Fixtures\FacebookController::loginAction';
 
         return [
             // object, method, secure, allow, domain, options, auth, roleManager, https, forward [, basic]
@@ -100,9 +99,6 @@ class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
             [new Fixtures\SuperAdminController(), 'superAction', true, ['superadmin'], 'admin', [], 'session', 'in_memory', true, $aforward],
             [new Fixtures\SuperAdminController(), 'hyperAction', true, ['hyperadmin'], 'admin', [], 'session', 'in_memory', true, $aforward],
             [new Fixtures\SuperAdminController(), 'hyper2Action', true, ['hyper2admin'], 'admin', [], 'session', 'in_memory', true, $aforward],
-
-            // enable roleManager
-            [new Fixtures\FacebookController(), 'securedAction', true, [], 'facebook', ['group' => ['10000001' => 'ADMIN']], 'facebook', 'session', null, $fforward],
 
             // enable basic
             [new Fixtures\BasicSecurityController(), 'securedAction', false, [], 'secured', [], null, null, true, null, 'foo:foopass'],

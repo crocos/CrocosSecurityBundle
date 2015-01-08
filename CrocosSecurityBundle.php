@@ -18,7 +18,6 @@ class CrocosSecurityBundle extends Bundle
         parent::build($container);
 
         $container->addCompilerPass(new Compiler\DoctrineAuthPass());
-        $container->addCompilerPass(new Compiler\FacebookAuthPass());
         $container->addCompilerPass(new Compiler\TwigGlobalPass());
 
         $container->addCompilerPass(new Compiler\AuthLogicPass());

@@ -24,7 +24,6 @@
         "symfony/event-dispatcher": ">=2.1.0@dev",
         "symfony/http-kernel": ">=2.1.0@dev",
         "doctrine/orm": ">=2.2.3",
-        "facebook/php-sdk": "dev-master",
         "phpunit/phpunit": ">=3.7.0",
         "phake/phake": ">=2.0.0@dev"
     },
