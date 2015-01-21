@@ -17,7 +17,7 @@ class Authorizer implements AuthorizerInterface
     public function authorize(SecurityContext $context)
     {
         // authorize
-        if (!$context->hasRole($context->getAllowedRoles())) {
+        if (!$context->hasAllowedRoles()) {
             throw new AuthException('Access not allowed');
         }
     }

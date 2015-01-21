@@ -53,6 +53,18 @@ class SecurityContextTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['FOO', 'BAR'], $this->context->getAllowedRoles());
     }
 
+    public function testHasAllowedRoles()
+    {
+        $manager = Phake::mock('Crocos\SecurityBundle\Security\Role\RoleManagerInterface');
+
+        $this->context->setRoleManager($manager);
+        $this->context->setAllowedRoles(['FOO', 'BAR']);
+
+        Phake::when($manager)->hasRole(['FOO', 'BAR'])->thenReturn(true);
+
+        $this->assertTrue($this->context->hasAllowedRoles());
+    }
+
     public function testSetDomain()
     {
         $this->context->setDomain('private');

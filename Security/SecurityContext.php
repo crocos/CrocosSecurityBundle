@@ -111,6 +111,16 @@ class SecurityContext
     }
 
     /**
+     * Check has all allowed roles?
+     *
+     * @return boolean
+     */
+    public function hasAllowedRoles()
+    {
+        return $this->hasRole($this->getAllowedRoles());
+    }
+
+    /**
      * Set security domain name.
      *
      * @param string domain
