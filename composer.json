@@ -34,5 +34,10 @@
     "scripts": {
         "test": "phpunit"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-develop": "2.x-dev"
+        }
+    },
     "minimum-stability": "dev"
 }
