@@ -3,18 +3,16 @@
 namespace Crocos\SecurityBundle\Tests\Security;
 
 use Symfony\Component\HttpFoundation\Request;
-use Crocos\SecurityBundle\Security\AuthChecker;
+use Crocos\SecurityBundle\Security\Authenticator;
 use Crocos\SecurityBundle\Tests\Fixtures;
 use Phake;
 
-class AuthCheckerTest extends \PHPUnit_Framework_TestCase
+class AuthenticatorTest extends \PHPUnit_Framework_TestCase
 {
     protected $context;
     protected $matcher;
-    protected $checker;
-
-    protected $object;
-    protected $method;
+    protected $authenticator;
+    protected $controller;
 
     protected function setUp()
     {
@@ -24,21 +22,20 @@ class AuthCheckerTest extends \PHPUnit_Framework_TestCase
         $loader = Phake::mock('Crocos\SecurityBundle\Security\AnnotationLoader');
         $matcher = Phake::mock('Crocos\SecurityBundle\Security\ForwardingControllerMatcher');
 
-        $checker = new AuthChecker($loader, $matcher);
+        $authenticator = new Authenticator($loader, $matcher);
 
         $this->context = $context;
         $this->matcher = $matcher;
-        $this->checker = $checker;
+        $this->authenticator = $authenticator;
 
-        $this->object = new Fixtures\UserController();
-        $this->method = 'securedAction';
+        $this->controller = [new Fixtures\UserController(), 'securedAction'];
     }
 
     public function testAuthenticateDoesNotThrowAuthExceptionIfControllerIsNotSecure()
     {
         Phake::when($this->context)->isSecure()->thenReturn(false);
 
-        $this->checker->authenticate($this->context, $this->object, $this->method);
+        $this->authenticator->authenticate($this->context, $this->controller);
     }
 
     /**
@@ -49,7 +46,7 @@ class AuthCheckerTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->context)->isSecure()->thenReturn(true);
         Phake::when($this->context)->isAuthenticated()->thenReturn(false);
 
-        $this->checker->authenticate($this->context, $this->object, $this->method);
+        $this->authenticator->authenticate($this->context, $this->controller);
     }
 
     public function testAuthenticateDoesNotThrowAuthExceptionIfUserIsAlreadyAuthenticated()
@@ -57,18 +54,18 @@ class AuthCheckerTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->context)->isSecure()->thenReturn(true);
         Phake::when($this->context)->isAuthenticated()->thenReturn(true);
 
-        $this->checker->authenticate($this->context, $this->object, $this->method);
+        $this->authenticator->authenticate($this->context, $this->controller);
     }
 
     public function testAuthenticateDoesNotThrowAuthExceptionIfControllerMatchesForwardingController()
     {
         Phake::when($this->context)->isSecure()->thenReturn(true);
 
-        $reflObject = new \ReflectionObject($this->object);
-        $reflMethod = $reflObject->getMethod($this->method);
+        $reflObject = new \ReflectionObject($this->controller[0]);
+        $reflMethod = $reflObject->getMethod($this->controller[1]);
         Phake::when($this->matcher)->isForwardingController($this->context, $reflObject, $reflMethod)->thenReturn(true);
 
-        $this->checker->authenticate($this->context, $this->object, $this->method);
+        $this->authenticator->authenticate($this->context, $this->controller);
     }
 
     /**
@@ -86,25 +83,6 @@ class AuthCheckerTest extends \PHPUnit_Framework_TestCase
             'test' => $httpAuth,
         ]);
 
-        $this->checker->authenticate($this->context, $this->object, $this->method, $request);
-    }
-
-    public function testAuthorizeDoesNotThrowAuthExceptionIfHasAllowedRoles()
-    {
-        Phake::when($this->context)->getAllowedRoles()->thenReturn(['FOO']);
-        Phake::when($this->context)->hasRole(['FOO'])->thenReturn(true);
-
-        $this->checker->authorize($this->context);
-    }
-
-    /**
-     * @expectedException Crocos\SecurityBundle\Exception\AuthException
-     */
-    public function testAuthorizeThrowsAuthExceptionIfHasNotAllowedRoles()
-    {
-        Phake::when($this->context)->getAllowedRoles()->thenReturn(['FOO']);
-        Phake::when($this->context)->hasRole(['FOO'])->thenReturn(false);
-
-        $this->checker->authorize($this->context);
+        $this->authenticator->authenticate($this->context, $this->controller, $request);
     }
 }

@@ -14,7 +14,8 @@ use Phake;
 
 class AuthListenerTest extends \PHPUnit_Framework_TestCase
 {
-    protected $checker;
+    protected $authenticator;
+    protected $authorizer;
     protected $context;
     protected $request;
     protected $resolver;
@@ -24,7 +25,8 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $checker = Phake::mock('Crocos\SecurityBundle\Security\AuthChecker');
+        $authenticator = Phake::mock('Crocos\SecurityBundle\Security\AuthenticatorInterface');
+        $authorizer = Phake::mock('Crocos\SecurityBundle\Security\AuthorizerInterface');
 
         $context = Phake::mock('Crocos\SecurityBundle\Security\SecurityContext');
 
@@ -35,7 +37,8 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
         $kernel = Phake::mock('Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel');
 
-        $this->checker = $checker;
+        $this->authenticator = $authenticator;
+        $this->authorizer = $authorizer;
         $this->context = $context;
         $this->query = $query;
         $this->request = $request;
@@ -51,11 +54,11 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
         $event = Phake::mock('Symfony\Component\HttpKernel\Event\GetResponseEvent');
         $this->fixKernelEventMock($event);
 
-        $listener = new AuthListener($this->context, $this->checker, $this->resolver);
+        $listener = new AuthListener($this->context, $this->authenticator, $this->authorizer, $this->resolver);
         $listener->onKernelRequest($event);
 
-        Phake::verify($this->checker)->authenticate($this->context, $controller[0], $controller[1], $this->request);
-        Phake::verify($this->checker)->authorize($this->context);
+        Phake::verify($this->authenticator)->authenticate($this->context, $controller, $this->request);
+        Phake::verify($this->authorizer)->authorize($this->context);
     }
 
     public function testHandleAuthException()
@@ -76,7 +79,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
         $response = new Response('test');
         Phake::when($controller[0])->forward($forwardingController, $attrs, $this->query)->thenReturn($response);
 
-        $listener = new AuthListener($this->context, $this->checker, $this->resolver);
+        $listener = new AuthListener($this->context, $this->authenticator, $this->authorizer, $this->resolver);
         $listener->onKernelException($event);
 
         Phake::verify($this->context)->setPreviousUrl($this->request->getUri());
@@ -101,7 +104,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
         Phake::when($this->context)->useHttpAuth()->thenReturn(true);
         Phake::when($this->context)->getHttpAuth('basic')->thenReturn($httpAuth);
 
-        $listener = new AuthListener($this->context, $this->checker, $this->resolver);
+        $listener = new AuthListener($this->context, $this->authenticator, $this->authorizer, $this->resolver);
         $listener->onKernelException($event);
 
         Phake::verify($httpAuth)->createUnauthorizedResponse($this->request, $exception);
@@ -120,7 +123,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
         $exception = new HttpsRequiredException();
         Phake::when($event)->getException()->thenReturn($exception);
 
-        $listener = new AuthListener($this->context, $this->checker, $this->resolver);
+        $listener = new AuthListener($this->context, $this->authenticator, $this->authorizer, $this->resolver);
         $listener->onKernelException($event);
 
         Phake::verify($event)->setResponse(Phake::capture($redirectResponse));

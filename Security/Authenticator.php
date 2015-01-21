@@ -8,11 +8,11 @@ use Crocos\SecurityBundle\Exception\HttpAuthException;
 use Crocos\SecurityBundle\Exception\HttpsRequiredException;
 
 /**
- * AuthChecker.
+ * Authenticator.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */
-class AuthChecker implements AuthCheckerInterface
+class Authenticator implements AuthenticatorInterface
 {
     /**
      * @var AnnotationLoader
@@ -42,7 +42,7 @@ class AuthChecker implements AuthCheckerInterface
     }
 
     /**
-     * @param boolean $enabled
+     * {@inheritdoc}
      */
     public function enableHttpsRequiring($enabled)
     {
@@ -52,10 +52,14 @@ class AuthChecker implements AuthCheckerInterface
     /**
      * {@inheritDoc}
      */
-    public function authenticate(SecurityContext $context, $_object, $_method, Request $request = null)
+    public function authenticate(SecurityContext $context, $controller, Request $request = null)
     {
-        $object = new \ReflectionObject($_object);
-        $method = $object->getMethod($_method);
+        if (!is_array($controller) || count($controller) !== 2) {
+            return;
+        }
+
+        $object = new \ReflectionObject($controller[0]);
+        $method = $object->getMethod($controller[1]);
 
         $this->loader->load($context, $object, $method);
 
@@ -83,17 +87,6 @@ class AuthChecker implements AuthCheckerInterface
         // authenticate
         if (!$context->isAuthenticated()) {
             throw new AuthException('Login required');
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function authorize(SecurityContext $context)
-    {
-        // authorize
-        if (!$context->hasRole($context->getAllowedRoles())) {
-            throw new AuthException('Access not allowed');
         }
     }
 }

@@ -10,7 +10,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Crocos\SecurityBundle\Exception\AuthException;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
 use Crocos\SecurityBundle\Exception\HttpsRequiredException;
-use Crocos\SecurityBundle\Security\AuthCheckerInterface;
+use Crocos\SecurityBundle\Security\AuthenticatorInterface;
+use Crocos\SecurityBundle\Security\AuthorizerInterface;
 use Crocos\SecurityBundle\Security\SecurityContext;
 
 /**
@@ -21,14 +22,19 @@ use Crocos\SecurityBundle\Security\SecurityContext;
 class AuthListener
 {
     /**
-     * @var AuthCheckerInterface
-     */
-    protected $checker;
-
-    /**
      * @var SecurityContext
      */
     protected $context;
+
+    /**
+     * @var AuthenticatorInterface
+     */
+    protected $authenticator;
+
+    /**
+     * @var AuthorizerInterface
+     */
+    protected $authorizer;
 
     /**
      * @var ControllerResolverInterface
@@ -39,13 +45,19 @@ class AuthListener
      * Constructor.
      *
      * @param SecurityContext             $context
-     * @param AuthCheckerInterface        $checker
+     * @param AuthenticatorInterface      $authenticator
+     * @param AuthorizerInterface         $authorizer
      * @param ControllerResolverInterface $resolver
      */
-    public function __construct(SecurityContext $context, AuthCheckerInterface $checker, ControllerResolverInterface $resolver)
-    {
+    public function __construct(
+        SecurityContext $context,
+        AuthenticatorInterface $authenticator,
+        AuthorizerInterface $authorizer,
+        ControllerResolverInterface $resolver
+    ) {
         $this->context = $context;
-        $this->checker = $checker;
+        $this->authenticator = $authenticator;
+        $this->authorizer = $authorizer;
         $this->resolver = $resolver;
     }
 
@@ -71,8 +83,8 @@ class AuthListener
         }
 
         // If not authenticated, will be thrown an AuthException
-        $this->checker->authenticate($this->context, $controller[0], $controller[1], $request);
-        $this->checker->authorize($this->context);
+        $this->authenticator->authenticate($this->context, $controller, $request);
+        $this->authorizer->authorize($this->context);
     }
 
     /**

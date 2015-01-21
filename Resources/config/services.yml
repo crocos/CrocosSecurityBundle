@@ -1,19 +1,38 @@
+parameters:
+    crocos_security.context.class: Crocos\SecurityBundle\Security\SecurityContext
+    crocos_security.authenticator.class: Crocos\SecurityBundle\Security\Authenticator
+    crocos_security.authorizer.class: Crocos\SecurityBundle\Security\Authorizer
+    crocos_security.annotation_loader.class: Crocos\SecurityBundle\Security\AnnotationLoader
+    crocos_security.forwarding_controller_matcher.class: Crocos\SecurityBundle\Security\ForwardingControllerMatcher
+    crocos_security.previous_url_holder.class: Crocos\SecurityBundle\Security\PreviousUrlHolder
+    crocos_security.auth_logic_resolver.class: Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver
+    crocos_security.auth_logic.session.class: Crocos\SecurityBundle\Security\AuthLogic\SessionAuth
+    crocos_security.basic_auth_factory.class: Crocos\SecurityBundle\Security\HttpAuth\BasicAuthFactory
+    crocos_security.container_parameter_resolver.class: Crocos\SecurityBundle\Security\ContainerParameterResolver
+    crocos_security.role_manager_resolver.class: Crocos\SecurityBundle\Security\Role\RoleManagerResolver
+    crocos_security.role_manager.session.class: Crocos\SecurityBundle\Security\Role\SessionRoleManager
+    crocos_security.role_manager.in_memory.class: Crocos\SecurityBundle\Security\Role\InMemoryRoleManager
+    crocos_security.auth_listener.class: Crocos\SecurityBundle\EventListener\AuthListener
+
 services:
     crocos_security.context:
-        class: Crocos\SecurityBundle\Security\SecurityContext
+        class: %crocos_security.context.class%
         calls:
             - [ setPreviousUrlHolder, [ @crocos_security.previous_url_holder ] ]
 
-    crocos_security.checker:
-        class: Crocos\SecurityBundle\Security\AuthChecker
+    crocos_security.authenticator:
+        class: %crocos_security.authenticator.class%
         arguments:
             - @crocos_security.annotation_loader
             - @crocos_security.forwarding_controller_matcher
         calls:
-            - [ enableHttpsRequiring , [ %crocos_security.checker.https_requiring% ] ]
+            - [ enableHttpsRequiring , [ %crocos_security.https_requiring% ] ]
+
+    crocos_security.authorizer:
+        class: %crocos_security.authorizer.class%
 
     crocos_security.annotation_loader:
-        class: Crocos\SecurityBundle\Security\AnnotationLoader
+        class: %crocos_security.annotation_loader.class%
         arguments:
             - @annotation_reader
             - @crocos_security.auth_logic_resolver
@@ -22,46 +41,58 @@ services:
             - [ setParameterResolver, [ @crocos_security.container_parameter_resolver ] ]
 
     crocos_security.forwarding_controller_matcher:
-        class: Crocos\SecurityBundle\Security\ForwardingControllerMatcher
+        class: %crocos_security.forwarding_controller_matcher.class%
         arguments:
             - @controller_name_converter
 
     crocos_security.previous_url_holder:
-        class: Crocos\SecurityBundle\Security\PreviousUrlHolder
+        class: %crocos_security.previous_url_holder.class%
         arguments:
             - @session
 
     crocos_security.auth_logic_resolver:
-        class: Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver
+        class: %crocos_security.auth_logic_resolver.class%
 
     crocos_security.auth_logic.session:
-        class: Crocos\SecurityBundle\Security\AuthLogic\SessionAuth
+        class: %crocos_security.auth_logic.session.class%
         arguments:
             - @session
         tags:
             - { name: crocos_security.auth_logic, alias: session }
 
     crocos_security.basic_auth_factory:
-        class: Crocos\SecurityBundle\Security\HttpAuth\BasicAuthFactory
+        class: %crocos_security.basic_auth_factory.class%
         tags:
             - { name: crocos_security.http_auth_factory }
 
     crocos_security.container_parameter_resolver:
-        class: Crocos\SecurityBundle\Security\ContainerParameterResolver
+        class: %crocos_security.container_parameter_resolver.class%
         arguments:
           - @service_container
 
     crocos_security.role_manager_resolver:
-        class: Crocos\SecurityBundle\Security\Role\RoleManagerResolver
+        class: %crocos_security.role_manager_resolver.class%
 
     crocos_security.role_manager.session:
-        class: Crocos\SecurityBundle\Security\Role\SessionRoleManager
+        class: %crocos_security.role_manager.session.class%
         arguments:
             - @session
         tags:
             - { name: crocos_security.role_manager, alias: session }
 
     crocos_security.role_manager.in_memory:
-        class: Crocos\SecurityBundle\Security\Role\InMemoryRoleManager
+        class: %crocos_security.role_manager.in_memory.class%
         tags:
             - { name: crocos_security.role_manager, alias: in_memory }
+
+    # EventListener
+    crocos_security.auth_listener:
+        class: %crocos_security.auth_listener.class%
+        arguments:
+            - @crocos_security.context
+            - @crocos_security.authenticator
+            - @crocos_security.authorizer
+            - @controller_resolver
+        tags:
+            - { name: kernel.event_listener, event: kernel.request }
+            - { name: kernel.event_listener, event: kernel.exception }

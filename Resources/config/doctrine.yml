@@ -1,6 +1,9 @@
+parameters:
+    crocos_security.auth_logic.session_entity.class: Crocos\SecurityBundle\Security\AuthLogic\SessionEntityAuth
+
 services:
     crocos_security.auth_logic.session_entity:
-        class: Crocos\SecurityBundle\Security\AuthLogic\SessionEntityAuth
+        class: %crocos_security.auth_logic.session_entity.class%
         arguments:
             - @session
             - @doctrine
