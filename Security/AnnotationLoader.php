@@ -69,8 +69,6 @@ class AnnotationLoader
     public function addHttpAuthFactory(HttpAuthFactoryInterface $httpAuthFactory)
     {
         $this->httpAuthFactories->insert($httpAuthFactory, $httpAuthFactory->getPriority());
-
-        SecureConfig::extendAttrs([$httpAuthFactory->getName() => null]);
     }
 
     /**

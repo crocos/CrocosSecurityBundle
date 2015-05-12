@@ -2,54 +2,25 @@
 
 namespace Crocos\SecurityBundle\Tests\Exception;
 
-use Crocos\SecurityBundle\Annotation\Secure;
 use Phake;
 
 class AnnotationTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @expectedException BadMethodCallException
-     */
-    public function testDisabledMagicSet()
+    public function testMagicSet()
     {
         $annot = Phake::partialMock('Crocos\SecurityBundle\Annotation\Annotation', []);
 
         $annot->wozozo = 'unk';
+
+        $this->assertEquals('unk', $annot->wozozo);
+        $this->assertEquals('unk', $annot->wozozo());
     }
 
-    /**
-     * @expectedException BadMethodCallException
-     */
-    public function testDisabledMagicGet()
+    public function testMagicGetReturnsNullByDefault()
     {
         $annot = Phake::partialMock('Crocos\SecurityBundle\Annotation\Annotation', []);
 
-        $annot->wozozo;
-    }
-
-    /**
-     * @expectedException BadMethodCallException
-     */
-    public function testCall()
-    {
-        $annot = Phake::partialMock('Crocos\SecurityBundle\Annotation\Annotation', []);
-
-        $annot->wozozo();
-    }
-
-    public function testExtendAttrsSetsDefault()
-    {
-        Secure::extendAttrs(['ext' => false]);
-
-        $annot = new Secure([]);
-        $this->assertEquals(false, $annot->ext());
-    }
-
-    public function testExtendAttrs()
-    {
-        Secure::extendAttrs(['ext' => false]);
-
-        $annot = new Secure(['ext' => true]);
-        $this->assertEquals(true, $annot->ext());
+        $this->assertNull($annot->wozozo);
+        $this->assertNull($annot->wozozo());
     }
 }

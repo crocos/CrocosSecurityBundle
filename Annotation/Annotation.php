@@ -9,8 +9,6 @@ namespace Crocos\SecurityBundle\Annotation;
  */
 abstract class Annotation
 {
-    protected static $extendedAttrs = [];
-
     /**
      * Constructor.
      *
@@ -28,13 +26,9 @@ abstract class Annotation
      */
     public function __set($property, $value)
     {
-        if (isset(self::$extendedAttrs[get_called_class()]) && array_key_exists($property, self::$extendedAttrs[get_called_class()])) {
-            $this->{$property} = $value;
+        $this->{$property} = $value;
 
-            return;
-        }
-
-        throw new \BadMethodCallException(sprintf('Unknown property "%s" given to __set.', $property));
+        return;
     }
 
     /**
@@ -42,29 +36,15 @@ abstract class Annotation
      */
     public function __get($property)
     {
-        if (isset(self::$extendedAttrs[get_called_class()]) && array_key_exists($property, self::$extendedAttrs[get_called_class()])) {
-            return isset($this->{$property}) ? $this->{$property} : self::$extendedAttrs[get_called_class()][$property];
+        if (!isset($this->{$property})) {
+            return;
         }
 
-        throw new \BadMethodCallException(sprintf('Unknown property "%s" given to __get.', $property));
+        return $this->{$property};
     }
 
     public function __call($method, $args)
     {
-        try {
-            return $this->{$method};
-        } catch (\BadMethodCallException $e) {
-            throw new \BadMethodCallException(sprintf('Unknown method "%s".', $method));
-        }
-    }
-
-    public static function extendAttrs($attrs)
-    {
-        $cls = get_called_class();
-        if (isset(self::$extendedAttrs[$cls])) {
-            $attrs = array_merge(self::$extendedAttrs[$cls], $attrs);
-        }
-
-        self::$extendedAttrs[$cls] = $attrs;
+        return $this->{$method};
     }
 }
