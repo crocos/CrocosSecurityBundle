@@ -93,6 +93,7 @@ services:
             - '@crocos_security.authenticator'
             - '@crocos_security.authorizer'
             - '@controller_resolver'
+            - '@http_kernel'
         tags:
             - { name: kernel.event_listener, event: kernel.request }
             - { name: kernel.event_listener, event: kernel.exception }

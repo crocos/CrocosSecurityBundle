@@ -2,17 +2,18 @@
 
 namespace Crocos\SecurityBundle\EventListener;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Crocos\SecurityBundle\Exception\AuthException;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
 use Crocos\SecurityBundle\Exception\HttpsRequiredException;
 use Crocos\SecurityBundle\Security\AuthenticatorInterface;
 use Crocos\SecurityBundle\Security\AuthorizerInterface;
 use Crocos\SecurityBundle\Security\SecurityContext;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
  * AuthListener.
@@ -42,23 +43,31 @@ class AuthListener
     protected $resolver;
 
     /**
+     * @var HttpKernelInterface
+     */
+    protected $httpKernel;
+
+    /**
      * Constructor.
      *
      * @param SecurityContext             $context
      * @param AuthenticatorInterface      $authenticator
      * @param AuthorizerInterface         $authorizer
      * @param ControllerResolverInterface $resolver
+     * @param HttpKernelInterface         $httpKernel
      */
     public function __construct(
         SecurityContext $context,
         AuthenticatorInterface $authenticator,
         AuthorizerInterface $authorizer,
-        ControllerResolverInterface $resolver
+        ControllerResolverInterface $resolver,
+        HttpKernelInterface $httpKernel
     ) {
         $this->context = $context;
         $this->authenticator = $authenticator;
         $this->authorizer = $authorizer;
         $this->resolver = $resolver;
+        $this->httpKernel = $httpKernel;
     }
 
     /**
@@ -117,13 +126,22 @@ class AuthListener
             // Save actual url.
             $this->context->setPreviousUrl($request->getUri());
 
-            $controller = $this->resolver->getController($request);
-            $response = $controller[0]->forward($forwardingController, $exception->getAttributes(), $request->query->all());
+            $response = $this->forward($request, $forwardingController, $exception);
         }
 
         if (null !== $response) {
             $response->headers->set('X-Status-Code', $response->getStatusCode());
             $event->setResponse($response);
         }
+    }
+
+    protected function forward(Request $request, $forwardingController, AuthException $exception)
+    {
+        $path = $exception->getAttributes();
+        $path['_controller'] = $forwardingController;
+
+        $subRequest = $request->duplicate($request->query->all(), null, $path);
+
+        return $this->httpKernel->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
     }
 }

@@ -47,7 +47,7 @@ class ForwardingControllerMatcher
 
         list($forwardingClass, $forwardingMethod) = explode('::', $forwardingController);
 
-        if ($forwardingClass === $class->getName() && $forwardingMethod === $method->getName()) {
+        if ($forwardingClass === $class->name && $forwardingMethod === $method->name) {
             return true;
         }
 
