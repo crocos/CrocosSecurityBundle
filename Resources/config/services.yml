@@ -18,13 +18,13 @@ services:
     crocos_security.context:
         class: %crocos_security.context.class%
         calls:
-            - [ setPreviousUrlHolder, [ @crocos_security.previous_url_holder ] ]
+            - [ setPreviousUrlHolder, [ '@crocos_security.previous_url_holder' ] ]
 
     crocos_security.authenticator:
         class: %crocos_security.authenticator.class%
         arguments:
-            - @crocos_security.annotation_loader
-            - @crocos_security.forwarding_controller_matcher
+            - '@crocos_security.annotation_loader'
+            - '@crocos_security.forwarding_controller_matcher'
         calls:
             - [ enableHttpsRequiring , [ %crocos_security.https_requiring% ] ]
 
@@ -34,21 +34,21 @@ services:
     crocos_security.annotation_loader:
         class: %crocos_security.annotation_loader.class%
         arguments:
-            - @annotation_reader
-            - @crocos_security.auth_logic_resolver
-            - @crocos_security.role_manager_resolver
+            - '@annotation_reader'
+            - '@crocos_security.auth_logic_resolver'
+            - '@crocos_security.role_manager_resolver'
         calls:
-            - [ setParameterResolver, [ @crocos_security.container_parameter_resolver ] ]
+            - [ setParameterResolver, [ '@crocos_security.container_parameter_resolver' ] ]
 
     crocos_security.forwarding_controller_matcher:
         class: %crocos_security.forwarding_controller_matcher.class%
         arguments:
-            - @controller_name_converter
+            - '@controller_name_converter'
 
     crocos_security.previous_url_holder:
         class: %crocos_security.previous_url_holder.class%
         arguments:
-            - @session
+            - '@session'
 
     crocos_security.auth_logic_resolver:
         class: %crocos_security.auth_logic_resolver.class%
@@ -56,7 +56,7 @@ services:
     crocos_security.auth_logic.session:
         class: %crocos_security.auth_logic.session.class%
         arguments:
-            - @session
+            - '@session'
         tags:
             - { name: crocos_security.auth_logic, alias: session }
 
@@ -68,7 +68,7 @@ services:
     crocos_security.container_parameter_resolver:
         class: %crocos_security.container_parameter_resolver.class%
         arguments:
-          - @service_container
+          - '@service_container'
 
     crocos_security.role_manager_resolver:
         class: %crocos_security.role_manager_resolver.class%
@@ -76,7 +76,7 @@ services:
     crocos_security.role_manager.session:
         class: %crocos_security.role_manager.session.class%
         arguments:
-            - @session
+            - '@session'
         tags:
             - { name: crocos_security.role_manager, alias: session }
 
@@ -89,10 +89,10 @@ services:
     crocos_security.auth_listener:
         class: %crocos_security.auth_listener.class%
         arguments:
-            - @crocos_security.context
-            - @crocos_security.authenticator
-            - @crocos_security.authorizer
-            - @controller_resolver
+            - '@crocos_security.context'
+            - '@crocos_security.authenticator'
+            - '@crocos_security.authorizer'
+            - '@controller_resolver'
         tags:
             - { name: kernel.event_listener, event: kernel.request }
             - { name: kernel.event_listener, event: kernel.exception }

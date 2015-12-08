@@ -153,8 +153,7 @@ trueに設定した場合、認証不要であることを表します。初期�
 * default: `"session"`
 
 認証状態の管理方法を指定します。初期値は `"session"` で、セッションを用いて認証状態の管理を行います。
-
-この他にも、FacebookのPHP-SDKの状態と連動させた `"facebook"` などが用意されており、また独自の管理方法を設定することもできます。
+独自の管理方法を設定することもできます。
 
 #### forward
 
@@ -447,7 +446,7 @@ $this->get('crocos_security.context')->isAuthenticated();   // => false
 Auth Logic
 --------------
 
-Auth Logic は認証状態の管理方法を切り替える仕組みです。`Secure` アノテーションの `auth` と対応しています。標準では、セッションを用いて認証状態の管理を行う `SessionAuth` (`auth="session"`)、セッションにエンティティを格納することを考慮した`SessionEntityAuth`、FacebookのPHP-SDKに状態管理を委譲する `FacebookAuth` (`auth="facebook"`) の3つがあります。また、既存の Auth Logic を拡張したり、独自に作成することも可能です。
+Auth Logic は認証状態の管理方法を切り替える仕組みです。`Secure` アノテーションの `auth` と対応しています。標準では、セッションを用いて認証状態の管理を行う `SessionAuth` (`auth="session"`)、セッションにエンティティを格納することを考慮した `SessionEntityAuth` があります。また、既存の Auth Logic を拡張したり、独自に作成することも可能です。
 
 ### SessionAuth
 
@@ -466,18 +465,6 @@ Auth Logic は認証状態の管理方法を切り替える仕組みです。`Se
 `SessionEntityAuth` はログインユーザにエンティティが使用されることを想定したもので、基本的には `SessionAuth` と同等です。`SessionAuth` を用いた場合、ログイン中のユーザ情報はセッションにシリアライズして格納されます。ユーザ情報がオブジェクトの場合、オブジェクトがシリアライズされて保存されます。`SessionEntityAuth` を用いた場合、クラス名とIDのみをセッションへ格納し、アクセスがあるたびにリポジトリからエンティティを取得します。
 
 `SessionEntityAuth` を用いるにあたって、ログイン対象のエンティティには必ず `getId()` メソッドを実装する必要があります。この値はセッションからエンティティを復元する際、リポジトリの `find()` メソッドに渡されます。また、ログイン中のユーザの有効性を確認したい場合、エンティティに `isEnabled()` メソッドを実装することで、エンティティ取得後に有効性の確認が可能です。ログインしていても `isEnabled()` が `false` であれば、ログアウトされます。
-
-### FacebookAuth
-
-```java
-@SecureConfig(auth="facebook")
-```
-
-`FacebookAuth` はFacebookのPHP-SDKを用いて認証を行います。
-
-`login()` および `logout()` メソッドは使用できません。`BaseFacebook::getLoginUrl()` を用いて認証してください。
-
-`FacebookAuth` を利用する場合は、`facebook.api` というキーで `Facebook` オブジェクトをDIコンテナにサービス登録してください。
 
 ### カスタムAuth Logic
 

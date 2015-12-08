@@ -35,7 +35,7 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
 
         $resolver = Phake::mock('Symfony\Component\HttpKernel\Controller\ControllerResolverInterface');
 
-        $kernel = Phake::mock('Symfony\Component\HttpKernel\DependencyInjection\ContainerAwareHttpKernel');
+        $kernel = Phake::mock('Symfony\Component\HttpKernel\Kernel');
 
         $this->authenticator = $authenticator;
         $this->authorizer = $authorizer;
