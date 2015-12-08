@@ -5,7 +5,7 @@ services:
     crocos_security.auth_logic.session_entity:
         class: %crocos_security.auth_logic.session_entity.class%
         arguments:
-            - @session
-            - @doctrine
+            - '@session'
+            - '@doctrine'
         tags:
             - { name: crocos_security.auth_logic, alias: session.entity }
