@@ -23,8 +23,8 @@
         "symfony/doctrine-bridge": "^3.0",
         "symfony/event-dispatcher": "^3.0",
         "symfony/http-kernel": "^3.0",
-        "doctrine/orm": ">=2.2.3",
-        "phpunit/phpunit": ">=3.7.0",
+        "doctrine/orm": "^2.5",
+        "symfony/phpunit-bridge": "^3.0",
         "phake/phake": ">=2.0.0"
     },
     "autoload": {

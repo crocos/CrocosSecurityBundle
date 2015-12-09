@@ -3,7 +3,7 @@ parameters:
 
 services:
     crocos_security.auth_logic.session_entity:
-        class: %crocos_security.auth_logic.session_entity.class%
+        class: '%crocos_security.auth_logic.session_entity.class%'
         arguments:
             - '@session'
             - '@doctrine'
