@@ -20,9 +20,7 @@ class CrocosSecurityExtensionTest extends \PHPUnit_Framework_TestCase
         $container->getCompilerPassConfig()->setOptimizationPasses([]);
         $container->getCompilerPassConfig()->setRemovingPasses([]);
 
-        $container->addCompilerPass(new Compiler\AuthLogicPass());
-        $container->addCompilerPass(new Compiler\HttpAuthFactoryPass());
-        $container->addCompilerPass(new Compiler\RoleManagerPass());
+        $container->addCompilerPass(new Compiler\SecurityStrategyPass());
 
         $loader = new CrocosSecurityExtension();
         $loader->load($config, $container);
