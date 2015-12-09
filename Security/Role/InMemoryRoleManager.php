@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\Role;
 
 /**
@@ -10,7 +9,7 @@ namespace Crocos\SecurityBundle\Security\Role;
 class InMemoryRoleManager extends AbstractRoleManager
 {
     /**
-     * @var array $attributes
+     * @var array
      */
     protected $attributes = [];
 
@@ -23,7 +22,7 @@ class InMemoryRoleManager extends AbstractRoleManager
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setAttribute($key, $value)
     {
@@ -31,7 +30,7 @@ class InMemoryRoleManager extends AbstractRoleManager
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getAttribute($key, $default = null)
     {

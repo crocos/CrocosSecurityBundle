@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Annotation;
 
 /**
@@ -12,7 +11,7 @@ namespace Crocos\SecurityBundle\Annotation;
 class Secure extends Annotation
 {
     /**
-     * @var boolean
+     * @var bool
      */
     protected $disabled = false;
 
@@ -22,7 +21,7 @@ class Secure extends Annotation
     protected $allow;
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function disabled()
     {

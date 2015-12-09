@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\HttpAuth;
 
 /**
@@ -10,7 +9,7 @@ namespace Crocos\SecurityBundle\Security\HttpAuth;
 class BasicAuthFactory implements HttpAuthFactoryInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -18,7 +17,7 @@ class BasicAuthFactory implements HttpAuthFactoryInterface
     }
 
     /**
-     * {@ihneritdoc}
+     * {@ihneritdoc}.
      */
     public function getPriority()
     {
@@ -26,7 +25,7 @@ class BasicAuthFactory implements HttpAuthFactoryInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function create($values, $domain)
     {

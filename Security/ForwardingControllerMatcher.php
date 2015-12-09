@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security;
 
 use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser;
@@ -29,10 +28,11 @@ class ForwardingControllerMatcher
     /**
      * Check given controller is a forwarding controller.
      *
-     * @param  SecurityContext   $context
-     * @param  \ReflectionClass  $class
-     * @param  \ReflectionMethod $method
-     * @return boolean
+     * @param SecurityContext   $context
+     * @param \ReflectionClass  $class
+     * @param \ReflectionMethod $method
+     *
+     * @return bool
      */
     public function isForwardingController(SecurityContext $context, \ReflectionClass $class, \ReflectionMethod $method)
     {

@@ -1,10 +1,9 @@
 <?php
-
 namespace Crocos\SecurityBundle;
 
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Crocos\SecurityBundle\DependencyInjection\Compiler;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class CrocosSecurityBundle extends Bundle
 {

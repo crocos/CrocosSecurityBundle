@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Fixtures;
 
 use Crocos\SecurityBundle\Security\AuthLogic\AuthLogicInterface;

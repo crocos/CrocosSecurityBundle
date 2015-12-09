@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Security;
 
 use Crocos\SecurityBundle\Security\ContainerParameterResolver;

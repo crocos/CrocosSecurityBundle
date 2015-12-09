@@ -1,9 +1,7 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Security;
 
 use Crocos\SecurityBundle\Security\SecurityContext;
-use Crocos\SecurityBundle\Tests\Fixtures;
 use Phake;
 
 class SecurityContextTest extends \PHPUnit_Framework_TestCase

@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\AuthLogic;
 
 /**
@@ -28,7 +27,8 @@ class AuthLogicResolver
     /**
      * Resolve auth logic by name.
      *
-     * @param  string             $name
+     * @param string $name
+     *
      * @return AuthLogicInterface
      *
      * @throws \InvalidArgumentException If no auth logic matched given name

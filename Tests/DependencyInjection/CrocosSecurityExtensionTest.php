@@ -1,9 +1,8 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\DependencyInjection;
 
-use Crocos\SecurityBundle\DependencyInjection\CrocosSecurityExtension;
 use Crocos\SecurityBundle\DependencyInjection\Compiler;
+use Crocos\SecurityBundle\DependencyInjection\CrocosSecurityExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class CrocosSecurityExtensionTest extends \PHPUnit_Framework_TestCase

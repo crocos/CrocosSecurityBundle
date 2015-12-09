@@ -1,23 +1,26 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\Container;
 
-/**
- * ContainerParameterResolver
- *
- * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
- */
 class ContainerParameterResolver implements ParameterResolverInterface
 {
+    /**
+     * @var Container
+     */
     protected $container;
 
-    public function __construct(ContainerInterface $container)
+    /**
+     * @param Container $container
+     */
+    public function __construct(Container $container)
     {
         $this->container = $container;
     }
 
+    /**
+     * @var mixed
+     */
     public function resolveValue($value)
     {
         return $this->container->getParameterBag()->resolveValue($value);

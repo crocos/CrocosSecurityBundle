@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\Role;
 
 /**
@@ -28,7 +27,8 @@ class RoleManagerResolver
     /**
      * Resolve role manager by name.
      *
-     * @param  string               $name
+     * @param string $name
+     *
      * @return RoleManagerInterface
      *
      * @throws \InvalidArgumentException If no role manager matched given name

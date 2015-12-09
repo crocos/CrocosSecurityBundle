@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\AuthLogic;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -17,7 +16,7 @@ class SessionAuth implements AuthLogicInterface
     protected $session;
 
     /**
-     * @var string $domain
+     * @var string
      */
     protected $domain;
 
@@ -37,7 +36,7 @@ class SessionAuth implements AuthLogicInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setDomain($domain)
     {
@@ -45,7 +44,7 @@ class SessionAuth implements AuthLogicInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function login($user)
     {
@@ -58,7 +57,7 @@ class SessionAuth implements AuthLogicInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function logout()
     {
@@ -71,7 +70,7 @@ class SessionAuth implements AuthLogicInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isAuthenticated()
     {
@@ -79,7 +78,7 @@ class SessionAuth implements AuthLogicInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getUser()
     {
@@ -104,7 +103,7 @@ class SessionAuth implements AuthLogicInterface
      */
     protected function setAttribute($key, $value)
     {
-        $acutualKey = $this->domain . '.' . $key;
+        $acutualKey = $this->domain.'.'.$key;
 
         $this->session->set($acutualKey, $value);
     }
@@ -112,13 +111,14 @@ class SessionAuth implements AuthLogicInterface
     /**
      * Get attribute from session.
      *
-     * @param  string $key
-     * @param  mixed  $default
+     * @param string $key
+     * @param mixed  $default
+     *
      * @return mixed
      */
     protected function getAttribute($key, $default = null)
     {
-        $acutualKey = $this->domain . '.' . $key;
+        $acutualKey = $this->domain.'.'.$key;
 
         return $this->session->get($acutualKey, $default);
     }
@@ -126,7 +126,8 @@ class SessionAuth implements AuthLogicInterface
     /**
      * sleep user.
      *
-     * @param  mixed $user
+     * @param mixed $user
+     *
      * @return mixed sleepd data.
      */
     protected function sleepUser($user)
@@ -137,7 +138,8 @@ class SessionAuth implements AuthLogicInterface
     /**
      * Awake user from sleepd data.
      *
-     * @param  mixed $data sleepd data made by sleep()
+     * @param mixed $data sleepd data made by sleep()
+     *
      * @return mixed
      */
     protected function awakeUser($data)

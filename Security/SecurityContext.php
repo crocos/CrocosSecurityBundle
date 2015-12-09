@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security;
 
 use Crocos\SecurityBundle\Annotation\Secure;
@@ -8,15 +7,10 @@ use Crocos\SecurityBundle\Security\AuthLogic\RolePreloadableInterface;
 use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthInterface;
 use Crocos\SecurityBundle\Security\Role\RoleManagerInterface;
 
-/**
- * SecurityContext.
- *
- * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
- */
 class SecurityContext
 {
     /**
-     * @var boolean
+     * @var bool
      */
     protected $secure = false;
 
@@ -31,17 +25,17 @@ class SecurityContext
     protected $domain = 'secured';
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $domainFixed = false;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $httpsRequired;
 
     /**
-     * @var options
+     * @var array
      */
     protected $options = [];
 
@@ -73,7 +67,7 @@ class SecurityContext
     /**
      * Set secure.
      *
-     * @param boolean $secure
+     * @param bool $security
      */
     public function setSecure($security)
     {
@@ -83,7 +77,7 @@ class SecurityContext
     /**
      * Check is secure.
      *
-     * @return boolean
+     * @return bool
      */
     public function isSecure()
     {
@@ -113,7 +107,7 @@ class SecurityContext
     /**
      * Check has all allowed roles?
      *
-     * @return boolean
+     * @return bool
      */
     public function hasAllowedRoles()
     {
@@ -143,7 +137,7 @@ class SecurityContext
     /**
      * Set httpsRequired.
      *
-     * @param boolean httpsRequired
+     * @param bool httpsRequired
      */
     public function setHttpsRequired($httpsRequired)
     {
@@ -153,7 +147,7 @@ class SecurityContext
     /**
      * Get httpsRequired.
      *
-     * @return boolean
+     * @return bool
      */
     public function getHttpsRequired()
     {
@@ -163,7 +157,7 @@ class SecurityContext
     /**
      * Is httpsRequired.
      *
-     * @return boolean
+     * @return bool
      */
     public function isHttpsRequired()
     {
@@ -173,7 +167,7 @@ class SecurityContext
     /**
      * Set secure options.
      *
-     * @param array $options
+     * @param array|string $options
      */
     public function setOptions($options)
     {
@@ -231,7 +225,7 @@ class SecurityContext
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isDomainFixed()
     {
@@ -269,7 +263,7 @@ class SecurityContext
     /**
      * Check is authenticated.
      *
-     * @return boolean
+     * @return bool
      */
     public function isAuthenticated()
     {
@@ -297,7 +291,7 @@ class SecurityContext
     /**
      * Use http auth.
      *
-     * @return boolean
+     * @return bool
      */
     public function useHttpAuth()
     {
@@ -317,7 +311,8 @@ class SecurityContext
     /**
      * Get http auth.
      *
-     * @param  string            $name
+     * @param string $name
+     *
      * @return HttpAuthInterface
      */
     public function getHttpAuth($name)
@@ -480,7 +475,7 @@ class SecurityContext
     /**
      * Get PreviousUrlHolder.
      *
-     * @return PreviousUrlHolder.
+     * @return PreviousUrlHolder
      */
     public function getPreviousUrlHolder()
     {

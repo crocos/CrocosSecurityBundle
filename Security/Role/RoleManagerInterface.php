@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\Role;
 
 /**
@@ -42,14 +41,14 @@ interface RoleManagerInterface
     /**
      * Is role preloaded?
      *
-     * @return boolean
+     * @return bool
      */
     public function isPreloaded();
 
     /**
      * Set preloaded flag.
      *
-     * @param boolean $bool
+     * @param bool preloaded$
      */
     public function setPreloaded($preloaded = true);
 }

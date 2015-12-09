@@ -1,15 +1,13 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Exception;
 
 use Crocos\SecurityBundle\Exception\AuthException;
-use Phake;
 
 class AuthExceptionTest extends \PHPUnit_Framework_TestCase
 {
     public function testConstructor()
     {
-        $exception = new AuthException('Security error', array(), 100, $previous = new \LogicException('dummy'));
+        $exception = new AuthException('Security error', [], 100, $previous = new \LogicException('dummy'));
 
         $this->assertEquals('Security error', $exception->getMessage());
         $this->assertEquals(100, $exception->getCode());
@@ -26,7 +24,7 @@ class AuthExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testGetAttributes()
     {
-        $exception = new AuthException('Secuirty error', array('foo' => 'bar'));
-        $this->assertEquals(array('foo' => 'bar'), $exception->getAttributes());
+        $exception = new AuthException('Secuirty error', ['foo' => 'bar']);
+        $this->assertEquals(['foo' => 'bar'], $exception->getAttributes());
     }
 }

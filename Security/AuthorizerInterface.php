@@ -1,11 +1,10 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security;
 
 interface AuthorizerInterface
 {
     /**
-     * Authorize
+     * Authorize.
      *
      * @param SecurityContext $context
      *

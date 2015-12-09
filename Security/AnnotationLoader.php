@@ -1,14 +1,13 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security;
 
-use Doctrine\Common\Annotations\Reader;
 use Crocos\SecurityBundle\Annotation\Annotation;
 use Crocos\SecurityBundle\Annotation\Secure;
 use Crocos\SecurityBundle\Annotation\SecureConfig;
 use Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver;
-use Crocos\SecurityBundle\Security\Role\RoleManagerResolver;
 use Crocos\SecurityBundle\Security\HttpAuth\HttpAuthFactoryInterface;
+use Crocos\SecurityBundle\Security\Role\RoleManagerResolver;
+use Doctrine\Common\Annotations\Reader;
 use SplPriorityQueue;
 
 /**
@@ -47,8 +46,6 @@ class AnnotationLoader
     protected $parameterResolver;
 
     /**
-     * Constructor.
-     *
      * @param Reader              $reader              Annotation reader
      * @param AuthLogicResolver   $resolver
      * @param RoleManagerResolver $roleManagerResolver
@@ -62,8 +59,6 @@ class AnnotationLoader
     }
 
     /**
-     * Add http auth factory.
-     *
      * @param HttpAuthFactoryInterface $httpAuthFactory
      */
     public function addHttpAuthFactory(HttpAuthFactoryInterface $httpAuthFactory)
@@ -80,8 +75,6 @@ class AnnotationLoader
     }
 
     /**
-     * Read security annotation.
-     *
      * @param SecurityContext   $context
      * @param \ReflectionClass  $class
      * @param \ReflectionMethod $method
@@ -95,12 +88,12 @@ class AnnotationLoader
             $classes[] = $klass;
         }
 
-        // Read class annotations.
+        // Read class annotations
         $classes = array_reverse($classes);
         foreach ($classes as $class) {
-            $annotations = $this->reader->getClassAnnotations($class);
-            if (count($annotations) > 0) {
-                foreach ($annotations as $annotation) {
+            $classAnnotations = $this->reader->getClassAnnotations($class);
+            if (count($classAnnotations) > 0) {
+                foreach ($classAnnotations as $annotation) {
                     if ($annotation instanceof Annotation) {
                         $this->loadAnnotation($context, $annotation);
                     }
@@ -108,10 +101,10 @@ class AnnotationLoader
             }
         }
 
-        // Read method annotations.
-        $annotations = $this->reader->getMethodAnnotations($method);
-        if (count($annotations) > 0) {
-            foreach ($annotations as $annotation) {
+        // Read method annotations
+        $methodAnnotations = $this->reader->getMethodAnnotations($method);
+        if (count($methodAnnotations) > 0) {
+            foreach ($methodAnnotations as $annotation) {
                 if ($annotation instanceof Annotation) {
                     $this->loadAnnotation($context, $annotation);
                 }
@@ -122,8 +115,6 @@ class AnnotationLoader
     }
 
     /**
-     * Load security annotation.
-     *
      * @param SecurityContext $context
      * @param Annotation      $annotation
      */
@@ -164,7 +155,7 @@ class AnnotationLoader
         }
 
         if (null !== $annotation->httpsRequired()) {
-            $context->setHttpsRequired($this->resolveParameter($annotation->httpsRequired()));
+            $context->setHttpsRequired($annotation->httpsRequired());
         }
 
         if (null !== $annotation->options()) {
@@ -172,7 +163,7 @@ class AnnotationLoader
         }
 
         if (null !== $annotation->auth()) {
-            $context->setAuthLogic($this->resolveParameter($this->resolver->resolveAuthLogic($annotation->auth())));
+            $context->setAuthLogic($this->resolver->resolveAuthLogic($this->resolveParameter($annotation->auth())));
         }
 
         if (null !== $annotation->roleManager()) {
@@ -209,8 +200,6 @@ class AnnotationLoader
     }
 
     /**
-     * Load http auth.
-     *
      * @param SecurityContext $context
      * @param SecureConfig    $annotation
      */
@@ -240,9 +229,8 @@ class AnnotationLoader
     }
 
     /**
-     * Parse parameter.
+     * @param mixed $value
      *
-     * @param  string $value
      * @return string
      */
     protected function resolveParameter($value)

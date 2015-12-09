@@ -1,4 +1,3 @@
-coverage
-phpunit.xml
-vendor
-composer.lock
+/build
+/composer.lock
+/vendor

@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit bootstrap="./vendor/autoload.php" colors="true">
   <testsuites>
-    <testsuite name="CrocosSecurityBundle">
+    <testsuite>
       <directory suffix="Test.php">./Tests</directory>
     </testsuite>
   </testsuites>
 
+  <logging>
+    <log type="coverage-clover" target="build/logs/clover.xml"/>
+  </logging>
+
   <filter>
     <whitelist>
-      <directory>./</directory>
+      <directory suffix=".php">.</directory>
       <exclude>
         <directory>./Resources</directory>
         <directory>./Tests</directory>

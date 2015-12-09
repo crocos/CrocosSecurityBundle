@@ -1,16 +1,20 @@
 <?php
-
 namespace Crocos\SecurityBundle\Exception;
 
-/**
- * HttpAuthException.
- *
- * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
- */
 class HttpAuthException extends AuthException
 {
+    /**
+     * @var string
+     */
     protected $name;
 
+    /**
+     * @param string     $name
+     * @param string     $message
+     * @param array      $attributes
+     * @param int        $code
+     * @param \Exception $previous
+     */
     public function __construct($name, $message = '', array $attributes = [], $code = 0, \Exception $previous = null)
     {
         parent::__construct($message, $attributes, $code, $previous);
@@ -18,6 +22,9 @@ class HttpAuthException extends AuthException
         $this->name = $name;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;

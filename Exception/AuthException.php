@@ -1,12 +1,6 @@
 <?php
-
 namespace Crocos\SecurityBundle\Exception;
 
-/**
- * AuthException.
- *
- * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
- */
 class AuthException extends \RuntimeException
 {
     /**
@@ -15,11 +9,9 @@ class AuthException extends \RuntimeException
     protected $attributes;
 
     /**
-     * Constructor.
-     *
      * @param string     $message
      * @param array      $attributes
-     * @param integer    $code
+     * @param int        $code
      * @param \Exception $previous
      */
     public function __construct($message = '', array $attributes = [], $code = 0, \Exception $previous = null)
@@ -30,8 +22,6 @@ class AuthException extends \RuntimeException
     }
 
     /**
-     * Get attributes.
-     *
      * @return array
      */
     public function getAttributes()

@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Annotation;
 
 /**
@@ -17,7 +16,7 @@ class SecureConfig extends Annotation
     protected $domain;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $httpsRequired;
 
@@ -50,7 +49,7 @@ class SecureConfig extends Annotation
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function httpsRequired()
     {

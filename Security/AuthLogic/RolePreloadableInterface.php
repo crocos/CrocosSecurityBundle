@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\AuthLogic;
 
 /**
@@ -12,7 +11,7 @@ interface RolePreloadableInterface
     /**
      * Is role preloadable?
      *
-     * @return boolean
+     * @return bool
      */
     public function isRolePreloadable();
 

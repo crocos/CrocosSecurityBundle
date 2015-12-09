@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -51,7 +50,7 @@ class PreviousUrlHolder
     /**
      * Has url?
      *
-     * @return boolean
+     * @return bool
      */
     public function has()
     {

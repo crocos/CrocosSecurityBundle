@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Exception;
 
 use Phake;

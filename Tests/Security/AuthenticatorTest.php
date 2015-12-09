@@ -1,11 +1,10 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Security;
 
-use Symfony\Component\HttpFoundation\Request;
 use Crocos\SecurityBundle\Security\Authenticator;
 use Crocos\SecurityBundle\Tests\Fixtures;
 use Phake;
+use Symfony\Component\HttpFoundation\Request;
 
 class AuthenticatorTest extends \PHPUnit_Framework_TestCase
 {

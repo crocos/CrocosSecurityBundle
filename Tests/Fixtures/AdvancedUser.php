@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Fixtures;
 
 class AdvancedUser extends User

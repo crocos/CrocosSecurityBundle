@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Security;
 
 use Crocos\SecurityBundle\Security\ForwardingControllerMatcher;
@@ -36,9 +35,9 @@ class ForwardingControllerMatcherTest extends \PHPUnit_Framework_TestCase
         $reflMethod = $reflClass->getMethod($method);
 
         $context = Phake::mock('Crocos\SecurityBundle\Security\SecurityContext');
-        Phake::when($context)->getForwardingController()->thenReturn("CrocosSecurityBundle:Admin:secure");
+        Phake::when($context)->getForwardingController()->thenReturn('CrocosSecurityBundle:Admin:secure');
 
-        Phake::when($parser)->parse("CrocosSecurityBundle:Admin:secure")->thenReturn("{$class}::{$method}");
+        Phake::when($parser)->parse('CrocosSecurityBundle:Admin:secure')->thenReturn("{$class}::{$method}");
 
         $this->assertTrue($matcher->isForwardingController($context, $reflClass, $reflMethod));
     }

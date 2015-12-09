@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\Role;
 
 /**
@@ -10,7 +9,7 @@ namespace Crocos\SecurityBundle\Security\Role;
 abstract class AbstractRoleManager implements RoleManagerInterface
 {
     /**
-     * @var string $domain
+     * @var string
      */
     protected $domain;
 
@@ -23,7 +22,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasRole($roles)
     {
@@ -45,7 +44,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setRoles($roles)
     {
@@ -53,7 +52,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function addRoles($roles)
     {
@@ -62,7 +61,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getRoles()
     {
@@ -70,7 +69,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function clearRoles()
     {
@@ -79,7 +78,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function isPreloaded()
     {
@@ -87,7 +86,7 @@ abstract class AbstractRoleManager implements RoleManagerInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setPreloaded($preloaded = true)
     {
@@ -105,8 +104,9 @@ abstract class AbstractRoleManager implements RoleManagerInterface
     /**
      * Get attribute.
      *
-     * @param  string $key
-     * @param  mixed  $default
+     * @param string $key
+     * @param mixed  $default
+     *
      * @return mixed
      */
     abstract protected function getAttribute($key, $default = null);

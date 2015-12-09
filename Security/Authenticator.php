@@ -1,11 +1,10 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security;
 
-use Symfony\Component\HttpFoundation\Request;
 use Crocos\SecurityBundle\Exception\AuthException;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
 use Crocos\SecurityBundle\Exception\HttpsRequiredException;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Authenticator.
@@ -25,7 +24,7 @@ class Authenticator implements AuthenticatorInterface
     protected $matcher;
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected $httpsRequiringEnabled;
 
@@ -50,7 +49,7 @@ class Authenticator implements AuthenticatorInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function authenticate(SecurityContext $context, $controller, Request $request = null)
     {

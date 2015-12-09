@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security;
 
 use Crocos\SecurityBundle\Exception\AuthException;
@@ -12,7 +11,7 @@ use Crocos\SecurityBundle\Exception\AuthException;
 class Authorizer implements AuthorizerInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function authorize(SecurityContext $context)
     {

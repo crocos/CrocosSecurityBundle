@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;

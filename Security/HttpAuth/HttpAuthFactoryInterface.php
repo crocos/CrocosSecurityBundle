@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\HttpAuth;
 
 /**
@@ -10,8 +9,8 @@ namespace Crocos\SecurityBundle\Security\HttpAuth;
 interface HttpAuthFactoryInterface
 {
     const PRIORITY_HIGH = 20;
-    const PRIORITY_MID  = 10;
-    const PRIORITY_LOW  = 0;
+    const PRIORITY_MID = 10;
+    const PRIORITY_LOW = 0;
 
     /**
      * @return string
@@ -19,13 +18,14 @@ interface HttpAuthFactoryInterface
     public function getname();
 
     /**
-     * @return integer
+     * @return int
      */
     public function getPriority();
 
     /**
-     * @param  string            $value
-     * @param  string            $domain
+     * @param string $value
+     * @param string $domain
+     *
      * @return HttpAuthInterface
      */
     public function create($value, $domain);

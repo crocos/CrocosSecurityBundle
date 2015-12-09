@@ -1,9 +1,8 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security;
 
 /**
- * ParameterResolverInterface
+ * ParameterResolverInterface.
  *
  * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
  */

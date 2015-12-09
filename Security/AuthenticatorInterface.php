@@ -1,9 +1,8 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security;
 
-use Symfony\Component\HttpFoundation\Request;
 use Crocos\SecurityBundle\Exception\AuthException;
+use Symfony\Component\HttpFoundation\Request;
 
 interface AuthenticatorInterface
 {
@@ -19,7 +18,7 @@ interface AuthenticatorInterface
     public function authenticate(SecurityContext $context, $controller, Request $request = null);
 
     /**
-     * @param boolean $enabled
+     * @param bool $enabled
      */
     public function enableHttpsRequiring($enabled);
 }

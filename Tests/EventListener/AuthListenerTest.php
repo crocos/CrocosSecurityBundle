@@ -1,16 +1,15 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\EventListener;
 
-use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Crocos\SecurityBundle\EventListener\AuthListener;
 use Crocos\SecurityBundle\Exception\AuthException;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
 use Crocos\SecurityBundle\Exception\HttpsRequiredException;
-use Crocos\SecurityBundle\EventListener\AuthListener;
 use Crocos\SecurityBundle\Tests\Fixtures;
 use Phake;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class AuthListenerTest extends \PHPUnit_Framework_TestCase
 {
@@ -153,6 +152,6 @@ class AuthListenerTest extends \PHPUnit_Framework_TestCase
     {
         Phake::when($event)->getKernel()->thenReturn($this->httpKernel);
         Phake::when($event)->getRequest()->thenReturn($this->request);
-        Phake::when($event)->getRequestType()->thenReturn(HttpKernelInterface::MASTER_REQUEST);
+        Phake::when($event)->isMasterRequest()->thenReturn(true);
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\EventListener;
 
 use Crocos\SecurityBundle\Exception\AuthException;
@@ -71,21 +70,18 @@ class AuthListener
     }
 
     /**
-     * onKernelRequest.
+     * Listen to the kernel.request event.
      *
      * @param GetResponseEvent $event
      */
     public function onKernelRequest(GetResponseEvent $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+        if (!$event->isMasterRequest()) {
             return;
         }
 
         $request = $event->getRequest();
         $controller = $this->resolver->getController($request);
-
-        //無駄になるけどRequestDataCollectorでこけるから...
-        //$request->attributes->set('_controller', $controller);
 
         if (!is_array($controller)) {
             return;
@@ -97,7 +93,7 @@ class AuthListener
     }
 
     /**
-     * onKernelException.
+     * Listen to the kernel.exception event.
      *
      * @param GetResponseForExceptionEvent $event
      */
@@ -110,24 +106,7 @@ class AuthListener
             return;
         }
 
-        $response = null;
-        if ($exception instanceof HttpsRequiredException) {
-            $sslUrl = preg_replace('_^http:_', 'https:', $request->getUri());
-
-            $response = new RedirectResponse($sslUrl);
-        } elseif ($exception instanceof HttpAuthException) {
-            $response = $this->context->getHttpAuth($exception->getName())->createUnauthorizedResponse($request, $exception);
-        } else {
-            $forwardingController = $this->context->getForwardingController();
-            if (null === $forwardingController) {
-                throw new \LogicException('You must configure "forward" attribute in @SecureConfig annotation');
-            }
-
-            // Save actual url.
-            $this->context->setPreviousUrl($request->getUri());
-
-            $response = $this->forward($request, $forwardingController, $exception);
-        }
+        $response = $this->respondForAuthException($request, $exception);
 
         if (null !== $response) {
             $response->headers->set('X-Status-Code', $response->getStatusCode());
@@ -135,6 +114,45 @@ class AuthListener
         }
     }
 
+    /**
+     * @param Request       $request
+     * @param AuthException $exception
+     *
+     * @return Response
+     */
+    protected function respondForAuthException(Request $request, AuthException $exception)
+    {
+        // Switch http to https
+        if ($exception instanceof HttpsRequiredException) {
+            $sslUrl = preg_replace('_^http:_', 'https:', $request->getUri());
+
+            return new RedirectResponse($sslUrl);
+        }
+
+        // Handle http auth
+        if ($exception instanceof HttpAuthException) {
+            return $this->context->getHttpAuth($exception->getName())->createUnauthorizedResponse($request, $exception);
+        }
+
+        // Forward to another controller
+        $forwardingController = $this->context->getForwardingController();
+        if (null === $forwardingController) {
+            throw new \LogicException('You must configure "forward" attribute in @SecureConfig annotation');
+        }
+
+        // Keep previous url before forward
+        $this->context->setPreviousUrl($request->getUri());
+
+        return $this->forward($request, $forwardingController, $exception);
+    }
+
+    /**
+     * @param Request       $request
+     * @param string        $forwardingController
+     * @param AuthException $exception
+     *
+     * @return Response
+     */
     protected function forward(Request $request, $forwardingController, AuthException $exception)
     {
         $path = $exception->getAttributes();

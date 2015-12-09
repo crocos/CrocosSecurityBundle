@@ -1,12 +1,11 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Security;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Crocos\SecurityBundle\Security\AnnotationLoader;
 use Crocos\SecurityBundle\Security\HttpAuth;
 use Crocos\SecurityBundle\Security\SecurityContext;
 use Crocos\SecurityBundle\Tests\Fixtures;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Phake;
 
 class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase

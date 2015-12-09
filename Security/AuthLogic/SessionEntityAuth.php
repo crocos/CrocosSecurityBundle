@@ -1,9 +1,8 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\AuthLogic;
 
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * SessionEntityAuth.
@@ -33,7 +32,7 @@ class SessionEntityAuth extends SessionAuth
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function sleepUser($user)
     {
@@ -57,7 +56,7 @@ class SessionEntityAuth extends SessionAuth
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function awakeUser($data)
     {

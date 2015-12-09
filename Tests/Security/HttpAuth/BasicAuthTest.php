@@ -1,11 +1,9 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Security;
 
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Crocos\SecurityBundle\Security\HttpAuth\BasicAuth;
 use Crocos\SecurityBundle\Exception\HttpAuthException;
+use Crocos\SecurityBundle\Security\HttpAuth\BasicAuth;
+use Symfony\Component\HttpFoundation\Request;
 
 class BasicAuthTest extends \PHPUnit_Framework_TestCase
 {

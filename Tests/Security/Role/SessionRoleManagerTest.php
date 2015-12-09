@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Security\Role;
 
 use Crocos\SecurityBundle\Security\Role\SessionRoleManager;

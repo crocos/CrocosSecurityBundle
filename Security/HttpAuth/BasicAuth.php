@@ -1,20 +1,14 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\HttpAuth;
 
+use Crocos\SecurityBundle\Exception\HttpAuthException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Crocos\SecurityBundle\Exception\HttpAuthException;
 
-/**
- * Basic http auth.
- *
- * @author Katsuhiro Ogawa <ogawa@crocos.co.jp>
- */
 class BasicAuth implements HttpAuthInterface
 {
     /**
-     * @var arry
+     * @var array
      */
     protected $users;
 
@@ -24,8 +18,6 @@ class BasicAuth implements HttpAuthInterface
     protected $realm;
 
     /**
-     * Constructor.
-     *
      * @param array  $users
      * @param string $realm
      */
@@ -36,7 +28,7 @@ class BasicAuth implements HttpAuthInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function authenticate(Request $request)
     {
@@ -51,7 +43,7 @@ class BasicAuth implements HttpAuthInterface
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createUnauthorizedResponse(Request $request, HttpAuthException $exception)
     {

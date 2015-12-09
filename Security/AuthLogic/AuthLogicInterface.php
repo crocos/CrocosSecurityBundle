@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\AuthLogic;
 
 /**
@@ -29,7 +28,7 @@ interface AuthLogicInterface
     /**
      * Check is authenticated.
      *
-     * @return boolean
+     * @return bool
      */
     public function isAuthenticated();
 

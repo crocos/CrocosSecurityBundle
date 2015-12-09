@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Security\Role;
 
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -12,7 +11,7 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 class SessionRoleManager extends AbstractRoleManager
 {
     /**
-     * @var SessionInterface $session
+     * @var SessionInterface
      */
     protected $session;
 
@@ -27,7 +26,7 @@ class SessionRoleManager extends AbstractRoleManager
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function setAttribute($key, $value)
     {
@@ -35,7 +34,7 @@ class SessionRoleManager extends AbstractRoleManager
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function getAttribute($key, $default = null)
     {
@@ -43,7 +42,8 @@ class SessionRoleManager extends AbstractRoleManager
     }
 
     /**
-     * @param  string $key
+     * @param string $key
+     *
      * @return string
      */
     protected function computeAttributeKey($key)

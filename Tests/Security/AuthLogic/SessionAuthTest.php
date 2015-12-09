@@ -1,5 +1,4 @@
 <?php
-
 namespace Crocos\SecurityBundle\Tests\Security\AuthLogic;
 
 use Crocos\SecurityBundle\Security\AuthLogic\SessionAuth;
