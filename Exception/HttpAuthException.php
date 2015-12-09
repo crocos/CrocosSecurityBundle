@@ -14,6 +14,8 @@ class HttpAuthException extends AuthException
      * @param array      $attributes
      * @param int        $code
      * @param \Exception $previous
+     *
+     * @see AuthException
      */
     public function __construct($name, $message = '', array $attributes = [], $code = 0, \Exception $previous = null)
     {

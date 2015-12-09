@@ -122,22 +122,17 @@ class AuthListener
      */
     protected function respondForAuthException(Request $request, AuthException $exception)
     {
-        // Switch http to https
         if ($exception instanceof HttpsRequiredException) {
-            $sslUrl = preg_replace('_^http:_', 'https:', $request->getUri());
-
-            return new RedirectResponse($sslUrl);
+            return new RedirectResponse(preg_replace('_^http:_', 'https:', $request->getUri()));
         }
 
-        // Handle http auth
         if ($exception instanceof HttpAuthException) {
             return $this->context->getHttpAuth($exception->getName())->createUnauthorizedResponse($request, $exception);
         }
 
-        // Forward to another controller
         $forwardingController = $this->context->getForwardingController();
         if (null === $forwardingController) {
-            throw new \LogicException('You must configure "forward" attribute in @SecureConfig annotation');
+            throw new \LogicException('You must configure "forward" to @SecureConfig');
         }
 
         // Keep previous url before forward

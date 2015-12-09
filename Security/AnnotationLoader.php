@@ -83,31 +83,23 @@ class AnnotationLoader
     {
         // Retrieve all ancestors (parent first)
         $klass = $class;
-        $classes = [$klass];
+        $klasses = [$klass];
         while ($klass = $klass->getParentClass()) {
-            $classes[] = $klass;
+            $klasses[] = $klass;
+        }
+        $klasses = array_reverse($klasses);
+
+        $annotations = [];
+
+        foreach ($klasses as $klass) {
+            $annotations = array_merge($annotations, $this->reader->getClassAnnotations($klass));
         }
 
-        // Read class annotations
-        $classes = array_reverse($classes);
-        foreach ($classes as $class) {
-            $classAnnotations = $this->reader->getClassAnnotations($class);
-            if (count($classAnnotations) > 0) {
-                foreach ($classAnnotations as $annotation) {
-                    if ($annotation instanceof Annotation) {
-                        $this->loadAnnotation($context, $annotation);
-                    }
-                }
-            }
-        }
+        $annotations = array_merge($annotations, $this->reader->getMethodAnnotations($method));
 
-        // Read method annotations
-        $methodAnnotations = $this->reader->getMethodAnnotations($method);
-        if (count($methodAnnotations) > 0) {
-            foreach ($methodAnnotations as $annotation) {
-                if ($annotation instanceof Annotation) {
-                    $this->loadAnnotation($context, $annotation);
-                }
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof Annotation) {
+                $this->loadAnnotation($context, $annotation);
             }
         }
 
