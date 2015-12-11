@@ -235,7 +235,7 @@ class SecurityContext
     /**
      * Log in.
      *
-     * @param user $user
+     * @param mixed $user
      */
     public function login($user)
     {
