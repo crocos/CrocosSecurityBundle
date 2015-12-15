@@ -1,7 +1,7 @@
 <?php
 namespace Crocos\SecurityBundle\Security\AuthLogic;
 
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
@@ -14,17 +14,17 @@ class SessionEntityAuth extends SessionAuth
     const FORMAT_VERSION = 1;
 
     /**
-     * @var RegistryInterface
+     * @var ManagerRegistry
      */
     protected $managerRegistry;
 
     /**
      * Constructor.
      *
-     * @param SessionInterface  $session
-     * @param RegistryInterface $managerRegistry
+     * @param SessionInterface $session
+     * @param ManagerRegistry  $managerRegistry
      */
-    public function __construct(SessionInterface $session, RegistryInterface $managerRegistry)
+    public function __construct(SessionInterface $session, ManagerRegistry $managerRegistry)
     {
         $this->managerRegistry = $managerRegistry;
 

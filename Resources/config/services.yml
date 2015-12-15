@@ -7,6 +7,7 @@ parameters:
     crocos_security.previous_url_holder.class: Crocos\SecurityBundle\Security\PreviousUrlHolder
     crocos_security.auth_logic_resolver.class: Crocos\SecurityBundle\Security\AuthLogic\AuthLogicResolver
     crocos_security.auth_logic.session.class: Crocos\SecurityBundle\Security\AuthLogic\SessionAuth
+    crocos_security.auth_logic.session_entity.class: Crocos\SecurityBundle\Security\AuthLogic\SessionEntityAuth
     crocos_security.basic_auth_factory.class: Crocos\SecurityBundle\Security\HttpAuth\BasicAuthFactory
     crocos_security.container_parameter_resolver.class: Crocos\SecurityBundle\Security\ContainerParameterResolver
     crocos_security.role_manager_resolver.class: Crocos\SecurityBundle\Security\Role\RoleManagerResolver
@@ -59,6 +60,13 @@ services:
             - '@session'
         tags:
             - { name: crocos_security.auth_logic, alias: session }
+
+    crocos_security.auth_logic.session_entity:
+        class: '%crocos_security.auth_logic.session_entity.class%'
+        arguments:
+            - '@session'
+        tags:
+            - { name: crocos_security.auth_logic, alias: session.entity }
 
     crocos_security.basic_auth_factory:
         class: '%crocos_security.basic_auth_factory.class%'
